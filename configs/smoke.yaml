@@ -1,0 +1,17 @@
+# Smoke config — tiny, fast, laptop/Colab safe. No tuning claimed.
+# Used by Phase 0 skeleton checks and later Phase 2+ smoke runs.
+project: trust-aware-vanet-frl
+config_name: smoke
+seed: 0
+
+scenario:
+  num_vehicles: 5
+  num_edge_nodes: 2
+  mobility: low            # low | medium | high (Phase 2 to implement)
+  task_load: low
+  malicious_client_ratio: 0.0
+  connectivity_range_m: 150.0
+  num_steps: 50
+
+placeholders_only: true   # Phase 1+ will replace ranges with specified models
+notes: "Interface skeleton only. Values are not tuned experimental choices."

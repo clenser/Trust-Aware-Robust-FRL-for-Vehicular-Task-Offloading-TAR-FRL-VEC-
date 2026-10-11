@@ -1,0 +1,21 @@
+# Experiment matrix template for Phase 10 (not executed; skeleton only).
+project: trust-aware-vanet-frl
+config_name: experiments_template
+seeds: [0, 1, 2]
+
+sweeps:
+  malicious_client_ratio: [0.0, 0.1, 0.2, 0.3, 0.4]
+  mobility: [low, medium, high]
+  num_vehicles: [20]
+  aggregation: [fedavg, trust_weighted, trust_weighted_with_exclusion]
+
+ablations:
+  - complete_model
+  - without_behavioural_trust
+  - without_model_update_trust
+  - without_temporal_trust
+  - without_trust_aware_aggregation
+  - federated_rl_without_trust
+  - rl_without_federated
+
+notes: "Template only. No experiment has been run. Every future result row must record config+seed."

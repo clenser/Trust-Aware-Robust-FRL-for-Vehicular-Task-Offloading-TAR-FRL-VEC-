@@ -1,0 +1,26 @@
+# Default small-scale dev config skeleton (not executed in Phase 0).
+project: trust-aware-vanet-frl
+config_name: default
+seed: 42
+
+scenario:
+  num_vehicles: 20
+  num_edge_nodes: 3
+  mobility: medium         # low | medium | high
+  task_load: medium
+  malicious_client_ratio: 0.1
+  connectivity_range_m: 200.0
+  num_steps: 500
+
+trust:
+  alpha: 0.6               # T_final = alpha*T_behaviour + (1-alpha)*T_model
+  smoothing: 0.9
+  exclusion_threshold: 0.3
+
+federated:
+  num_rounds: 10
+  local_episodes: 5
+  aggregation: trust_weighted_with_exclusion  # fedavg | trust_weighted | trust_weighted_with_exclusion
+
+placeholders_only: true
+notes: "Skeleton only. Trust/federated fields anticipate Phases 5-7; no logic exists yet."

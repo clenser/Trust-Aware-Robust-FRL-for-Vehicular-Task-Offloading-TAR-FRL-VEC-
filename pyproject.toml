@@ -1,0 +1,28 @@
+[project]
+name = "trust-aware-vanet-frl"
+version = "0.0.0"
+description = "Trust-aware federated reinforcement learning for secure task offloading in VANETs (synthetic Python simulation)."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.0",
+  "torch>=2.0",
+  "matplotlib>=3.8",
+  "pyyaml>=6.0",
+  "pytest>=8.0",
+  "streamlit>=1.32",
+  "scipy>=1.11",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"

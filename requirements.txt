@@ -1,0 +1,12 @@
+# Minimum install floor for the trust-aware VANET FRL project.
+# Python 3.11+ is required by AGENTS.md (audit machine had 3.10.11 — upgrade before Phase 2+).
+# Pins are lower bounds to stay laptop/Colab friendly; exact lockfile deferred to Phase 11.
+
+numpy>=1.26
+pandas>=2.0
+torch>=2.0
+matplotlib>=3.8
+pyyaml>=6.0
+pytest>=8.0
+streamlit>=1.32
+scipy>=1.11
