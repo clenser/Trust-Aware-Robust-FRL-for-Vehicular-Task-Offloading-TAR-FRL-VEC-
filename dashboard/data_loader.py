@@ -187,6 +187,15 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
       - 'unavailable': the manifest file is missing
       - 'unverified': the manifest is empty, malformed, or insufficient to establish integrity
     """
+    if max_check <= 0:
+        return {
+            "status": "unverified",
+            "label": "Invalid Parameter ⚠️",
+            "checked_count": 0,
+            "total_count": 0,
+            "message": "Invalid max_check parameter; must be positive integer."
+        }
+
     if not manifest_path or not manifest_path.exists():
         return {
             "status": "unavailable",
@@ -198,8 +207,17 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
     
     try:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        artifacts = manifest.get("artifacts", {})
-        if not artifacts:
+        if not isinstance(manifest, dict):
+            return {
+                "status": "unverified",
+                "label": "Manifest Malformed ⚠️",
+                "checked_count": 0,
+                "total_count": 0,
+                "message": "Manifest JSON root must be an object."
+            }
+
+        artifacts = manifest.get("artifacts")
+        if not isinstance(artifacts, dict) or not artifacts:
             return {
                 "status": "unverified",
                 "label": "Manifest Loaded (No Artifacts Listed)",
@@ -208,24 +226,30 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
                 "message": "Manifest is loaded but contains no artifact hashes."
             }
         
-        # Validate artifact paths to prevent path traversal
+        # Validate artifact paths to prevent path traversal and verify metadata format
         validated_artifacts = {}
+        invalid_entries = []
         for rel_path, meta in artifacts.items():
-            # Ensure path is relative and within repo root
             try:
-                # Normalize path and check for traversal
-                if rel_path.startswith("..") or os.path.isabs(rel_path):
-                    continue  # Skip invalid paths
-                # Resolve against repo root and verify it's within
-                target = (REPO_ROOT / rel_path).resolve()
-                if not str(target).startswith(str(REPO_ROOT.resolve())):
-                    continue  # Skip paths that escape repo root
+                if not isinstance(rel_path, str) or not isinstance(meta, dict):
+                    invalid_entries.append(str(rel_path))
+                    continue
+                p = Path(rel_path)
+                if p.is_absolute() or ".." in p.parts:
+                    invalid_entries.append(rel_path)
+                    continue
+                target = (REPO_ROOT / p).resolve()
+                if not target.is_relative_to(REPO_ROOT.resolve()):
+                    invalid_entries.append(rel_path)
+                    continue
             except Exception:
-                continue  # Skip malformed paths
+                invalid_entries.append(str(rel_path))
+                continue
             
             # Ensure SHA-256 is present
-            if not meta.get("sha256"):
-                continue  # Skip entries without hash
+            if not meta.get("sha256") or not isinstance(meta.get("sha256"), str):
+                invalid_entries.append(rel_path)
+                continue
             
             validated_artifacts[rel_path] = meta
         
@@ -236,6 +260,15 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
                 "checked_count": 0,
                 "total_count": len(artifacts),
                 "message": "Manifest contains no valid artifacts with SHA-256 hashes."
+            }
+        
+        if invalid_entries:
+            return {
+                "status": "failed",
+                "label": "Verification Failed ❌",
+                "checked_count": 0,
+                "total_count": len(artifacts),
+                "message": f"Verification encountered invalid integrity metadata ({len(invalid_entries)} invalid entries): {invalid_entries[0]}"
             }
         
         # Determine if we're doing full or sampled verification

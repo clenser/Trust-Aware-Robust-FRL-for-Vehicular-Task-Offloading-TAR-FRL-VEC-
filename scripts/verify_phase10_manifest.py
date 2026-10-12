@@ -149,6 +149,35 @@ def check_manifest(manifest_path: Path, repo_root: Path | None = None,
     for key in ("core_rows", "ablation_rows", "sensitivity_rows", "total_rows"):
         if matrices[key] != manifest["matrix_counts"][key]:
             failures.append(f"row drift: {key} manifest={manifest['matrix_counts'][key]} live={matrices[key]}")
+
+    # For Phase 10 v4 production suite, perform deep validation of expectations
+    if results_subdir == "results/phase10_final_v4":
+        expected_counts = {"core_rows": 630, "ablation_rows": 70, "sensitivity_rows": 180, "total_rows": 880}
+        for k, exp in expected_counts.items():
+            if matrices[k] != exp:
+                failures.append(f"v4 row count expectation failed: {k}={matrices[k]} (expected {exp})")
+        all_ids = matrices["core_run_ids"] + matrices["ablation_run_ids"] + matrices["sensitivity_run_ids"]
+        if len(all_ids) != 880 or len(set(all_ids)) != 880:
+            failures.append(f"v4 run IDs not unique or wrong count: total={len(all_ids)}, unique={len(set(all_ids))}")
+        if matrices["effective_core_alpha"] != [0.50]:
+            failures.append(f"v4 core alpha mismatch: {matrices['effective_core_alpha']} != [0.50]")
+        if matrices["effective_core_tau_exc"] != [0.35]:
+            failures.append(f"v4 core tau_exc mismatch: {matrices['effective_core_tau_exc']} != [0.35]")
+        if matrices["effective_core_lambda"] != [0.70]:
+            failures.append(f"v4 core lambda mismatch: {matrices['effective_core_lambda']} != [0.70]")
+
+        # Check for unlisted artifacts on disk in the v4 artifact directories
+        manifest_keys = set(manifest["artifacts"].keys())
+        v4_dirs = [root / "results/phase10_final_v4", root / "reports/figures/phase10_final_v4", root / "reports/tables/phase10_final_v4"]
+        for base in v4_dirs:
+            if not base.exists():
+                continue
+            for p in base.rglob("*"):
+                if p.is_file() and p.suffix.lower() in {".csv", ".json", ".pt", ".png", ".tex"}:
+                    rel = p.relative_to(root).as_posix()
+                    if rel not in manifest_keys:
+                        failures.append(f"unlisted artifact on disk: {rel}")
+
     return failures
 
 

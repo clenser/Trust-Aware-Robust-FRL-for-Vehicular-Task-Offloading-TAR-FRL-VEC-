@@ -63,7 +63,7 @@ and evaluation artifacts are implemented, tested, and verified.
 # 1. Activate virtual environment (Python 3.11+)
 .\.venv\Scripts\Activate.ps1
 
-# 2. Run unit and integration tests (153 tests pass)
+# 2. Run unit and integration tests (166 tests pass)
 pytest -q
 
 # 3. Verify Phase 10 v4 experimental manifest (894 artifacts verified)

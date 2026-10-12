@@ -366,6 +366,41 @@ def test_manifest_verify_pass_tamper_and_missing(tmp_path):
     assert any("missing" in f for f in failures)
 
 
+def test_manifest_verify_real_suite_zero_drift():
+    """Verify that check_manifest on the production Phase 10 v4 manifest produces zero failures."""
+    from scripts.verify_phase10_manifest import check_manifest, REPO_ROOT
+    manifest_path = REPO_ROOT / "reports/PHASE10_FINAL_V4_RUN_MANIFEST.json"
+    failures = check_manifest(manifest_path, repo_root=REPO_ROOT, results_subdir="results/phase10_final_v4")
+    assert failures == []
+
+
+def test_manifest_verify_detects_unlisted_file_in_v4_scope(tmp_path):
+    """Verify that check_manifest catches unlisted files in the v4 results directory."""
+    from scripts.verify_phase10_manifest import check_manifest, summarize_matrices
+    import hashlib as _hl
+    import json as _json
+    v4_res = tmp_path / "results" / "phase10_final_v4"
+    v4_res.mkdir(parents=True, exist_ok=True)
+    _write_minimal_csvs(v4_res)
+    matrices = summarize_matrices(v4_res)
+    manifest = {
+        "artifacts": {
+            f"results/phase10_final_v4/{name}": {
+                "sha256": _hl.sha256((v4_res / name).read_bytes()).hexdigest(),
+                "bytes": (v4_res / name).stat().st_size,
+            }
+            for name in ("phase10_experiment_runs.csv", "phase10_ablation_runs.csv", "phase10_sensitivity_runs.csv")
+        },
+        "matrix_counts": {k: matrices[k] for k in ("core_rows", "ablation_rows", "sensitivity_rows", "total_rows")},
+    }
+    (v4_res / "unlisted_model.pt").write_bytes(b"rogue-artifact")
+    man_path = tmp_path / "manifest.json"
+    man_path.write_text(_json.dumps(manifest), encoding="utf-8")
+    failures = check_manifest(man_path, repo_root=tmp_path, results_subdir="results/phase10_final_v4")
+    assert any("unlisted artifact" in f for f in failures)
+
+
+
 # ---------------------------------------------------------------- dashboard
 def test_dashboard_v4_text_and_visibility():
     from dashboard import data_loader as _dl

@@ -274,3 +274,84 @@ def test_verify_dataset_integrity_full_verification():
                 assert res["checked_count"] == total
                 break
 
+
+def test_verify_dataset_integrity_invalid_max_check():
+    """Verify handling of invalid max_check parameter."""
+    datasets = get_available_datasets()
+    v4_info = datasets["Phase 10 Final v4 (Full 880-Run Corrected Suite)"]
+    res_zero = verify_dataset_integrity(v4_info["manifest_path"], max_check=0)
+    assert res_zero["status"] == "unverified"
+    assert "Invalid" in res_zero["label"]
+    res_neg = verify_dataset_integrity(v4_info["manifest_path"], max_check=-5)
+    assert res_neg["status"] == "unverified"
+    assert "Invalid" in res_neg["label"]
+
+
+def test_verify_dataset_integrity_malformed_root_and_artifacts():
+    """Verify handling of non-dict root manifest and non-dict artifacts."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump([1, 2, 3], f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "Malformed" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump({"artifacts": "not_a_dict"}, f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "No Artifacts" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_mixed_valid_and_invalid():
+    """Verify that a manifest with valid files and invalid metadata is flagged as failed."""
+    test_file = REPO_ROOT / "test_mixed_integrity.txt"
+    test_file.write_text("valid content")
+    import hashlib
+    file_sha = hashlib.sha256(b"valid content").hexdigest()
+    rel_path = test_file.relative_to(REPO_ROOT).as_posix()
+    try:
+        # Mixed with traversal
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as mf:
+            json.dump({
+                "artifacts": {
+                    rel_path: {"sha256": file_sha},
+                    "../escaped_secret.txt": {"sha256": "abcdef"},
+                }
+            }, mf)
+            manifest_path = Path(mf.name)
+        try:
+            res = verify_dataset_integrity(manifest_path, max_check=10)
+            assert res["status"] == "failed"
+            assert "Verification Failed" in res["label"]
+            assert res["total_count"] == 2
+        finally:
+            os.unlink(manifest_path)
+
+        # Mixed with missing sha256
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as mf:
+            json.dump({
+                "artifacts": {
+                    rel_path: {"sha256": file_sha},
+                    "some/file.txt": {"bytes": 100},
+                }
+            }, mf)
+            manifest_path = Path(mf.name)
+        try:
+            res = verify_dataset_integrity(manifest_path, max_check=10)
+            assert res["status"] == "failed"
+            assert "Verification Failed" in res["label"]
+            assert res["total_count"] == 2
+        finally:
+            os.unlink(manifest_path)
+    finally:
+        test_file.unlink(missing_ok=True)
+
+
