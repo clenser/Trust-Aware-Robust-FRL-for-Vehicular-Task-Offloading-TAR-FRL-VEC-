@@ -1,0 +1,1250 @@
+{
+  "overall": {
+    "clean_control": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.795,
+          "stdev": 0.09264628073124866,
+          "ci95_half": 0.06627055228380099,
+          "ci95_low": 0.7287294477161991,
+          "ci95_high": 0.861270552283801,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.402582690991635,
+          "stdev": 0.652535090271685,
+          "ci95_half": 0.4667630527156044,
+          "ci95_low": 3.9358196382760307,
+          "ci95_high": 4.86934574370724,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.7606747680073699,
+          "stdev": 0.3833552995395315,
+          "ci95_half": 0.2742168084987982,
+          "ci95_low": 0.4864579595085717,
+          "ci95_high": 1.0348915765061681,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.8,
+          "stdev": 0.08498365855987974,
+          "ci95_half": 0.06078942342217106,
+          "ci95_low": 0.739210576577829,
+          "ci95_high": 0.8607894234221711,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.386741610771411,
+          "stdev": 0.6259568130610498,
+          "ci95_half": 0.447751419484367,
+          "ci95_low": 3.938990191287044,
+          "ci95_high": 4.834493030255778,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.782307356259874,
+          "stdev": 0.34670317827665215,
+          "ci95_half": 0.24799928201751556,
+          "ci95_low": 0.5343080742423585,
+          "ci95_high": 1.0303066382773896,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.065,
+          "stdev": 0.03574601764921203,
+          "ci95_half": 0.025569384036382262,
+          "ci95_low": 0.03943061596361774,
+          "ci95_high": 0.09056938403638226,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.8,
+          "stdev": 0.08498365855987974,
+          "ci95_half": 0.06078942342217106,
+          "ci95_low": 0.739210576577829,
+          "ci95_high": 0.8607894234221711,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.386741610771411,
+          "stdev": 0.6259568130610498,
+          "ci95_half": 0.447751419484367,
+          "ci95_low": 3.938990191287044,
+          "ci95_high": 4.834493030255778,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.782307356259874,
+          "stdev": 0.34670317827665215,
+          "ci95_half": 0.24799928201751556,
+          "ci95_low": 0.5343080742423585,
+          "ci95_high": 1.0303066382773896,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.065,
+          "stdev": 0.03574601764921203,
+          "ci95_half": 0.025569384036382262,
+          "ci95_low": 0.03943061596361774,
+          "ci95_high": 0.09056938403638226,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "poisoning_sign_flip": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.77125,
+          "stdev": 0.08464670166382211,
+          "ci95_half": 0.02623228462048734,
+          "ci95_low": 0.7450177153795127,
+          "ci95_high": 0.7974822846204873,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.348093206561658,
+          "stdev": 0.7170598543047082,
+          "ci95_half": 0.22221915111059443,
+          "ci95_low": 4.125874055451064,
+          "ci95_high": 4.570312357672252,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.6803317451414965,
+          "stdev": 0.34970763571833363,
+          "ci95_half": 0.10837551911419402,
+          "ci95_low": 0.5719562260273026,
+          "ci95_high": 0.7887072642556905,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.76875,
+          "stdev": 0.08674121547187624,
+          "ci95_half": 0.02688138117445147,
+          "ci95_low": 0.7418686188255486,
+          "ci95_high": 0.7956313811744515,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.363938311181512,
+          "stdev": 0.7298667612008614,
+          "ci95_half": 0.22618805267680342,
+          "ci95_low": 4.137750258504708,
+          "ci95_high": 4.590126363858316,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.6690127309498306,
+          "stdev": 0.3600661245418294,
+          "ci95_half": 0.11158564805855918,
+          "ci95_low": 0.5574270828912714,
+          "ci95_high": 0.7805983790083898,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.4177777178844596,
+          "stdev": 0.24770307020701923,
+          "ci95_half": 0.0767639767565361,
+          "ci95_low": 0.3410137411279235,
+          "ci95_high": 0.49454169464099573,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.05203373015873016,
+          "stdev": 0.04537910950647755,
+          "ci95_half": 0.01406313173460551,
+          "ci95_low": 0.03797059842412465,
+          "ci95_high": 0.06609686189333568,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.76875,
+          "stdev": 0.08674121547187624,
+          "ci95_half": 0.02688138117445147,
+          "ci95_low": 0.7418686188255486,
+          "ci95_high": 0.7956313811744515,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.363938311181512,
+          "stdev": 0.7298667612008614,
+          "ci95_half": 0.22618805267680342,
+          "ci95_low": 4.137750258504708,
+          "ci95_high": 4.590126363858316,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.6690127309498306,
+          "stdev": 0.3600661245418294,
+          "ci95_half": 0.11158564805855918,
+          "ci95_low": 0.5574270828912714,
+          "ci95_high": 0.7805983790083898,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.4177777178844596,
+          "stdev": 0.24770307020701923,
+          "ci95_half": 0.0767639767565361,
+          "ci95_low": 0.3410137411279235,
+          "ci95_high": 0.49454169464099573,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.05203373015873016,
+          "stdev": 0.04537910950647755,
+          "ci95_half": 0.01406313173460551,
+          "ci95_low": 0.03797059842412465,
+          "ci95_high": 0.06609686189333568,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "poisoning_perturbation": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.8,
+          "stdev": 0.08623164985025764,
+          "ci95_half": 0.026723465152251304,
+          "ci95_low": 0.7732765348477487,
+          "ci95_high": 0.8267234651522514,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.3788685313178375,
+          "stdev": 0.6042511668800095,
+          "ci95_half": 0.18725937668322223,
+          "ci95_low": 4.191609154634615,
+          "ci95_high": 4.56612790800106,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.782160179141263,
+          "stdev": 0.3539764673459186,
+          "ci95_half": 0.10969844374150536,
+          "ci95_low": 0.6724617353997576,
+          "ci95_high": 0.8918586228827684,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.805,
+          "stdev": 0.08305080311132397,
+          "ci95_half": 0.025737710535122266,
+          "ci95_low": 0.7792622894648777,
+          "ci95_high": 0.8307377105351224,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.362970831593723,
+          "stdev": 0.5836545196094236,
+          "ci95_half": 0.18087640956448436,
+          "ci95_low": 4.182094422029238,
+          "ci95_high": 4.543847241158207,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.8024738465680997,
+          "stdev": 0.3371343700420553,
+          "ci95_half": 0.10447902371217527,
+          "ci95_low": 0.6979948228559245,
+          "ci95_high": 0.9069528702802749,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.06120411706349206,
+          "stdev": 0.0512887540708257,
+          "ci95_half": 0.01589454955917213,
+          "ci95_low": 0.04530956750431993,
+          "ci95_high": 0.0770986666226642,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.805,
+          "stdev": 0.08305080311132397,
+          "ci95_half": 0.025737710535122266,
+          "ci95_low": 0.7792622894648777,
+          "ci95_high": 0.8307377105351224,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.362970831593723,
+          "stdev": 0.5836545196094236,
+          "ci95_half": 0.18087640956448436,
+          "ci95_low": 4.182094422029238,
+          "ci95_high": 4.543847241158207,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.8024738465680997,
+          "stdev": 0.3371343700420553,
+          "ci95_half": 0.10447902371217527,
+          "ci95_low": 0.6979948228559245,
+          "ci95_high": 0.9069528702802749,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.06120411706349206,
+          "stdev": 0.0512887540708257,
+          "ci95_half": 0.01589454955917213,
+          "ci95_low": 0.04530956750431993,
+          "ci95_high": 0.0770986666226642,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "freeriding_zero_update": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.7837500000000001,
+          "stdev": 0.08871410433348413,
+          "ci95_half": 0.02749278576701112,
+          "ci95_low": 0.756257214232989,
+          "ci95_high": 0.8112427857670111,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.277153296861059,
+          "stdev": 0.6212952443573221,
+          "ci95_half": 0.19254139101680137,
+          "ci95_low": 4.084611905844257,
+          "ci95_high": 4.46969468787786,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.727315444477797,
+          "stdev": 0.36333902077811847,
+          "ci95_half": 0.11259992911046166,
+          "ci95_low": 0.6147155153673353,
+          "ci95_high": 0.8399153735882586,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.79,
+          "stdev": 0.08711913446392583,
+          "ci95_half": 0.02699849948347082,
+          "ci95_low": 0.7630015005165293,
+          "ci95_high": 0.8169984994834708,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.248988824536425,
+          "stdev": 0.6130223035527825,
+          "ci95_half": 0.18997758009957247,
+          "ci95_low": 4.059011244436852,
+          "ci95_high": 4.438966404635997,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.7529417031269745,
+          "stdev": 0.35557528119289356,
+          "ci95_half": 0.11019392128598894,
+          "ci95_low": 0.6427477818409856,
+          "ci95_high": 0.8631356244129634,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.9170161725643518,
+          "stdev": 0.08789593919560934,
+          "ci95_half": 0.027239233763903775,
+          "ci95_low": 0.889776938800448,
+          "ci95_high": 0.9442554063282556,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.04131324404761905,
+          "stdev": 0.03168839161827604,
+          "ci95_half": 0.00982033430431184,
+          "ci95_low": 0.03149290974330721,
+          "ci95_high": 0.051133578351930886,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.79,
+          "stdev": 0.08711913446392583,
+          "ci95_half": 0.02699849948347082,
+          "ci95_low": 0.7630015005165293,
+          "ci95_high": 0.8169984994834708,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.248988824536425,
+          "stdev": 0.6130223035527825,
+          "ci95_half": 0.18997758009957247,
+          "ci95_low": 4.059011244436852,
+          "ci95_high": 4.438966404635997,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.7529417031269745,
+          "stdev": 0.35557528119289356,
+          "ci95_half": 0.11019392128598894,
+          "ci95_low": 0.6427477818409856,
+          "ci95_high": 0.8631356244129634,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.9170161725643518,
+          "stdev": 0.08789593919560934,
+          "ci95_half": 0.027239233763903775,
+          "ci95_low": 0.889776938800448,
+          "ci95_high": 0.9442554063282556,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.04131324404761905,
+          "stdev": 0.03168839161827604,
+          "ci95_half": 0.00982033430431184,
+          "ci95_low": 0.03149290974330721,
+          "ci95_high": 0.051133578351930886,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "freeriding_copy_update": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.8150000000000001,
+          "stdev": 0.0752772652709081,
+          "ci95_half": 0.02332866619990664,
+          "ci95_low": 0.7916713338000935,
+          "ci95_high": 0.8383286661999066,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.307726052296444,
+          "stdev": 0.523843868019949,
+          "ci95_half": 0.1623408966030564,
+          "ci95_low": 4.145385155693388,
+          "ci95_high": 4.4700669488995,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.8466164125429424,
+          "stdev": 0.29756701937906505,
+          "ci95_half": 0.09221697470296022,
+          "ci95_low": 0.7543994378399822,
+          "ci95_high": 0.9388333872459026,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.8150000000000001,
+          "stdev": 0.0752772652709081,
+          "ci95_half": 0.02332866619990664,
+          "ci95_low": 0.7916713338000935,
+          "ci95_high": 0.8383286661999066,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.307726052296444,
+          "stdev": 0.523843868019949,
+          "ci95_half": 0.1623408966030564,
+          "ci95_low": 4.145385155693388,
+          "ci95_high": 4.4700669488995,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.8466164125429424,
+          "stdev": 0.29756701937906505,
+          "ci95_half": 0.09221697470296022,
+          "ci95_low": 0.7543994378399822,
+          "ci95_high": 0.9388333872459026,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.7157963473175036,
+          "stdev": 0.13752077793892023,
+          "ci95_half": 0.04261813062075194,
+          "ci95_low": 0.6731782166967517,
+          "ci95_high": 0.7584144779382556,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.1920324900793651,
+          "stdev": 0.06255642634048396,
+          "ci95_half": 0.019386437372615153,
+          "ci95_low": 0.17264605270674993,
+          "ci95_high": 0.21141892745198027,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.8150000000000001,
+          "stdev": 0.0752772652709081,
+          "ci95_half": 0.02332866619990664,
+          "ci95_low": 0.7916713338000935,
+          "ci95_high": 0.8383286661999066,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.307726052296444,
+          "stdev": 0.523843868019949,
+          "ci95_half": 0.1623408966030564,
+          "ci95_low": 4.145385155693388,
+          "ci95_high": 4.4700669488995,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.8466164125429424,
+          "stdev": 0.29756701937906505,
+          "ci95_half": 0.09221697470296022,
+          "ci95_low": 0.7543994378399822,
+          "ci95_high": 0.9388333872459026,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.7157963473175036,
+          "stdev": 0.13752077793892023,
+          "ci95_half": 0.04261813062075194,
+          "ci95_low": 0.6731782166967517,
+          "ci95_high": 0.7584144779382556,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.1920324900793651,
+          "stdev": 0.06255642634048396,
+          "ci95_half": 0.019386437372615153,
+          "ci95_low": 0.17264605270674993,
+          "ci95_high": 0.21141892745198027,
+          "n": 40,
+          "method": "asymptotic_normal",
+          "confidence_level": 0.95
+        }
+      }
+    },
+    "honest_non_iid": {
+      "fedavg": {
+        "completion_rate": {
+          "mean": 0.795,
+          "stdev": 0.09264628073124866,
+          "ci95_half": 0.06627055228380099,
+          "ci95_low": 0.7287294477161991,
+          "ci95_high": 0.861270552283801,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.402582690991635,
+          "stdev": 0.652535090271685,
+          "ci95_half": 0.4667630527156044,
+          "ci95_low": 3.9358196382760307,
+          "ci95_high": 4.86934574370724,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.7606747680073699,
+          "stdev": 0.3833552995395315,
+          "ci95_half": 0.2742168084987982,
+          "ci95_low": 0.4864579595085717,
+          "ci95_high": 1.0348915765061681,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_weighted": {
+        "completion_rate": {
+          "mean": 0.8,
+          "stdev": 0.08498365855987974,
+          "ci95_half": 0.06078942342217106,
+          "ci95_low": 0.739210576577829,
+          "ci95_high": 0.8607894234221711,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.386741610771411,
+          "stdev": 0.6259568130610498,
+          "ci95_half": 0.447751419484367,
+          "ci95_low": 3.938990191287044,
+          "ci95_high": 4.834493030255778,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.782307356259874,
+          "stdev": 0.34670317827665215,
+          "ci95_half": 0.24799928201751556,
+          "ci95_low": 0.5343080742423585,
+          "ci95_high": 1.0303066382773896,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.065,
+          "stdev": 0.03574601764921203,
+          "ci95_half": 0.025569384036382262,
+          "ci95_low": 0.03943061596361774,
+          "ci95_high": 0.09056938403638226,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      },
+      "trust_threshold": {
+        "completion_rate": {
+          "mean": 0.8,
+          "stdev": 0.08498365855987974,
+          "ci95_half": 0.06078942342217106,
+          "ci95_low": 0.739210576577829,
+          "ci95_high": 0.8607894234221711,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_latency_s": {
+          "mean": 4.386741610771411,
+          "stdev": 0.6259568130610498,
+          "ci95_half": 0.447751419484367,
+          "ci95_low": 3.938990191287044,
+          "ci95_high": 4.834493030255778,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "mean_reward": {
+          "mean": 0.782307356259874,
+          "stdev": 0.34670317827665215,
+          "ci95_half": 0.24799928201751556,
+          "ci95_low": 0.5343080742423585,
+          "ci95_high": 1.0303066382773896,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "f1": {
+          "mean": 0.0,
+          "stdev": 0.0,
+          "ci95_half": 0.0,
+          "ci95_low": 0.0,
+          "ci95_high": 0.0,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        },
+        "fpr": {
+          "mean": 0.065,
+          "stdev": 0.03574601764921203,
+          "ci95_half": 0.025569384036382262,
+          "ci95_low": 0.03943061596361774,
+          "ci95_high": 0.09056938403638226,
+          "n": 10,
+          "method": "student_t",
+          "confidence_level": 0.95
+        }
+      }
+    }
+  },
+  "by_fraction": {},
+  "ablations": {
+    "full_proposed": {
+      "completion_rate": {
+        "mean": 0.76,
+        "stdev": 0.10839741694339401,
+        "ci95_half": 0.1345715928418773,
+        "ci95_low": 0.6254284071581226,
+        "ci95_high": 0.8945715928418774,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.4001269841269841,
+        "stdev": 0.2783646046314348,
+        "ci95_half": 0.34557989749528334,
+        "ci95_low": 0.05454708663170077,
+        "ci95_high": 0.7457068816222674,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0375,
+        "stdev": 0.013975424859373685,
+        "ci95_half": 0.017349999999999997,
+        "ci95_low": 0.02015,
+        "ci95_high": 0.054849999999999996,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "no_behavioural_trust": {
+      "completion_rate": {
+        "mean": 0.75,
+        "stdev": 0.10606601717798213,
+        "ci95_half": 0.13167724176941129,
+        "ci95_low": 0.6183227582305887,
+        "ci95_high": 0.8816772417694113,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.3898705738705739,
+        "stdev": 0.26679293850100905,
+        "ci95_half": 0.3312140796841543,
+        "ci95_low": 0.058656494186419605,
+        "ci95_high": 0.7210846535547282,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0375,
+        "stdev": 0.013975424859373685,
+        "ci95_half": 0.017349999999999997,
+        "ci95_low": 0.02015,
+        "ci95_high": 0.054849999999999996,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "no_model_trust": {
+      "completion_rate": {
+        "mean": 0.76,
+        "stdev": 0.10839741694339401,
+        "ci95_half": 0.1345715928418773,
+        "ci95_low": 0.6254284071581226,
+        "ci95_high": 0.8945715928418774,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.4100845391167972,
+        "stdev": 0.21463564389430798,
+        "ci95_half": 0.2664626270068996,
+        "ci95_low": 0.1436219121098976,
+        "ci95_high": 0.6765471661236968,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0625,
+        "stdev": 0.011048543456039806,
+        "ci95_half": 0.013716379350980345,
+        "ci95_low": 0.04878362064901966,
+        "ci95_high": 0.07621637935098034,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "no_temporal_smoothing": {
+      "completion_rate": {
+        "mean": 0.76,
+        "stdev": 0.10839741694339401,
+        "ci95_half": 0.1345715928418773,
+        "ci95_low": 0.6254284071581226,
+        "ci95_high": 0.8945715928418774,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.4001269841269841,
+        "stdev": 0.2783646046314348,
+        "ci95_half": 0.34557989749528334,
+        "ci95_low": 0.05454708663170077,
+        "ci95_high": 0.7457068816222674,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0375,
+        "stdev": 0.013975424859373685,
+        "ci95_half": 0.017349999999999997,
+        "ci95_low": 0.02015,
+        "ci95_high": 0.054849999999999996,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "no_threshold_exclusion": {
+      "completion_rate": {
+        "mean": 0.76,
+        "stdev": 0.10839741694339401,
+        "ci95_half": 0.1345715928418773,
+        "ci95_low": 0.6254284071581226,
+        "ci95_high": 0.8945715928418774,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.4001269841269841,
+        "stdev": 0.2783646046314348,
+        "ci95_half": 0.34557989749528334,
+        "ci95_low": 0.05454708663170077,
+        "ci95_high": 0.7457068816222674,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0375,
+        "stdev": 0.013975424859373685,
+        "ci95_half": 0.017349999999999997,
+        "ci95_low": 0.02015,
+        "ci95_high": 0.054849999999999996,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "fedavg_no_trust": {
+      "completion_rate": {
+        "mean": 0.76,
+        "stdev": 0.10839741694339401,
+        "ci95_half": 0.1345715928418773,
+        "ci95_low": 0.6254284071581226,
+        "ci95_high": 0.8945715928418774,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    },
+    "local_rl_no_fl": {
+      "completion_rate": {
+        "mean": 0.82,
+        "stdev": 0.0670820393249937,
+        "ci95_half": 0.08327999999999999,
+        "ci95_low": 0.7367199999999999,
+        "ci95_high": 0.90328,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "f1": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "fpr": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      },
+      "exclusion_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "ci95_half": 0.0,
+        "ci95_low": 0.0,
+        "ci95_high": 0.0,
+        "n": 5,
+        "method": "student_t",
+        "confidence_level": 0.95
+      }
+    }
+  },
+  "sensitivity": {}
+}

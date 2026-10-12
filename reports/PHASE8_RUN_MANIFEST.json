@@ -1,0 +1,99 @@
+{
+  "phase": "Phase 8: Adversarial and Dynamic Scenario Testing",
+  "audit_date": "2026-10-12T13:15:00+05:30",
+  "system_info": {
+    "python_version": "3.11.9",
+    "torch_version": "2.10.0+cpu",
+    "os": "Windows"
+  },
+  "scenarios_evaluated": {
+    "Scenario A: Model Poisoning": {
+      "A1_sign_flip": "Delta_attack = -s * Delta_honest, tested at s = 1.0",
+      "A2_perturbation": "Delta_attack = Delta_honest + epsilon * u, tested at epsilon = 2.0",
+      "attack_fractions": [0.1, 0.2, 0.3, 0.4],
+      "seeds": [0, 1, 2]
+    },
+    "Scenario B: Free-Riding": {
+      "B1_zero_update": "Delta_attack = 0, no local training step",
+      "B2_copy_update": "Delta_attack = Delta_peer, bit-identical duplicate",
+      "B3_stale_replay": "Replay of previous round update with historical metadata (age >= 1)",
+      "attack_fractions": [0.1, 0.2, 0.3, 0.4],
+      "seeds": [0, 1, 2]
+    },
+    "Scenario C: Unreliable Execution": {
+      "profiles": {
+        "low": {"fail_prob": 0.1, "delay_prob": 0.1, "drop_prob": 0.1},
+        "medium": {"fail_prob": 0.25, "delay_prob": 0.25, "drop_prob": 0.2},
+        "high": {"fail_prob": 0.5, "delay_prob": 0.4, "drop_prob": 0.3}
+      },
+      "malicious_fraction": 0.2,
+      "seeds": [0, 1, 2]
+    },
+    "Scenario D: Honest Non-IID Control": {
+      "client_population": 10,
+      "heterogeneity": "10 distinct task_load, mobility, and link_reliability client conditions",
+      "malicious_fraction": 0.0,
+      "seeds": [0, 1, 2]
+    }
+  },
+  "strategies_compared": [
+    "fedavg",
+    "trust_weighted",
+    "trust_threshold"
+  ],
+  "experiment_matrix": {
+    "total_trials": 225,
+    "clean_control_trials": 9,
+    "scenario_a_trials": 72,
+    "scenario_b_trials": 108,
+    "scenario_c_trials": 27,
+    "scenario_d_trials": 9,
+    "output_csv": "results/phase8/phase8_experiment_runs.csv",
+    "summary_json": "results/phase8/phase8_summary_metrics.json"
+  },
+  "invariant_verification": {
+    "task_partition_identity": "Verified on all 225 rows: completion_rate + failure_rate + miss_rate == 1.0",
+    "ground_truth_isolation": "Verified: ClientScenarioLabel kept strictly separated from detector inputs",
+    "checkpoint_fingerprinting": "Verified: SHA256 parameter hash computed and recorded for each trial model"
+  },
+  "key_findings": {
+    "free_riding_zero_update": {
+      "detection_f1": 0.981,
+      "precision": 0.97,
+      "recall": 1.00,
+      "mechanism": "m4 originality flag reliably detects zero-norm updates"
+    },
+    "free_riding_copy_update": {
+      "detection_f1": 0.759,
+      "precision": 0.62,
+      "recall": 1.00,
+      "mechanism": "m4 detects 100% of copied updates; precision impacted by symmetrical pair detection"
+    },
+    "free_riding_stale_replay": {
+      "detection_f1": 0.672,
+      "precision": 0.94,
+      "recall": 0.53,
+      "mechanism": "m3 staleness detects replay in round >= 1; round 0 has age = 0"
+    },
+    "model_poisoning_sign_flip": {
+      "detection_f1": 0.193,
+      "precision": 0.38,
+      "recall": 0.16,
+      "mechanism": "Non-IID client gradient diversity widens consensus cone, making directional detection challenging at low rounds"
+    },
+    "honest_non_iid_fpr": {
+      "fpr_mean": 0.033,
+      "significance": "Honest non-IID clients with high mobility or heavy load are not unfairly penalized as malicious (FPR <= 3.3%)"
+    }
+  },
+  "figures_generated": [
+    "reports/figures/phase8/detection_f1_vs_fraction.png",
+    "reports/figures/phase8/completion_vs_fraction.png",
+    "reports/figures/phase8/honest_non_iid_fpr.png"
+  ],
+  "test_suite_status": {
+    "total_tests": 116,
+    "passed": 116,
+    "failed": 0
+  }
+}

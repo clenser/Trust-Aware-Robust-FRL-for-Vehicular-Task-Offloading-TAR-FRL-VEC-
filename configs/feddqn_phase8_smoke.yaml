@@ -1,0 +1,42 @@
+# Federated DQN Phase 8 smoke config — 10 clients representing exact fractions f in {0, 0.1, 0.2, 0.3, 0.4}.
+project: trust-aware-vanet-frl
+config_name: feddqn_phase8_smoke
+seed: 0
+
+scenario:
+  num_vehicles: 10
+  num_edge_nodes: 2
+  mobility: low
+  task_load: low
+  malicious_client_ratio: 0.0
+  connectivity_range_m: 150.0
+  num_steps: 5
+
+dqn:
+  hidden: [16, 16]
+  lr: 0.001
+  gamma: 0.99
+  batch_size: 4
+  capacity: 500
+  warmup_steps: 0
+  target_sync_steps: 20
+  eps_start: 1.0
+  eps_end: 0.2
+  eps_decay_episodes: 4
+  max_grad_norm: 10.0
+
+federated:
+  num_clients: 10
+  rounds: 1
+  local_episodes: 1
+  participation_fraction: 1.0
+  dropout_prob: 0.0
+  strategy: trust_threshold
+  alpha: 0.6
+  tau_exc: 0.3
+  clip_c: 3.0
+  run_name: feddqn_phase8_smoke
+  eval_seeds: [10, 11]
+  train_independent: false
+
+notes: "Phase 8 smoke test with 10 clients for exact integer attack fractions."

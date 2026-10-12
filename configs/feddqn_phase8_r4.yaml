@@ -1,0 +1,77 @@
+config_name: feddqn_phase8
+detector:
+  m2_dir_threshold: 0.45
+  m3_stale_threshold: 0.5
+  m4_orig_threshold: 0.0
+  tau_anomaly: 0.5
+dqn:
+  batch_size: 4
+  capacity: 1000
+  eps_decay_episodes: 6
+  eps_end: 0.1
+  eps_start: 1.0
+  gamma: 0.99
+  hidden:
+  - 16
+  - 16
+  lr: 0.001
+  max_grad_norm: 10.0
+  target_sync_steps: 20
+  warmup_steps: 0
+federated:
+  alpha: 0.6
+  client_conditions:
+  - link_reliability: 0.95
+    mobility: low
+    task_load: low
+  - link_reliability: 0.9
+    mobility: low
+    task_load: medium
+  - link_reliability: 0.85
+    mobility: medium
+    task_load: high
+  - link_reliability: 0.8
+    mobility: high
+    task_load: low
+  - link_reliability: 0.95
+    mobility: medium
+    task_load: medium
+  - link_reliability: 0.9
+    mobility: low
+    task_load: high
+  - link_reliability: 0.85
+    mobility: medium
+    task_load: low
+  - link_reliability: 0.8
+    mobility: high
+    task_load: medium
+  - link_reliability: 0.75
+    mobility: high
+    task_load: high
+  - link_reliability: 0.9
+    mobility: low
+    task_load: low
+  clip_c: 3.0
+  dropout_prob: 0.0
+  eval_seeds:
+  - 10
+  - 11
+  local_episodes: 1
+  num_clients: 10
+  participation_fraction: 1.0
+  rounds: 4
+  strategy: trust_threshold
+  tau_exc: 0.3
+  train_independent: false
+notes: Phase 8 research configuration with 10 heterogeneous non-IID clients and configurable
+  detector.
+project: trust-aware-vanet-frl
+scenario:
+  connectivity_range_m: 150.0
+  malicious_client_ratio: 0.0
+  mobility: medium
+  num_edge_nodes: 2
+  num_steps: 10
+  num_vehicles: 10
+  task_load: medium
+seed: 0

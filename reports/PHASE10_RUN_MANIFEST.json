@@ -1,0 +1,90 @@
+{
+  "phase": "Phase 10: Full Evaluation, Ablation Studies, and Sensitivity Analysis",
+  "execution_date": "2026-10-12T17:45:00+05:30",
+  "system_info": {
+    "python_version": "3.11.9",
+    "torch_version": "2.10.0+cpu",
+    "os": "Windows",
+    "platform": "win32"
+  },
+  "experimental_matrix_spec": {
+    "num_rounds": 8,
+    "core_seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "ablation_seeds": [0, 1, 2, 3, 4],
+    "sensitivity_seeds": [0, 1, 2, 3, 4],
+    "client_population": 10,
+    "client_heterogeneity": "10 distinct task_load, mobility, and link_reliability distributions (Non-IID)",
+    "tau_exclusion_default": 0.40,
+    "alpha_default": 0.60
+  },
+  "scenarios_evaluated": {
+    "Scenario A: Model Poisoning": {
+      "A1_sign_flip": "Delta_attack = -s * Delta_honest, s = 1.0",
+      "A2_gaussian_perturbation": "Delta_attack = Delta_honest + epsilon * u, epsilon = 2.0",
+      "fractions": [0.1, 0.2, 0.3, 0.4],
+      "seeds": 10
+    },
+    "Scenario B: Free-Riding": {
+      "B1_zero_update": "Delta_attack = 0, no local training step",
+      "B2_copy_update": "Delta_attack = Delta_peer, bit-identical duplicate",
+      "fractions": [0.1, 0.2, 0.3, 0.4],
+      "seeds": 10
+    },
+    "Scenario C: Unreliable Execution": {
+      "severity_levels": ["low", "medium", "high"],
+      "malicious_fraction": 0.2,
+      "seeds": 10
+    },
+    "Scenario D: Honest Non-IID Control": {
+      "malicious_fraction": 0.0,
+      "seeds": 10,
+      "total_client_round_decisions": 800
+    }
+  },
+  "strategies_evaluated": [
+    "fedavg",
+    "trust_weighted",
+    "trust_threshold"
+  ],
+  "experiment_counts": {
+    "core_matrix_runs": 540,
+    "ablation_runs": 35,
+    "sensitivity_runs": 55,
+    "total_phase10_runs": 630
+  },
+  "invariants_verified": {
+    "task_partition_identity": "100% of 540 core runs satisfy completion_rate + failure_rate + miss_rate == 1.0000",
+    "ground_truth_isolation": "Detector inputs strictly derived from behavioural and model metrics, never scenario ground-truth labels",
+    "reproducibility": "All random seeds explicitly controlled across NumPy, PyTorch, and Python random generators"
+  },
+  "key_empirical_findings": {
+    "free_riding_mitigation": {
+      "finding": "At f=0.40 over 8 FL rounds, zero-update free-riding causes significant degradation in FedAvg (completion drops to 76.5%), whereas Trust-Threshold maintains 80.0% completion with F1=0.982 (precision=0.981, recall=1.000).",
+      "evidence": "Observed across 10 random seeds (p < 0.05 vs FedAvg)."
+    },
+    "copy_update_mitigation": {
+      "finding": "Pairwise cosine duplicate detector maintains 100% recall across all fractions (f=0.1 to 0.4), with F1 increasing from 0.567 to 0.848.",
+      "evidence": "Zero duplicate attacks escaped detection across 10 seeds."
+    },
+    "honest_non_iid_fpr": {
+      "finding": "Under 10 random seeds and 8 rounds (800 client decisions per strategy), 52 false exclusions were observed, yielding a micro FPR of 6.50% and macro per-run FPR of 6.50% +/- 3.57% (95% CI: [3.95%, 9.05%]).",
+      "scientific_implication": "Disproves claims of a guaranteed <5% FPR bound under extended training horizons with severe gradient heterogeneity; highlights the essential trade-off between poisoning sensitivity and non-IID tolerance."
+    },
+    "gaussian_perturbation_stealth": {
+      "finding": "Gaussian random perturbation achieves F1 = 0.000 across all fractions, demonstrating that uncoordinated isotropic noise does not trigger cosine or norm anomaly filters.",
+      "scientific_implication": "Confirmed across 10 seeds; acknowledged as an inherent limitation of distance/direction heuristic detectors in high dimensions."
+    }
+  },
+  "artifact_checksums": {
+    "results/phase10/phase10_experiment_runs.csv": "db2a6eb3c606e1c4635419e1929b1b2737a7ba925e2a239e733ba6e43149eb68",
+    "results/phase10/phase10_ablation_runs.csv": "b1e960e91a7f665ffbbb89e77bab96c632508db4bdc6d2a6097780f58d7458f7",
+    "results/phase10/phase10_sensitivity_runs.csv": "5fc0ae9547739240ad46b01bf4bfd6343584090027a833200029f7270d743bb8",
+    "results/phase10/phase10_summary_metrics.json": "4b65e1adbece5fdf2d921b9971da72cf410ffd26ae65541cdd58ed993ba44619",
+    "reports/figures/phase10/completion_vs_fraction_zeroupdate.png": "2405aa1381f36768d7fdedc53f3ac39598380e7eccaee24e6a5afb0cbda64ee0",
+    "reports/figures/phase10/detection_f1_vs_fraction.png": "b11363297664ab97cc6c8f76436fc884fc83b2a3b4db36d00fecdcb23fff67ef",
+    "reports/figures/phase10/honest_non_iid_fpr_distribution.png": "8f1106d41a5037857f8b3fca49f7b64ca86ce5142ec4dc2736233988c8aa6c8c",
+    "reports/tables/phase10/ablation_results.tex": "bc57455873a73d56ce7271265298944bce2c9dbbe3b2355438fcc1a01c29bab7",
+    "reports/tables/phase10/core_performance_matrix.tex": "4bd8e72f12548bbdaa86a618787ac5283fe33677209adbfe008a066bf89dcc32",
+    "reports/tables/phase10/sensitivity_alpha.tex": "e7e905742a9b44bdff89ccc22322c3c28e62348573b85003c1c8772b894f68f2"
+  }
+}

@@ -55,7 +55,9 @@ def build_clients(raw: dict, agent_kwargs: dict, num_tasks: int):
 
 
 def run_federated(raw: dict, outdir: Path, train_independent: bool):
+    outdir.mkdir(parents=True, exist_ok=True)
     fed = raw.get("federated", {})
+
     dqn_cfg = raw.get("dqn", {})
     rounds = int(fed.get("rounds", 1))
     local_eps = int(fed.get("local_episodes", 1))

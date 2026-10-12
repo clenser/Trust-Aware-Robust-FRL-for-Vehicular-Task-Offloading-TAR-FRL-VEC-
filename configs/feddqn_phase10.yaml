@@ -1,0 +1,77 @@
+project: trust-aware-vanet-frl
+config_name: feddqn_phase10
+notes: Phase 10 full evaluation configuration with 10 heterogeneous non-IID clients, 8 rounds, and 10 random seeds.
+seed: 0
+
+scenario:
+  num_vehicles: 10
+  num_edge_nodes: 2
+  mobility: medium
+  task_load: medium
+  connectivity_range_m: 150.0
+  malicious_client_ratio: 0.0
+  num_steps: 10
+
+detector:
+  tau_anomaly: 0.50
+  m2_dir_threshold: 0.45
+  m3_stale_threshold: 0.50
+  m4_orig_threshold: 0.00
+
+dqn:
+  hidden: [16, 16]
+  lr: 0.001
+  gamma: 0.99
+  batch_size: 4
+  capacity: 1000
+  target_sync_steps: 20
+  eps_start: 1.0
+  eps_end: 0.1
+  eps_decay_episodes: 8
+  warmup_steps: 0
+  max_grad_norm: 10.0
+
+federated:
+  num_clients: 10
+  rounds: 8
+  local_episodes: 1
+  participation_fraction: 1.0
+  strategy: trust_threshold
+  alpha: 0.6
+  tau_exc: 0.40
+  clip_c: 3.0
+  dropout_prob: 0.0
+  train_independent: false
+  eval_seeds: [10, 11]
+
+  client_conditions:
+    - mobility: low
+      task_load: low
+      link_reliability: 0.95
+    - mobility: low
+      task_load: medium
+      link_reliability: 0.90
+    - mobility: medium
+      task_load: high
+      link_reliability: 0.85
+    - mobility: high
+      task_load: low
+      link_reliability: 0.80
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.95
+    - mobility: low
+      task_load: high
+      link_reliability: 0.90
+    - mobility: medium
+      task_load: low
+      link_reliability: 0.85
+    - mobility: high
+      task_load: medium
+      link_reliability: 0.80
+    - mobility: high
+      task_load: high
+      link_reliability: 0.75
+    - mobility: low
+      task_load: low
+      link_reliability: 0.90

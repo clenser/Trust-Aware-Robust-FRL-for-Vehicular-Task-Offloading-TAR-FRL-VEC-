@@ -1,0 +1,58 @@
+# Federated DQN Phase 8 research experiment configuration — 10 clients with non-IID conditions.
+project: trust-aware-vanet-frl
+config_name: feddqn_phase8
+seed: 0
+
+scenario:
+  num_vehicles: 10
+  num_edge_nodes: 2
+  mobility: medium
+  task_load: medium
+  malicious_client_ratio: 0.0
+  connectivity_range_m: 150.0
+  num_steps: 10
+
+dqn:
+  hidden: [16, 16]
+  lr: 0.001
+  gamma: 0.99
+  batch_size: 4
+  capacity: 1000
+  warmup_steps: 0
+  target_sync_steps: 20
+  eps_start: 1.0
+  eps_end: 0.1
+  eps_decay_episodes: 6
+  max_grad_norm: 10.0
+
+federated:
+  num_clients: 10
+  rounds: 2
+  local_episodes: 1
+  participation_fraction: 1.0
+  dropout_prob: 0.0
+  strategy: trust_threshold
+  alpha: 0.6
+  tau_exc: 0.3
+  clip_c: 3.0
+  client_conditions:
+    - {task_load: low, mobility: low, link_reliability: 0.95}
+    - {task_load: medium, mobility: low, link_reliability: 0.90}
+    - {task_load: high, mobility: medium, link_reliability: 0.85}
+    - {task_load: low, mobility: high, link_reliability: 0.80}
+    - {task_load: medium, mobility: medium, link_reliability: 0.95}
+    - {task_load: high, mobility: low, link_reliability: 0.90}
+    - {task_load: low, mobility: medium, link_reliability: 0.85}
+    - {task_load: medium, mobility: high, link_reliability: 0.80}
+    - {task_load: high, mobility: high, link_reliability: 0.75}
+    - {task_load: low, mobility: low, link_reliability: 0.90}
+  eval_seeds: [10, 11]
+  train_independent: false
+
+detector:
+  tau_anomaly: 0.50
+  m2_dir_threshold: 0.45
+  m4_orig_threshold: 0.0
+  m3_stale_threshold: 0.5
+
+notes: "Phase 8 research configuration with 10 heterogeneous non-IID clients and configurable detector."

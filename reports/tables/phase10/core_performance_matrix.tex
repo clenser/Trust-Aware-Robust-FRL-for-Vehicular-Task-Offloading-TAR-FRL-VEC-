@@ -1,0 +1,31 @@
+\begin{tabular}{llrrrrr}
+\toprule
+ &  & completion_rate & f1 & precision & recall & fpr \\
+scenario_group & strategy &  &  &  &  &  \\
+\midrule
+\multirow[t]{3}{*}{clean_control} & fedavg & 0.795000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.800000 & 0.000000 & 0.000000 & 0.000000 & 0.065000 \\
+ & trust_weighted & 0.800000 & 0.000000 & 0.000000 & 0.000000 & 0.065000 \\
+\cline{1-7}
+\multirow[t]{3}{*}{freeriding_copy_update} & fedavg & 0.815000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.815000 & 0.716000 & 0.596000 & 0.948000 & 0.192000 \\
+ & trust_weighted & 0.815000 & 0.716000 & 0.596000 & 0.948000 & 0.192000 \\
+\cline{1-7}
+\multirow[t]{3}{*}{freeriding_zero_update} & fedavg & 0.784000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.790000 & 0.917000 & 0.857000 & 1.000000 & 0.041000 \\
+ & trust_weighted & 0.790000 & 0.917000 & 0.857000 & 1.000000 & 0.041000 \\
+\cline{1-7}
+\multirow[t]{3}{*}{honest_non_iid} & fedavg & 0.795000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.800000 & 0.000000 & 0.000000 & 0.000000 & 0.065000 \\
+ & trust_weighted & 0.800000 & 0.000000 & 0.000000 & 0.000000 & 0.065000 \\
+\cline{1-7}
+\multirow[t]{3}{*}{poisoning_perturbation} & fedavg & 0.800000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.805000 & 0.000000 & 0.000000 & 0.000000 & 0.061000 \\
+ & trust_weighted & 0.805000 & 0.000000 & 0.000000 & 0.000000 & 0.061000 \\
+\cline{1-7}
+\multirow[t]{3}{*}{poisoning_sign_flip} & fedavg & 0.771000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & trust_threshold & 0.769000 & 0.418000 & 0.621000 & 0.349000 & 0.052000 \\
+ & trust_weighted & 0.769000 & 0.418000 & 0.621000 & 0.349000 & 0.052000 \\
+\cline{1-7}
+\bottomrule
+\end{tabular}
