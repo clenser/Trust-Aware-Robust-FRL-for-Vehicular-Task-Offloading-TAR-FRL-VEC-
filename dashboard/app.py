@@ -88,8 +88,10 @@ def main():
     # Dynamic integrity check
     integrity_info = verify_dataset_integrity(Path(dataset_info.get("manifest_path", "")))
     st.sidebar.markdown(f"**Integrity:** {integrity_info['label']}")
-    if integrity_info["status"] != "verified":
+    if integrity_info["status"] in ("failed", "unavailable", "unverified"):
         st.sidebar.caption(integrity_info["message"])
+    elif integrity_info["status"] == "sampled":
+        st.sidebar.caption("Full verification not performed. Run `python scripts/verify_phase10_manifest.py --check` for complete verification.")
 
     # Filter controls in sidebar
     st.sidebar.markdown("### Experiment Filters")

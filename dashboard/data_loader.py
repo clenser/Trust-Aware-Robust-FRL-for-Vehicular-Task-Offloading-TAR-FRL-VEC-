@@ -7,6 +7,7 @@ manifests, and figures with graceful fallback.
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -173,11 +174,18 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
     """Verify integrity of a dataset manifest.
     
     Returns a status dict:
-      - status: 'verified', 'unverified', 'failed', 'unavailable'
+      - status: 'verified', 'sampled', 'failed', 'unavailable', 'unverified'
       - label: human-readable label
       - checked_count: number of artifacts hashed
       - total_count: total artifacts in manifest
       - message: explanation
+    
+    Status semantics:
+      - 'verified': every required manifest artifact was checked and all hashes matched
+      - 'sampled': a subset was checked successfully, but complete integrity has not been established
+      - 'failed': a checked artifact is missing, a hash mismatches, or verification encounters invalid integrity metadata
+      - 'unavailable': the manifest file is missing
+      - 'unverified': the manifest is empty, malformed, or insufficient to establish integrity
     """
     if not manifest_path or not manifest_path.exists():
         return {
@@ -200,11 +208,47 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
                 "message": "Manifest is loaded but contains no artifact hashes."
             }
         
-        # Verify sample/subset or all artifacts
+        # Validate artifact paths to prevent path traversal
+        validated_artifacts = {}
+        for rel_path, meta in artifacts.items():
+            # Ensure path is relative and within repo root
+            try:
+                # Normalize path and check for traversal
+                if rel_path.startswith("..") or os.path.isabs(rel_path):
+                    continue  # Skip invalid paths
+                # Resolve against repo root and verify it's within
+                target = (REPO_ROOT / rel_path).resolve()
+                if not str(target).startswith(str(REPO_ROOT.resolve())):
+                    continue  # Skip paths that escape repo root
+            except Exception:
+                continue  # Skip malformed paths
+            
+            # Ensure SHA-256 is present
+            if not meta.get("sha256"):
+                continue  # Skip entries without hash
+            
+            validated_artifacts[rel_path] = meta
+        
+        if not validated_artifacts:
+            return {
+                "status": "unverified",
+                "label": "Manifest Invalid (No Valid Artifacts)",
+                "checked_count": 0,
+                "total_count": len(artifacts),
+                "message": "Manifest contains no valid artifacts with SHA-256 hashes."
+            }
+        
+        # Determine if we're doing full or sampled verification
+        artifacts_list = list(validated_artifacts.items())
+        total_artifacts = len(artifacts_list)
+        check_count = min(max_check, total_artifacts)
+        is_full_verification = (max_check >= total_artifacts)
+        
+        # Verify artifacts
         import hashlib
         checked = 0
         mismatches = []
-        for rel_path, meta in list(artifacts.items())[:max_check]:
+        for rel_path, meta in artifacts_list[:check_count]:
             target = REPO_ROOT / rel_path
             if not target.exists():
                 mismatches.append(f"Missing: {rel_path}")
@@ -223,16 +267,33 @@ def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[s
                 "status": "failed",
                 "label": "Verification Failed ❌",
                 "checked_count": checked,
-                "total_count": len(artifacts),
+                "total_count": total_artifacts,
                 "message": mismatches[0]
             }
         
+        if is_full_verification:
+            return {
+                "status": "verified",
+                "label": f"Integrity Verified ✅ ({checked}/{total_artifacts} checked)",
+                "checked_count": checked,
+                "total_count": total_artifacts,
+                "message": f"Successfully verified SHA-256 hashes for all {checked} artifacts against manifest."
+            }
+        else:
+            return {
+                "status": "sampled",
+                "label": f"Integrity Sampled 🔍 ({checked}/{total_artifacts} sampled)",
+                "checked_count": checked,
+                "total_count": total_artifacts,
+                "message": f"Sampled {checked} of {total_artifacts} artifacts successfully. Full verification not performed."
+            }
+    except json.JSONDecodeError as e:
         return {
-            "status": "verified",
-            "label": f"Integrity Verified ✅ ({checked}/{len(artifacts)} sampled)",
-            "checked_count": checked,
-            "total_count": len(artifacts),
-            "message": f"Successfully verified SHA-256 hashes for {checked} artifacts against manifest."
+            "status": "unverified",
+            "label": "Manifest Malformed ⚠️",
+            "checked_count": 0,
+            "total_count": 0,
+            "message": f"Manifest JSON is malformed: {e}"
         }
     except Exception as e:
         return {

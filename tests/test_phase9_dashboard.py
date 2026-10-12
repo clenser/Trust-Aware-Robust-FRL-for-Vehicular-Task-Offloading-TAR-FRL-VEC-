@@ -6,6 +6,9 @@ Tests data loaders, components, data integrity, formatting, and simulator integr
 from pathlib import Path
 import pytest
 import pandas as pd
+import json
+import tempfile
+import os
 
 from dashboard.data_loader import (
     get_available_datasets,
@@ -14,7 +17,8 @@ from dashboard.data_loader import (
     load_manifest,
     get_available_checkpoints,
     get_available_figures,
-    REPO_ROOT
+    REPO_ROOT,
+    verify_dataset_integrity
 )
 from environment.vanet_env import VehicularEdgeEnv, EnvConfig
 import baselines
@@ -140,18 +144,133 @@ def test_dashboard_filtering_logic():
 
 def test_verify_dataset_integrity_status():
     """Verify that verify_dataset_integrity returns honest status across manifests."""
-    from dashboard.data_loader import verify_dataset_integrity
     
     # 1. Non-existent manifest
     res_none = verify_dataset_integrity(Path("reports/non_existent_manifest.json"))
     assert res_none["status"] == "unavailable"
     assert "Unavailable" in res_none["label"]
+    assert res_none["checked_count"] == 0
+    assert res_none["total_count"] == 0
 
-    # 2. Real Phase 10 v4 manifest
+    # 2. Real Phase 10 v4 manifest with sampling (should be "sampled" not "verified")
     datasets = get_available_datasets()
     v4_info = datasets["Phase 10 Final v4 (Full 880-Run Corrected Suite)"]
     res_v4 = verify_dataset_integrity(v4_info["manifest_path"], max_check=20)
-    assert res_v4["status"] == "verified"
+    assert res_v4["status"] == "sampled", f"Expected 'sampled', got '{res_v4['status']}'"
     assert res_v4["checked_count"] == 20
-    assert "Integrity Verified" in res_v4["label"]
+    assert res_v4["total_count"] == 894
+    assert "Sampled" in res_v4["label"]
+    assert "Full verification not performed" in res_v4["message"]
+
+    # 3. Full verification with max_check >= total (should be "verified")
+    res_full = verify_dataset_integrity(v4_info["manifest_path"], max_check=1000)
+    assert res_full["status"] == "verified", f"Expected 'verified', got '{res_full['status']}'"
+    assert res_full["checked_count"] == 894
+    assert "Integrity Verified" in res_full["label"]
+    assert "all 894" in res_full["message"]
+
+
+def test_verify_dataset_integrity_malformed_manifest():
+    """Verify handling of malformed manifests."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        f.write("{ invalid json }")
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "Malformed" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_empty_artifacts():
+    """Verify handling of manifest with empty artifacts."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump({"artifacts": {}}, f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "No Artifacts" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_missing_sha256():
+    """Verify handling of manifest entries missing SHA-256."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump({"artifacts": {"some/file.txt": {"bytes": 100}}}, f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "No Valid Artifacts" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_path_traversal():
+    """Verify that path traversal attempts are rejected."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump({"artifacts": {"../outside_repo.txt": {"sha256": "abc123"}}}, f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path)
+        assert res["status"] == "unverified"
+        assert "No Valid Artifacts" in res["label"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_missing_file():
+    """Verify detection of missing files in manifest."""
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump({"artifacts": {"nonexistent/file.txt": {"sha256": "abc123"}}}, f)
+        temp_path = Path(f.name)
+    try:
+        res = verify_dataset_integrity(temp_path, max_check=10)
+        assert res["status"] == "failed"
+        assert "Missing" in res["message"]
+    finally:
+        os.unlink(temp_path)
+
+
+def test_verify_dataset_integrity_hash_mismatch():
+    """Verify detection of hash mismatches."""
+    # Create a real file within the repo
+    test_file = REPO_ROOT / "test_hash_mismatch.txt"
+    test_file.write_text("actual content")
+    try:
+        # Create manifest with wrong hash, using relative path
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as mf:
+            rel_path = test_file.relative_to(REPO_ROOT).as_posix()
+            json.dump({"artifacts": {rel_path: {"sha256": "wrong_hash"}}}, mf)
+            manifest_path = Path(mf.name)
+        try:
+            res = verify_dataset_integrity(manifest_path, max_check=10)
+            assert res["status"] == "failed"
+            assert "Hash mismatch" in res["message"]
+        finally:
+            os.unlink(manifest_path)
+    finally:
+        test_file.unlink(missing_ok=True)
+
+
+def test_verify_dataset_integrity_full_verification():
+    """Verify that full verification works when max_check >= total artifacts."""
+    datasets = get_available_datasets()
+    v4_info = datasets["Phase 10 Final v4 (Full 880-Run Corrected Suite)"]
+    
+    # Test with a small manifest to make full verification fast
+    # We can use a smaller dataset manifest for this
+    for name, info in datasets.items():
+        if info["manifest_path"].exists() and name != "Phase 10 Final v4 (Full 880-Run Corrected Suite)":
+            # Get total artifact count
+            manifest = load_manifest(info["manifest_path"])
+            total = len(manifest.get("artifacts", {}))
+            if total > 0 and total < 50:  # Small manifest
+                res = verify_dataset_integrity(info["manifest_path"], max_check=total + 10)
+                assert res["status"] == "verified"
+                assert res["checked_count"] == total
+                break
 
