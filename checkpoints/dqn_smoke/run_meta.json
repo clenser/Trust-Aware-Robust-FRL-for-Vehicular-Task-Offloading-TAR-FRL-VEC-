@@ -1,0 +1,59 @@
+{
+  "config_file": "configs\\dqn_smoke.yaml",
+  "config": {
+    "project": "trust-aware-vanet-frl",
+    "config_name": "dqn_smoke",
+    "seed": 0,
+    "scenario": {
+      "num_vehicles": 5,
+      "num_edge_nodes": 2,
+      "mobility": "low",
+      "task_load": "low",
+      "malicious_client_ratio": 0.0,
+      "connectivity_range_m": 150.0,
+      "num_steps": 20
+    },
+    "dqn": {
+      "hidden": [
+        32,
+        32
+      ],
+      "lr": 0.001,
+      "gamma": 0.99,
+      "batch_size": 8,
+      "capacity": 2000,
+      "warmup_steps": 50,
+      "target_sync_steps": 100,
+      "eps_start": 1.0,
+      "eps_end": 0.1,
+      "eps_decay_episodes": 3,
+      "max_grad_norm": 10.0
+    },
+    "training": {
+      "episodes": 3,
+      "train_seed_base": 1000,
+      "eval_seeds": [
+        10,
+        11
+      ],
+      "checkpoint_every": 3,
+      "run_name": "dqn_smoke"
+    },
+    "placeholders_only": false,
+    "notes": "Smoke pipeline check only. Do not claim convergence from this run."
+  },
+  "reward_caveat": "EQ-11 defaults; latency/energy norms provisional (10s, 10J); destination trust neutral 0.5 pending Phase 5.",
+  "train_seeds": [
+    1000,
+    1001,
+    1002
+  ],
+  "total_transitions": 60,
+  "train_steps": 10,
+  "final_checkpoint": "checkpoints\\dqn_smoke\\checkpoint_final.pt",
+  "versions": {
+    "python": "3.11.9",
+    "torch": "2.14.1+cpu",
+    "numpy": "2.4.6"
+  }
+}

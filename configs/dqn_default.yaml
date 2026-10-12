@@ -1,0 +1,36 @@
+# DQN default experiment — modest CPU-friendly run on the smoke scenario.
+project: trust-aware-vanet-frl
+config_name: dqn_default
+seed: 0
+
+scenario:
+  num_vehicles: 5
+  num_edge_nodes: 2
+  mobility: low
+  task_load: low
+  malicious_client_ratio: 0.0
+  connectivity_range_m: 150.0
+  num_steps: 50
+
+dqn:
+  hidden: [64, 64]
+  lr: 0.001
+  gamma: 0.99
+  batch_size: 32
+  capacity: 20000
+  warmup_steps: 500
+  target_sync_steps: 200
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_episodes: 20
+  max_grad_norm: 10.0
+
+training:
+  episodes: 25
+  train_seed_base: 1000
+  eval_seeds: [10, 11, 12]
+  checkpoint_every: 5
+  run_name: dqn_default
+
+placeholders_only: false
+notes: "Configured experiment (25 eps x 50 tasks). Train seeds 1000+; held-out eval seeds 10-12."
