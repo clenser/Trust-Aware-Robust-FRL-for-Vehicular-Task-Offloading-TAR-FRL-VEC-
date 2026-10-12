@@ -19,9 +19,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
 def generate_plots_and_tables(
-    results_dir: Path = Path("results/phase10_final_v2"),
-    out_figs: Path = Path("reports/figures/phase10_final_v2"),
-    out_tables: Path = Path("reports/tables/phase10_final_v2"),
+    results_dir: Path = Path("results/phase10_final_v3"),
+    out_figs: Path = Path("reports/figures/phase10_final_v3"),
+    out_tables: Path = Path("reports/tables/phase10_final_v3"),
 ) -> None:
     out_figs.mkdir(parents=True, exist_ok=True)
     out_tables.mkdir(parents=True, exist_ok=True)
@@ -152,10 +152,10 @@ def generate_plots_and_tables(
         ("alpha", "Trust Balance (alpha)", axes[0, 0]),
         ("tau_exc", "Exclusion Threshold (tau_exc)", axes[0, 1]),
         ("lambda_smooth", "Temporal Smoothing (lambda)", axes[1, 0]),
-        ("tau_anomaly", "Anomaly Threshold (tau_anom)", axes[1, 1]),
+        ("m2_dir_threshold", "Directional Agreement Threshold (m2)", axes[1, 1]),
     ]
     for param_key, param_title, p_ax in params:
-        sub = df_sens[df_sens["sweep_param"] == param_key]
+        sub = df_sens[df_sens["sweep_param"].isin([param_key, "tau_anomaly" if param_key == "m2_dir_threshold" else param_key])]
         if not sub.empty:
             grp = sub.groupby(["param_value", "scenario_group"])["completion_rate"].mean().unstack()
             grp.plot(ax=p_ax, marker="o", linewidth=2)
@@ -192,9 +192,10 @@ def generate_plots_and_tables(
 
     # Table 4: Unreliable Execution
     if not unrel_rows.empty:
-        unrel_summary = unrel_rows.groupby(["unreliable_severity", "strategy"])[
-            ["injected_tasks_exposed", "injected_drops", "injected_fails", "injected_delays", "completion_rate", "mean_latency_s"]
-        ].agg(["mean", "std"]).round(3)
+        unrel_cols = [c for c in ["tasks_exposed", "tasks_with_any_fault", "injected_drops", "injected_fails", "injected_delays", "completion_rate", "mean_latency_s"] if c in unrel_rows.columns]
+        if not unrel_cols:
+            unrel_cols = ["injected_tasks_exposed", "injected_drops", "injected_fails", "injected_delays", "completion_rate", "mean_latency_s"]
+        unrel_summary = unrel_rows.groupby(["unreliable_severity", "strategy"])[unrel_cols].agg(["mean", "std"]).round(3)
         unrel_summary.to_latex(out_tables / "unreliable_execution.tex")
 
     print(f"Generated Phase 10 figures to {out_figs}")
@@ -203,9 +204,9 @@ def generate_plots_and_tables(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", default="results/phase10_final_v2")
-    parser.add_argument("--out-figs", default="reports/figures/phase10_final_v2")
-    parser.add_argument("--out-tables", default="reports/tables/phase10_final_v2")
+    parser.add_argument("--results-dir", default="results/phase10_final_v3")
+    parser.add_argument("--out-figs", default="reports/figures/phase10_final_v3")
+    parser.add_argument("--out-tables", default="reports/tables/phase10_final_v3")
     args = parser.parse_args()
 
     generate_plots_and_tables(Path(args.results_dir), Path(args.out_figs), Path(args.out_tables))

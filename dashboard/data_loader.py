@@ -20,18 +20,36 @@ def get_available_datasets() -> Dict[str, Dict[str, Any]]:
     """Return dictionary of available result datasets and their paths."""
     datasets = {}
     
-    # Phase 10 Final Remediation (Full 880-run matrix - primary)
+    # Phase 10 Final v3 (Full 880-Run Corrected Suite - Primary)
+    p10_v3_csv = REPO_ROOT / "results" / "phase10_final_v3" / "phase10_experiment_runs.csv"
+    p10_v3_json = REPO_ROOT / "results" / "phase10_final_v3" / "phase10_summary_metrics.json"
+    if p10_v3_csv.exists():
+        datasets["Phase 10 Final v3 (Full 880-Run Corrected Suite)"] = {
+            "key": "phase10_final_v3",
+            "csv_path": p10_v3_csv,
+            "ablation_csv_path": REPO_ROOT / "results" / "phase10_final_v3" / "phase10_ablation_runs.csv",
+            "sensitivity_csv_path": REPO_ROOT / "results" / "phase10_final_v3" / "phase10_sensitivity_runs.csv",
+            "json_path": p10_v3_json,
+            "manifest_path": REPO_ROOT / "reports" / "PHASE10_FINAL_V3_RUN_MANIFEST.json",
+            "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10_final_v3",
+            "rounds": 8,
+            "description": "Corrected full matrix suite (630 core runs, 70 ablations, 180 sensitivity sweeps, 10 seeds, 8 rounds)."
+        }
+
+    # Phase 10 Final v2 (Historical Reconciled - 880 Runs)
     p10_final_csv = REPO_ROOT / "results" / "phase10_final_v2" / "phase10_experiment_runs.csv"
     p10_final_json = REPO_ROOT / "results" / "phase10_final_v2" / "phase10_summary_metrics.json"
     if p10_final_csv.exists():
-        datasets["Phase 10 Final (Full 880-Run Matrix, Paired Seeds)"] = {
+        datasets["Phase 10 Final v2 (Historical Reconciled Suite)"] = {
             "key": "phase10_final_v2",
             "csv_path": p10_final_csv,
+            "ablation_csv_path": REPO_ROOT / "results" / "phase10_final_v2" / "phase10_ablation_runs.csv",
+            "sensitivity_csv_path": REPO_ROOT / "results" / "phase10_final_v2" / "phase10_sensitivity_runs.csv",
             "json_path": p10_final_json,
             "manifest_path": REPO_ROOT / "reports" / "PHASE10_FINAL_RUN_MANIFEST.json",
             "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10_final_v2",
             "rounds": 8,
-            "description": "Full remediated matrix (630 core runs, 70 ablations, 180 sensitivity runs, 10 seeds, 8 rounds)."
+            "description": "Historical reconciled matrix (630 core runs, 70 ablations, 180 sensitivity runs, 10 seeds, 8 rounds)."
         }
 
     # Phase 10 (Superseded Preliminary - 540 Core Runs)

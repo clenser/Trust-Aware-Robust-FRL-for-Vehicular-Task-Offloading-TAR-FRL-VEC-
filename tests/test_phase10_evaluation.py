@@ -210,5 +210,139 @@ def test_all_seven_ablations_and_four_sensitivities_in_plan():
     # Sensitivity
     sens_items = [p for p in plan if p.matrix_type == "sensitivity"]
     sens_params = {p.sweep_param for p in sens_items}
-    expected_sens = {"alpha", "tau_exc", "lambda_smooth", "tau_anomaly"}
-    assert sens_params == expected_sens, f"Missing sensitivity parameters: {expected_sens - sens_params}"
+    # Accepts m2_dir_threshold or tau_anomaly for directional sensitivity
+    assert {"alpha", "tau_exc", "lambda_smooth"}.issubset(sens_params)
+    assert ("tau_anomaly" in sens_params or "m2_dir_threshold" in sens_params)
+
+
+def test_runtime_trust_lambda_propagation_and_resets():
+    """Regression test: verifies that smoothing overrides survive environment resets throughout local training."""
+    with open("configs/feddqn_phase10.yaml") as f:
+        raw = yaml.safe_load(f)
+    agent_kwargs = {"lr": 1e-3, "gamma": 0.99, "batch_size": 4, "capacity": 100}
+
+    for target_lambda in [0.50, 0.70, 0.90, 0.95]:
+        clients = build_clients_with_seed(raw, agent_kwargs, num_tasks=5, master_seed=1, is_iid=True, lambda_smooth=target_lambda)
+        c = clients[0]
+        # Verify initial setting
+        assert c.get_effective_trust_lambda() == pytest.approx(target_lambda)
+        assert c.env.trust.lam == pytest.approx(target_lambda)
+
+        # Trigger reset directly
+        c.env.reset(seed=999)
+        assert c.get_effective_trust_lambda() == pytest.approx(target_lambda)
+        assert c.env.trust.lam == pytest.approx(target_lambda)
+
+        # Run local_train which resets env multiple times
+        c.local_train(num_episodes=2, base_seed=1000, num_tasks=5, warmup_steps=0, sync_every=10)
+        assert c.get_effective_trust_lambda() == pytest.approx(target_lambda)
+        assert c.env.trust.lam == pytest.approx(target_lambda)
+
+        # Wrap with UnreliableEnvWrapper and re-verify
+        prof = UnreliableProfile(fail_prob=0.1, delay_prob=0.1, drop_prob=0.1, name="low")
+        c.env = UnreliableEnvWrapper(c.env, prof, seed=555)
+        c.set_trust_lambda(target_lambda)
+
+        c.env.reset(seed=888)
+        assert c.get_effective_trust_lambda() == pytest.approx(target_lambda)
+        base_env = getattr(c.env, "env", c.env)
+        assert base_env.trust.lam == pytest.approx(target_lambda)
+
+        c.local_train(num_episodes=2, base_seed=2000, num_tasks=5, warmup_steps=0, sync_every=10)
+        assert c.get_effective_trust_lambda() == pytest.approx(target_lambda)
+        assert base_env.trust.lam == pytest.approx(target_lambda)
+
+
+def test_two_unreliable_clients_counter_aggregation_and_resets():
+    """Verify two unreliable clients: aggregate counters equal sum of both, persist across resets, and accounting identity holds."""
+    cfg1 = EnvConfig(seed=101, num_vehicles=4, num_edge_nodes=2, num_tasks=10)
+    cfg2 = EnvConfig(seed=102, num_vehicles=4, num_edge_nodes=2, num_tasks=10)
+    env1 = VehicularEdgeEnv(cfg1)
+    env2 = VehicularEdgeEnv(cfg2)
+
+    prof = UnreliableProfile(fail_prob=0.3, delay_prob=0.3, drop_prob=0.2, name="test")
+    wrap1 = UnreliableEnvWrapper(env1, prof, seed=111)
+    wrap2 = UnreliableEnvWrapper(env2, prof, seed=222)
+
+    # Step client 1 for 10 tasks across 2 episodes (with a reset)
+    wrap1.reset(1)
+    for _ in range(5):
+        wrap1.step(0)
+    wrap1.reset(2)  # Reset must NOT clear lifetime counters
+    for _ in range(5):
+        wrap1.step(0)
+
+    # Step client 2 for 10 tasks across 2 episodes (with a reset)
+    wrap2.reset(3)
+    for _ in range(5):
+        wrap2.step(0)
+    wrap2.reset(4)
+    for _ in range(5):
+        wrap2.step(0)
+
+    st1 = wrap1.get_fault_stats()
+    st2 = wrap2.get_fault_stats()
+
+    assert st1["tasks_exposed"] == 10
+    assert st2["tasks_exposed"] == 10
+
+    # Aggregate counters across both clients
+    total_exposed = st1["tasks_exposed"] + st2["tasks_exposed"]
+    total_with_fault = st1["tasks_with_any_fault"] + st2["tasks_with_any_fault"]
+    total_drops = st1["injected_drops"] + st2["injected_drops"]
+    total_fails = st1["injected_fails"] + st2["injected_fails"]
+    total_delays = st1["injected_delays"] + st2["injected_delays"]
+
+    assert total_exposed == 20
+    assert total_with_fault <= total_exposed
+    assert st1["tasks_with_any_fault"] <= st1["tasks_exposed"]
+    assert st2["tasks_with_any_fault"] <= st2["tasks_exposed"]
+    assert total_drops + total_fails + total_delays >= total_with_fault
+
+
+def test_stale_replay_provenance_and_round_zero():
+    """Verify stale replay preserves originating round, computes true staleness, and does not attack in round 0."""
+    from attacks.pipeline import AttackPipeline
+
+    scen = ScenarioAssignment.create(
+        num_clients=4,
+        malicious_fraction=0.25,
+        attack_type=AttackType.STALE_REPLAY,
+        seed=123,
+        attack_strength=2.0,  # target staleness age = 2
+    )
+    mal_cid = scen.malicious_client_ids[0]
+    pipeline = AttackPipeline(scen, seed=123)
+
+    ref_state = {"w": torch.tensor([1.0, 2.0])}
+
+    # Round 0: First round -> NO earlier update exists to replay!
+    u0 = {"client_id": mal_cid, "round_trained": 0, "num_samples": 10, "staleness": 0, "state": {"w": torch.tensor([1.1, 2.1])}}
+    att0, audit0 = pipeline.transform_update(u0, ref_state, current_round=0)
+    assert not audit0["attack_applied"], "Round 0 must NOT be labeled as stale replay"
+    assert att0["round_trained"] == 0
+    assert att0["staleness"] == 0
+
+    # Round 1: Only round 0 exists
+    u1 = {"client_id": mal_cid, "round_trained": 1, "num_samples": 10, "staleness": 0, "state": {"w": torch.tensor([1.2, 2.2])}}
+    att1, audit1 = pipeline.transform_update(u1, ref_state, current_round=1)
+    assert audit1["attack_applied"], "Round 1 must replay round 0 update"
+    assert att1["round_trained"] == 0, "Origin round must remain 0"
+    assert att1["staleness"] == 1, "Staleness in round 1 must be 1"
+    assert torch.allclose(att1["state"]["w"], u0["state"]["w"]), "Parameters must match round 0 update"
+
+    # Round 2: Round 0 and Round 1 exist. Target age = 2 -> round 2 - 2 = 0
+    u2 = {"client_id": mal_cid, "round_trained": 2, "num_samples": 10, "staleness": 0, "state": {"w": torch.tensor([1.3, 2.3])}}
+    att2, audit2 = pipeline.transform_update(u2, ref_state, current_round=2)
+    assert audit2["attack_applied"]
+    assert att2["round_trained"] == 0
+    assert att2["staleness"] == 2
+    assert torch.allclose(att2["state"]["w"], u0["state"]["w"])
+
+    # Round 5: Replay maintains true age (5 - 0 = 5)
+    u5 = {"client_id": mal_cid, "round_trained": 5, "num_samples": 10, "staleness": 0, "state": {"w": torch.tensor([1.6, 2.6])}}
+    att5, audit5 = pipeline.transform_update(u5, ref_state, current_round=5)
+    assert audit5["attack_applied"]
+    assert att5["round_trained"] == 0
+    assert att5["staleness"] == 5
+

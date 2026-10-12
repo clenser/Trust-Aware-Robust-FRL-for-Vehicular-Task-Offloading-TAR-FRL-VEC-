@@ -11,6 +11,9 @@ scenario:
   connectivity_range_m: 150.0
   malicious_client_ratio: 0.0
   num_steps: 10
+  trust_lambda: 0.70
+  bandwidth_hz: 10000000.0
+  vehicle_cpu_ghz: 2.0
 
 detector:
   tau_anomaly: 0.50
@@ -48,30 +51,50 @@ federated:
     - mobility: low
       task_load: low
       link_reliability: 0.95
+      vehicle_cpu_ghz: 1.2
+      bandwidth_hz: 5000000.0
     - mobility: low
       task_load: medium
       link_reliability: 0.90
+      vehicle_cpu_ghz: 1.5
+      bandwidth_hz: 10000000.0
     - mobility: medium
       task_load: high
       link_reliability: 0.85
+      vehicle_cpu_ghz: 2.0
+      bandwidth_hz: 15000000.0
     - mobility: high
       task_load: low
       link_reliability: 0.80
+      vehicle_cpu_ghz: 2.5
+      bandwidth_hz: 20000000.0
     - mobility: medium
       task_load: medium
       link_reliability: 0.95
+      vehicle_cpu_ghz: 1.8
+      bandwidth_hz: 10000000.0
     - mobility: low
       task_load: high
       link_reliability: 0.90
+      vehicle_cpu_ghz: 2.2
+      bandwidth_hz: 15000000.0
     - mobility: medium
       task_load: low
       link_reliability: 0.85
+      vehicle_cpu_ghz: 1.0
+      bandwidth_hz: 5000000.0
     - mobility: high
       task_load: medium
       link_reliability: 0.80
+      vehicle_cpu_ghz: 2.8
+      bandwidth_hz: 20000000.0
     - mobility: high
       task_load: high
       link_reliability: 0.75
+      vehicle_cpu_ghz: 3.0
+      bandwidth_hz: 20000000.0
     - mobility: low
       task_load: low
       link_reliability: 0.90
+      vehicle_cpu_ghz: 1.6
+      bandwidth_hz: 10000000.0

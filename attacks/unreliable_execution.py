@@ -48,13 +48,30 @@ class UnreliableEnvWrapper:
         self.profile = profile
         self._fault_rng = np.random.default_rng(seed)
         self.injected_tasks_exposed: int = 0
+        self.tasks_with_any_fault: int = 0
         self.injected_drops: int = 0
         self.injected_fails: int = 0
         self.injected_delays: int = 0
 
+    def set_trust_lambda(self, lam: float) -> None:
+        """Propagate trust smoothing coefficient to base environment."""
+        if hasattr(self.env, "set_trust_lambda"):
+            self.env.set_trust_lambda(lam)
+        else:
+            self.env.cfg.trust_lambda = float(lam)
+            if hasattr(self.env, "trust") and self.env.trust is not None:
+                self.env.trust.lam = float(lam)
+
+    def get_effective_trust_lambda(self) -> float:
+        """Single source of truth for runtime trust smoothing coefficient."""
+        if hasattr(self.env, "get_effective_trust_lambda"):
+            return self.env.get_effective_trust_lambda()
+        return float(getattr(getattr(self.env, "trust", None), "lam", self.env.cfg.trust_lambda))
+
     def get_fault_stats(self) -> dict[str, int]:
         return {
             "tasks_exposed": self.injected_tasks_exposed,
+            "tasks_with_any_fault": self.tasks_with_any_fault,
             "injected_drops": self.injected_drops,
             "injected_fails": self.injected_fails,
             "injected_delays": self.injected_delays,
@@ -66,6 +83,7 @@ class UnreliableEnvWrapper:
     def reset(self, seed: int | None = None) -> tuple[list[float], list[bool]]:
         if seed is not None:
             self._fault_rng = np.random.default_rng(seed + 888)
+        # Note: lifetime fault counters persist across resets within the trial
         return self.env.reset(seed)
 
     def step(self, action: int) -> StepResult:
@@ -76,19 +94,23 @@ class UnreliableEnvWrapper:
         res = self.env.step(action)
         self.injected_tasks_exposed += 1
 
-        # Check if fault is injected
+        # Independent Bernoulli sampling for each fault mode
         inject_drop = self._fault_rng.random() < self.profile.drop_prob
         inject_fail = self._fault_rng.random() < self.profile.fail_prob
         inject_delay = self._fault_rng.random() < self.profile.delay_prob
 
+        has_fault = inject_drop or inject_fail or inject_delay
+        if has_fault:
+            self.tasks_with_any_fault += 1
+
         if inject_drop:
             self.injected_drops += 1
-        elif inject_fail:
+        if inject_fail:
             self.injected_fails += 1
-        elif inject_delay:
+        if inject_delay:
             self.injected_delays += 1
 
-        if not (inject_drop or inject_fail or inject_delay):
+        if not has_fault:
             return res
 
         # In base env, path_ok is True iff (res.success or res.failed or res.deadline_missed)

@@ -76,6 +76,9 @@ class PlanItem:
     alpha: float = 0.60
     tau_exc: float = 0.40
     lambda_smooth: float | None = None
+    m2_dir_threshold: float = 0.45
+    m3_stale_threshold: float = 0.50
+    m4_orig_threshold: float = 0.00
     tau_anomaly: float = 0.50
     skip_fl: bool = False
 
@@ -297,7 +300,7 @@ def build_phase10_experiment_plan(
                     lambda_smooth=lam_val,
                 ))
 
-    # Sweep 4: Anomaly Threshold (3 values)
+    # Sweep 4: Anomaly Directional Threshold (3 values)
     for anom_val in [0.40, 0.50, 0.60]:
         for sc_name, att_type, strength in sens_scenarios:
             for seed in sec_seeds:
@@ -314,11 +317,13 @@ def build_phase10_experiment_plan(
                     master_seed=seed,
                     eval_seeds=eval_seeds,
                     is_iid=False,
-                    sweep_param="tau_anomaly",
+                    sweep_param="m2_dir_threshold",
                     param_value=anom_val,
                     alpha=0.60,
                     tau_exc=0.40,
-                    tau_anomaly=anom_val,
+                    lambda_smooth=0.70,
+                    m2_dir_threshold=anom_val,
+                    tau_anomaly=0.50,
                 ))
 
     return plan
@@ -330,6 +335,7 @@ def build_clients_with_seed(
     num_tasks: int,
     master_seed: int,
     is_iid: bool = False,
+    lambda_smooth: float | None = None,
 ) -> list[FedClient]:
     """Build client environments with genuine master seed derivation and IID/Non-IID control."""
     from environment.config import EnvConfig
@@ -337,27 +343,36 @@ def build_clients_with_seed(
     fed = raw.get("federated", {})
     conds = fed.get("client_conditions", [{}])
     num_clients = int(fed.get("num_clients", 10))
+    eff_lam = float(lambda_smooth if lambda_smooth is not None else 0.70)
     clients = []
 
     for i in range(num_clients):
         cfg = copy.deepcopy(base)
         if not is_iid:
-            for k, v in conds[i % len(conds)].items():
+            cond = conds[i % len(conds)]
+            for k, v in cond.items():
                 if k == "task_load":
                     cfg.task_load = str(v)
                 elif k == "mobility":
                     cfg.mobility = str(v)
                 elif k == "link_reliability":
                     cfg.link_reliability = float(v)
+                elif k == "vehicle_cpu_ghz":
+                    cfg.vehicle_cpu_ghz = float(v)
+                elif k == "bandwidth_hz":
+                    cfg.bandwidth_hz = float(v)
                 else:
                     raise ValueError(f"unknown client override: {k}")
         else:
-            # Clean IID baseline: homogeneous medium load, medium mobility, 0.90 reliability
+            # Clean IID baseline: homogeneous medium load, medium mobility, 0.90 reliability, 2.0 GHz compute, 10 MHz bandwidth
             cfg.task_load = "medium"
             cfg.mobility = "medium"
             cfg.link_reliability = 0.90
+            cfg.vehicle_cpu_ghz = 2.0
+            cfg.bandwidth_hz = 10000000.0
 
         cfg.num_tasks = num_tasks
+        cfg.trust_lambda = eff_lam
         cfg.validate()
 
         # Seed propagation: unique, deterministic client environment and exploration seeds
@@ -367,6 +382,7 @@ def build_clients_with_seed(
             del client_agent_kwargs["seed"]
 
         c = FedClient(i, cfg, client_agent_kwargs, seed=client_env_seed)
+        c.set_trust_lambda(eff_lam)
         clients.append(c)
 
     return clients
@@ -407,12 +423,14 @@ def execute_plan_item(
     }
 
     # Deterministic client construction with master seed derivation
-    clients = build_clients_with_seed(raw_cfg, agent_kwargs, num_tasks, item.master_seed, is_iid=item.is_iid)
-
-    # Apply temporal smoothing override if specified
-    if item.lambda_smooth is not None:
-        for c in clients:
-            c.env.trust.lam = item.lambda_smooth
+    clients = build_clients_with_seed(
+        raw_cfg,
+        agent_kwargs,
+        num_tasks,
+        item.master_seed,
+        is_iid=item.is_iid,
+        lambda_smooth=item.lambda_smooth,
+    )
 
     # Build scenario assignment
     attack_enum = AttackType(item.attack_type)
@@ -467,17 +485,11 @@ def execute_plan_item(
     detection_history = {"y_true": [], "y_pred": [], "excluded": []}
     has_detector = (item.strategy != "fedavg" and not item.skip_fl)
 
-    # Anomaly thresholds
-    m2_dir_thresh = 0.0
-    m4_orig_thresh = 0.50
-    m3_stale_thresh = 0.50
+    # Configured detector thresholds
+    m2_dir_thresh = item.m2_dir_threshold
+    m4_orig_thresh = item.m4_orig_threshold
+    m3_stale_thresh = item.m3_stale_threshold
     tau_anomaly = item.tau_anomaly
-
-    # Training-time unreliability metrics
-    injected_tasks_exposed = 0
-    injected_drops = 0
-    injected_fails = 0
-    injected_delays = 0
 
     server_rng = np.random.default_rng(40000 + item.master_seed)
 
@@ -499,15 +511,6 @@ def execute_plan_item(
                 sync_every=sync_every,
             )
             honest_updates.append(c.make_update(round_trained=r))
-
-        # Ingest faults counters from unreliable wrappers
-        for c in clients:
-            if isinstance(c.env, UnreliableEnvWrapper):
-                stats = c.env.get_fault_stats()
-                injected_tasks_exposed = stats["tasks_exposed"]
-                injected_drops = stats["injected_drops"]
-                injected_fails = stats["injected_fails"]
-                injected_delays = stats["injected_delays"]
 
         # If skip_fl (local RL ablation), do not aggregate or distribute
         if item.skip_fl:
@@ -553,6 +556,24 @@ def execute_plan_item(
             detection_history["y_true"].append(is_mal)
             detection_history["y_pred"].append(detected)
             detection_history["excluded"].append(is_excluded)
+
+    # Ingest aggregate fault counters across every unreliable client wrapper for the whole run
+    unreliable_wrappers = [c.env for c in clients if isinstance(c.env, UnreliableEnvWrapper)]
+    if unreliable_wrappers:
+        injected_tasks_exposed = sum(w.injected_tasks_exposed for w in unreliable_wrappers)
+        injected_tasks_with_any_fault = sum(w.tasks_with_any_fault for w in unreliable_wrappers)
+        injected_drops = sum(w.injected_drops for w in unreliable_wrappers)
+        injected_fails = sum(w.injected_fails for w in unreliable_wrappers)
+        injected_delays = sum(w.injected_delays for w in unreliable_wrappers)
+    else:
+        injected_tasks_exposed = 0
+        injected_tasks_with_any_fault = 0
+        injected_drops = 0
+        injected_fails = 0
+        injected_delays = 0
+
+    # Effective runtime trust smoothing coefficient (single source of truth)
+    actual_runtime_lambda = clients[0].get_effective_trust_lambda()
 
     # Save final model checkpoint
     ckpt_dir = checkpoints_dir / item.run_id
@@ -626,7 +647,12 @@ def execute_plan_item(
         "alpha": item.alpha,
         "tau_exc": item.tau_exc,
         "tau_anomaly": item.tau_anomaly,
-        "lambda_smooth": item.lambda_smooth if item.lambda_smooth is not None else 0.70,
+        "m2_dir_threshold": m2_dir_thresh,
+        "m3_stale_threshold": m3_stale_thresh,
+        "m4_orig_threshold": m4_orig_thresh,
+        "lambda_smooth": actual_runtime_lambda,
+        "runtime_trust_lambda": actual_runtime_lambda,
+        "effective_trust_lambda": actual_runtime_lambda,
         "skip_fl": item.skip_fl,
         "has_detector": has_detector,
         "rounds": rounds,
@@ -646,7 +672,10 @@ def execute_plan_item(
         "recall": recall_val,
         "f1": f1_val,
         "fpr": fpr_val,
+        "tasks_exposed": injected_tasks_exposed,
+        "tasks_with_any_fault": injected_tasks_with_any_fault,
         "injected_tasks_exposed": injected_tasks_exposed,
+        "injected_tasks_with_any_fault": injected_tasks_with_any_fault,
         "injected_drops": injected_drops,
         "injected_fails": injected_fails,
         "injected_delays": injected_delays,
@@ -660,7 +689,7 @@ def _worker_wrapper(args: tuple[PlanItem, dict, Path]) -> dict[str, Any]:
 
 def run_full_phase10_matrix(
     config_path: str = "configs/feddqn_phase10.yaml",
-    outdir: Path = Path("results/phase10_final_v2"),
+    outdir: Path = Path("results/phase10_final_v3"),
     num_seeds_core: int = 10,
     num_seeds_secondary: int = 5,
     num_workers: int = 4,
@@ -779,7 +808,7 @@ def run_full_phase10_matrix(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/feddqn_phase10.yaml")
-    parser.add_argument("--outdir", default="results/phase10_final_v2")
+    parser.add_argument("--outdir", default="results/phase10_final_v3")
     parser.add_argument("--seeds-core", type=int, default=10)
     parser.add_argument("--seeds-sec", type=int, default=5)
     args = parser.parse_args()

@@ -67,6 +67,7 @@ class EnvConfig:
     trust_rho: float = 0.99
     trust_prior: float = 0.5
     trust_threshold: float = 0.3  # trust_aware policy falls back to local below this
+    vehicle_cpu_ghz: float | None = None  # optional explicit vehicle compute override
 
     @property
     def obs_dim(self) -> int:
@@ -102,21 +103,31 @@ class EnvConfig:
             raise ValueError("trust_rho must be in (0, 1]")
         if abs(sum(self.trust_beta) - 1.0) > 1e-9:
             raise ValueError("trust_beta must sum to 1")
-
+        if self.vehicle_cpu_ghz is not None and self.vehicle_cpu_ghz <= 0:
+            raise ValueError("vehicle_cpu_ghz must be positive")
 
     @classmethod
     def from_raw(cls, raw: dict) -> "EnvConfig":
         """Build from a parsed project YAML dict (same mapping as from_yaml)."""
         scenario = (raw or {}).get("scenario", {}) or {}
-        cfg = cls(
-            seed=int((raw or {}).get("seed", 0)),
-            num_vehicles=int(scenario.get("num_vehicles", 5)),
-            num_edge_nodes=int(scenario.get("num_edge_nodes", 2)),
-            mobility=str(scenario.get("mobility", "low")),
-            task_load=str(scenario.get("task_load", "low")),
-            comm_range_m=float(scenario.get("connectivity_range_m", 150.0)),
-            num_tasks=int(scenario.get("num_steps", 50)),
-        )
+        federated = (raw or {}).get("federated", {}) or {}
+        t_lam = scenario.get("trust_lambda", federated.get("trust_lambda", (raw or {}).get("trust_lambda", None)))
+        kwargs: dict = {
+            "seed": int((raw or {}).get("seed", 0)),
+            "num_vehicles": int(scenario.get("num_vehicles", 5)),
+            "num_edge_nodes": int(scenario.get("num_edge_nodes", 2)),
+            "mobility": str(scenario.get("mobility", "low")),
+            "task_load": str(scenario.get("task_load", "low")),
+            "comm_range_m": float(scenario.get("connectivity_range_m", 150.0)),
+            "num_tasks": int(scenario.get("num_steps", 50)),
+        }
+        if t_lam is not None:
+            kwargs["trust_lambda"] = float(t_lam)
+        if "bandwidth_hz" in scenario:
+            kwargs["bandwidth_hz"] = float(scenario["bandwidth_hz"])
+        if "vehicle_cpu_ghz" in scenario:
+            kwargs["vehicle_cpu_ghz"] = float(scenario["vehicle_cpu_ghz"])
+        cfg = cls(**kwargs)
         cfg.validate()
         return cfg
 

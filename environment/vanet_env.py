@@ -86,6 +86,18 @@ class VehicularEdgeEnv:
     def from_yaml(cls, path: str) -> "VehicularEdgeEnv":
         return cls(from_yaml(path))
 
+    def set_trust_lambda(self, lam: float) -> None:
+        """Set effective trust smoothing coefficient and persist to config."""
+        self.cfg.trust_lambda = float(lam)
+        if hasattr(self, "trust") and self.trust is not None:
+            self.trust.lam = float(lam)
+
+    def get_effective_trust_lambda(self) -> float:
+        """Single source of truth for runtime trust smoothing coefficient."""
+        if hasattr(self, "trust") and self.trust is not None:
+            return float(self.trust.lam)
+        return float(self.cfg.trust_lambda)
+
     # ------------------------------------------------------------------ setup
     def reset(self, seed: int | None = None) -> tuple[list[float], list[bool]]:
         """(Re)build the scenario. Same seed -> identical stream (tested)."""
@@ -99,7 +111,7 @@ class VehicularEdgeEnv:
                 vid=i,
                 x_m=float(self._rng.uniform(0, self.cfg.road_length_m)),
                 speed_mps=self._mobility.sample_speed(),
-                cpu_freq_hz=float(self._rng.uniform(1e9, 3e9)),
+                cpu_freq_hz=float(self.cfg.vehicle_cpu_ghz * 1e9) if getattr(self.cfg, "vehicle_cpu_ghz", None) is not None else float(self._rng.uniform(1e9, 3e9)),
                 utilisation=float(self._rng.uniform(0.0, 0.7)),
                 bandwidth_hz=self.cfg.bandwidth_hz,
                 tx_power_w=self.cfg.tx_power_w,

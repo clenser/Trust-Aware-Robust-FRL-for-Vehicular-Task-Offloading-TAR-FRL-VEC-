@@ -237,8 +237,8 @@ def main():
                     f"**Macro Mean Per-Run FPR (All Strategies):** **{macro_fpr:.2%}**"
                 )
                 st.markdown(
-                    "The trust model ensures honest non-IID clients experiencing heterogeneous local "
-                    "workloads are not penalized, maintaining an FPR strictly bounded below the 5% target."
+                    "Observed anomaly false positive rate for honest non-IID clients across tested conditions, "
+                    "measuring whether heterogeneous local updates avoid being misclassified as adversarial."
                 )
                 
                 # Show seed by seed honest runs

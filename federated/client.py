@@ -33,6 +33,24 @@ class FedClient:
         self.last_mean_reward = float("nan")
         self.last_round_samples = 0
 
+    def set_trust_lambda(self, lam: float) -> None:
+        """Set effective trust smoothing coefficient across client config and active environment."""
+        self.env_cfg.trust_lambda = float(lam)
+        if hasattr(self.env, "set_trust_lambda"):
+            self.env.set_trust_lambda(lam)
+        else:
+            base_env = getattr(self.env, "env", self.env)
+            base_env.cfg.trust_lambda = float(lam)
+            if hasattr(base_env, "trust") and base_env.trust is not None:
+                base_env.trust.lam = float(lam)
+
+    def get_effective_trust_lambda(self) -> float:
+        """Single source of truth for runtime trust smoothing coefficient."""
+        if hasattr(self.env, "get_effective_trust_lambda"):
+            return self.env.get_effective_trust_lambda()
+        base_env = getattr(self.env, "env", self.env)
+        return float(getattr(getattr(base_env, "trust", None), "lam", self.env_cfg.trust_lambda))
+
     def install_global(self, state: dict[str, torch.Tensor]) -> None:
         """Load the distributed global model into BOTH online and target nets.
 

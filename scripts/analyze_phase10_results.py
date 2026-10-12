@@ -54,7 +54,7 @@ def compute_student_t_ci_95(values: list[float] | np.ndarray) -> dict[str, Any]:
 
 
 def analyze_phase10_results(
-    results_dir: Path = Path("results/phase10_final_v2"),
+    results_dir: Path = Path("results/phase10_final_v3"),
     out_json: Path | None = None,
 ) -> dict[str, Any]:
     """Perform full statistical analysis and return structured results dictionary."""
@@ -75,6 +75,7 @@ def analyze_phase10_results(
             "total_rows": len(df_core) + len(df_abl) + len(df_sens),
         },
         "primary_hypotheses": {},
+        "secondary_hypotheses": {},
         "overall": {},
         "by_fraction": {},
         "unreliable_execution": {},
@@ -98,21 +99,27 @@ def analyze_phase10_results(
     paired_diff = th_vals - fed_vals
     n_pairs = len(paired_diff)
 
-    t_res = stats.ttest_rel(th_vals, fed_vals)
-    t_stat = float(t_res.statistic)
-    p_val = float(t_res.pvalue)
-
     mean_diff = float(np.mean(paired_diff))
-    std_diff = float(np.std(paired_diff, ddof=1))
-    se_diff = std_diff / np.sqrt(n_pairs) if n_pairs > 0 else 0.0
+    std_diff = float(np.std(paired_diff, ddof=1)) if n_pairs > 1 else 0.0
+    se_diff = std_diff / np.sqrt(n_pairs) if n_pairs > 0 and std_diff > 0 else 0.0
     t_crit_9 = float(stats.t.ppf(0.975, df=n_pairs - 1)) if n_pairs > 1 else 0.0
     ci_diff_half = t_crit_9 * se_diff
     cohen_dz = mean_diff / std_diff if std_diff > 0 else 0.0
 
+    if std_diff > 1e-12:
+        t_res = stats.ttest_rel(th_vals, fed_vals)
+        t_stat = float(t_res.statistic)
+        p_val = float(t_res.pvalue)
+    else:
+        t_stat = float("nan")
+        p_val = float("nan")
+
     try:
-        w_res = stats.wilcoxon(th_vals, fed_vals)
-        w_stat = float(w_res.statistic)
-        w_pval = float(w_res.pvalue)
+        if np.any(paired_diff != 0):
+            w_res = stats.wilcoxon(th_vals, fed_vals)
+            w_stat, w_pval = float(w_res.statistic), float(w_res.pvalue)
+        else:
+            w_stat, w_pval = None, None
     except Exception:
         w_stat, w_pval = None, None
 
@@ -137,8 +144,55 @@ def analyze_phase10_results(
         "cohen_dz": cohen_dz,
         "wilcoxon_stat": w_stat,
         "wilcoxon_pvalue": w_pval,
-        "statistically_significant_alpha_005": bool(p_val < 0.05),
+        "statistically_significant_alpha_005": bool(p_val < 0.05) if not np.isnan(p_val) else False,
     }
+
+    # Secondary confirmatory tests across primary comparisons with Holm-Bonferroni
+    confirmatory_tests = [
+        ("freeriding_zero_update", 0.20, "H_zero_f20"),
+        ("poisoning_sign_flip", 0.20, "H_signflip_f20"),
+        ("poisoning_sign_flip", 0.40, "H_signflip_f40"),
+    ]
+    p_values_for_correction = []
+    test_keys = []
+
+    for scen, frac, t_key in confirmatory_tests:
+        sub = df_core[(df_core["scenario_group"] == scen) & (df_core["attack_fraction"] == frac)]
+        sub_fed = sub[sub["strategy"] == "fedavg"].sort_values("seed")
+        sub_th = sub[sub["strategy"] == "trust_threshold"].sort_values("seed")
+        v_fed = sub_fed["completion_rate"].to_numpy()
+        v_th = sub_th["completion_rate"].to_numpy()
+        diff = v_th - v_fed
+        s_diff = float(np.std(diff, ddof=1)) if len(diff) > 1 else 0.0
+        m_diff = float(np.mean(diff))
+        if s_diff > 1e-12:
+            res_t = stats.ttest_rel(v_th, v_fed)
+            p_v = float(res_t.pvalue)
+            t_s = float(res_t.statistic)
+        else:
+            p_v = float("nan")
+            t_s = float("nan")
+
+        analysis_report["secondary_hypotheses"][t_key] = {
+            "scenario": scen,
+            "attack_fraction": frac,
+            "mean_difference": m_diff,
+            "std_difference": s_diff,
+            "t_statistic": t_s,
+            "p_value_raw": p_v,
+        }
+        if not np.isnan(p_v):
+            p_values_for_correction.append(p_v)
+            test_keys.append(t_key)
+
+    # Apply Holm-Bonferroni step-down correction if any valid p-values exist
+    if p_values_for_correction:
+        sorted_pairs = sorted(zip(p_values_for_correction, test_keys))
+        m_tests = len(sorted_pairs)
+        for rank, (p_raw, k_test) in enumerate(sorted_pairs):
+            alpha_adj = 0.05 / (m_tests - rank)
+            analysis_report["secondary_hypotheses"][k_test]["holm_adjusted_alpha"] = alpha_adj
+            analysis_report["secondary_hypotheses"][k_test]["holm_significant"] = bool(p_raw < alpha_adj)
 
     # ==============================================================
     # 2. Overall Scenario Group Summaries
@@ -189,7 +243,8 @@ def analyze_phase10_results(
             if sub.empty:
                 continue
             analysis_report["unreliable_execution"][ug][strat] = {
-                "injected_tasks_exposed": compute_student_t_ci_95(sub["injected_tasks_exposed"].tolist()),
+                "tasks_exposed": compute_student_t_ci_95(sub["tasks_exposed"].tolist()) if "tasks_exposed" in sub.columns else compute_student_t_ci_95(sub["injected_tasks_exposed"].tolist()),
+                "tasks_with_any_fault": compute_student_t_ci_95(sub["tasks_with_any_fault"].tolist()) if "tasks_with_any_fault" in sub.columns else None,
                 "injected_drops": compute_student_t_ci_95(sub["injected_drops"].tolist()),
                 "injected_fails": compute_student_t_ci_95(sub["injected_fails"].tolist()),
                 "injected_delays": compute_student_t_ci_95(sub["injected_delays"].tolist()),
@@ -248,8 +303,8 @@ def analyze_phase10_results(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", default="results/phase10_final_v2")
-    parser.add_argument("--out-json", default="results/phase10_final_v2/phase10_summary_metrics.json")
+    parser.add_argument("--results-dir", default="results/phase10_final_v3")
+    parser.add_argument("--out-json", default="results/phase10_final_v3/phase10_summary_metrics.json")
     args = parser.parse_args()
 
     rep = analyze_phase10_results(Path(args.results_dir), Path(args.out_json))
@@ -259,6 +314,6 @@ if __name__ == "__main__":
     print(f"  FedAvg completion:          {h1['fedavg_mean']:.3f} +/- {h1['fedavg_std']:.3f}")
     print(f"  Trust-Threshold completion: {h1['trust_threshold_mean']:.3f} +/- {h1['trust_threshold_std']:.3f}")
     print(f"  Mean paired diff:           {h1['mean_paired_difference']:+.4f} (95% CI: [{h1['ci95_difference_low']:+.4f}, {h1['ci95_difference_high']:+.4f}])")
-    print(f"  Paired t-test:              t({h1['sample_size']-1}) = {h1['t_statistic']:.4f}, p = {h1['p_value_twotailed']:.6f}")
+    print(f"  Paired t-test:              t({h1['sample_size']-1}) = {h1['t_statistic']}, p = {h1['p_value_twotailed']}")
     print(f"  Statistically significant:  {h1['statistically_significant_alpha_005']}")
     print("=======================================================\n")

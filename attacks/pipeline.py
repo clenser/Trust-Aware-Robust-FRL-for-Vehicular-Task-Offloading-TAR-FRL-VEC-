@@ -88,15 +88,36 @@ class AttackPipeline:
                 target_state = update["state"]
             attacked["state"] = apply_copy_update(target_state=target_state)
         elif label.attack_type == AttackType.STALE_REPLAY:
-            # Replay update from previous round if available, else age current update
+            # Replay historical update from previous rounds if available
             hist = self.history_updates.get(cid, [])
-            stale_source = hist[0] if len(hist) > 1 else update
-            staleness_age = max(1, int(round(label.attack_strength))) if label.attack_strength >= 1 else 1
-            attacked = create_stale_update(
-                historical_update=stale_source,
-                staleness_age=staleness_age,
-                current_round=current_round,
-            )
+            prior_updates = hist[:-1] if len(hist) > 1 else []
+            if not prior_updates or current_round == 0:
+                # In round 0 or with no historical update yet, cannot replay an earlier update
+                attacked = update
+                audit_info["attack_applied"] = False
+                audit_info["origin_round"] = current_round
+                audit_info["staleness_age"] = 0
+            else:
+                # Target staleness age from attack strength (default 2 or 1)
+                target_age = max(1, int(round(label.attack_strength))) if label.attack_strength >= 1 else 1
+                target_round = max(0, current_round - target_age)
+                # Find matching historical update by round_trained, or fallback to earliest prior
+                chosen = None
+                for u_prev in prior_updates:
+                    if u_prev.get("round_trained") == target_round:
+                        chosen = u_prev
+                        break
+                if chosen is None:
+                    chosen = prior_updates[0]
+
+                origin_round = int(chosen.get("round_trained", 0))
+                attacked = copy.deepcopy(chosen)
+                # Preserve genuine originating round metadata!
+                attacked["round_trained"] = origin_round
+                attacked["staleness"] = max(0, current_round - origin_round)
+                audit_info["attack_applied"] = True
+                audit_info["origin_round"] = origin_round
+                audit_info["staleness_age"] = max(0, current_round - origin_round)
         elif label.attack_type == AttackType.UNRELIABLE:
             # For unreliable node, parameters may be trained normally, but behaviour is faulty
             pass

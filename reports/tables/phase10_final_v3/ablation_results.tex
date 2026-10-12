@@ -1,0 +1,29 @@
+\begin{tabular}{llrrrrrrrrrr}
+\toprule
+ &  & \multicolumn{2}{r}{completion_rate} & \multicolumn{2}{r}{mean_reward} & \multicolumn{2}{r}{f1} & \multicolumn{2}{r}{fpr} & \multicolumn{2}{r}{exclusion_rate} \\
+ &  & mean & std & mean & std & mean & std & mean & std & mean & std \\
+ablation_name & scenario_group &  &  &  &  &  &  &  &  &  &  \\
+\midrule
+\multirow[t]{2}{*}{fedavg_no_trust} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & NaN & NaN & NaN & NaN & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.732000 & 0.056000 & 0.443000 & 0.213000 & NaN & NaN & NaN & NaN & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{full_proposed} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & 1.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.732000 & 0.056000 & 0.443000 & 0.213000 & 0.348000 & 0.132000 & 0.016000 & 0.027000 & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{local_rl_no_fl} & freeriding_zero_update & 0.736000 & 0.067000 & 0.457000 & 0.275000 & NaN & NaN & NaN & NaN & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.736000 & 0.067000 & 0.457000 & 0.275000 & NaN & NaN & NaN & NaN & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{no_behavioural_trust} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & 1.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.752000 & 0.050000 & 0.516000 & 0.199000 & 0.381000 & 0.155000 & 0.012000 & 0.028000 & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{no_model_trust} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & 0.928000 & 0.057000 & 0.041000 & 0.034000 & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.732000 & 0.056000 & 0.443000 & 0.213000 & 0.327000 & 0.198000 & 0.056000 & 0.053000 & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{no_temporal_smoothing} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & 0.994000 & 0.014000 & 0.003000 & 0.007000 & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.760000 & 0.058000 & 0.541000 & 0.224000 & 0.364000 & 0.157000 & 0.012000 & 0.028000 & 0.000000 & 0.000000 \\
+\cline{1-12}
+\multirow[t]{2}{*}{no_threshold_exclusion} & freeriding_zero_update & 0.752000 & 0.050000 & 0.519000 & 0.195000 & 1.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 & 0.000000 \\
+ & poisoning_sign_flip & 0.732000 & 0.056000 & 0.443000 & 0.213000 & 0.348000 & 0.132000 & 0.016000 & 0.027000 & 0.000000 & 0.000000 \\
+\cline{1-12}
+\bottomrule
+\end{tabular}
