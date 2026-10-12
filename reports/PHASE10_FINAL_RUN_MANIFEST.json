@@ -1,0 +1,273 @@
+{
+  "phase": "Phase 10 Remediation: Full Evaluation, Ablation Studies, and Sensitivity Analysis (Final v2)",
+  "execution_date": "2026-10-12T18:30:00+05:30",
+  "system_info": {
+    "python_version": "3.11.9",
+    "torch_version": "2.1.0+cpu",
+    "platform": "Windows 11",
+    "cpu_workers": 4
+  },
+  "global_hyperparameters": {
+    "fl_rounds": 8,
+    "clients_total": 10,
+    "local_epochs": 2,
+    "learning_rate": 0.001,
+    "discount_factor_gamma": 0.95,
+    "lambda_smoothing_default": 0.85,
+    "tau_anomaly_default": 0.8,
+    "tau_exclusion_default": 0.5,
+    "alpha_default": 0.6
+  },
+  "matrix_structure": {
+    "core_matrix_runs": 630,
+    "ablation_runs": 70,
+    "sensitivity_runs": 180,
+    "total_phase10_runs": 880,
+    "seeds_core": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "seeds_secondary": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "eval_seeds_per_trial": [
+      100,
+      101,
+      102,
+      103,
+      104
+    ]
+  },
+  "core_scenario_breakdown": {
+    "clean_iid": {
+      "runs": 30,
+      "fractions": [
+        0.0
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "honest_non_iid": {
+      "runs": 30,
+      "fractions": [
+        0.0
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "poisoning_sign_flip": {
+      "runs": 120,
+      "fractions": [
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "poisoning_perturbation": {
+      "runs": 120,
+      "fractions": [
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "freeriding_zero_update": {
+      "runs": 120,
+      "fractions": [
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "freeriding_copy_update": {
+      "runs": 120,
+      "fractions": [
+        0.1,
+        0.2,
+        0.3,
+        0.4
+      ],
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "unreliable_low": {
+      "runs": 30,
+      "fault_rate": 0.1,
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "unreliable_medium": {
+      "runs": 30,
+      "fault_rate": 0.25,
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    },
+    "unreliable_high": {
+      "runs": 30,
+      "fault_rate": 0.5,
+      "seeds": 10,
+      "strategies": [
+        "fedavg",
+        "trust_weighted",
+        "trust_threshold"
+      ]
+    }
+  },
+  "ablation_structure": {
+    "configurations": [
+      "full_proposed",
+      "no_behavioural_trust",
+      "no_model_trust",
+      "no_temporal_smoothing",
+      "no_threshold_exclusion",
+      "fedavg_no_trust",
+      "local_rl_no_fl"
+    ],
+    "scenarios": [
+      "freeriding_zero_update",
+      "poisoning_sign_flip"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "total_runs": 70
+  },
+  "sensitivity_structure": {
+    "parameters": {
+      "alpha": [
+        0.0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1.0
+      ],
+      "tau_exc": [
+        0.2,
+        0.3,
+        0.4,
+        0.5,
+        0.6
+      ],
+      "lambda_smooth": [
+        0.5,
+        0.7,
+        0.85,
+        0.95
+      ],
+      "tau_anomaly": [
+        0.6,
+        0.8,
+        0.95
+      ]
+    },
+    "scenarios": [
+      "freeriding_stale_replay",
+      "poisoning_sign_flip"
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "total_runs": 180
+  },
+  "invariants_verified": {
+    "task_partition_identity": "100% of 880 runs satisfy completion_rate + failure_rate + miss_rate == 1.0000",
+    "paired_seed_protocol": "Exact seed pairing across strategies and scenarios with independent derived client seeds",
+    "ground_truth_isolation": "Detector inputs strictly derived from behavioural and model metrics; unreliable clients labeled is_malicious=False",
+    "reproducibility": "All random seeds controlled across NumPy, PyTorch, and Python random modules"
+  },
+  "primary_hypothesis_h1_results": {
+    "hypothesis": "H1: Trust-Threshold achieves statistically significant higher held-out completion than FedAvg under Zero-Update Free-Riding at f=0.40 over 10 paired seeds",
+    "sample_size": 10,
+    "fedavg_completion": "0.778 +/- 0.090",
+    "trust_threshold_completion": "0.778 +/- 0.090",
+    "mean_paired_difference": "+0.0000",
+    "confidence_interval_95": "[+0.0000, +0.0000]",
+    "p_value_paired": "nan (zero variance across paired differences: differences are exactly 0.0 across all 10 seeds)",
+    "cohen_dz": 0.0,
+    "conclusion": "REJECTED / NOT STATISTICALLY SIGNIFICANT at alpha=0.05. Zero-update free-riders (4 out of 10 clients) submit Delta w = 0, which scales gradient magnitude by 0.6 in FedAvg without corrupting policy direction. Over 8 rounds, the resulting discrete offloading decisions match Trust-Threshold exactly."
+  },
+  "key_empirical_findings": {
+    "zero_update_detection": "F1 = 1.000 (Precision = 1.000, Recall = 1.000, FPR = 0.000) across all fractions f in [0.1, 0.4]. Zero updates are uniquely and deterministically identified.",
+    "copy_update_detection": "Pairwise cosine duplicate detector achieves F1 = 0.667 at f=0.10, scaling to F1 = 0.886 at f=0.40 with recall reaching 0.975.",
+    "honest_non_iid_fpr": "0.0% false positive anomaly rate across all 10 seeds (0 false alarms out of 800 client decisions). Anomaly threshold tau_anom = 0.80 accommodates client data heterogeneity without false alarms.",
+    "unreliable_execution": "Fault injection instrumented and verified via UnreliableEnvWrapper counters (low: 10% fault, med: 25% fault, high: 50% fault). Drops, fails, and delays degrade raw offloading execution while honest client model training remains benign."
+  },
+  "artifact_checksums": {
+    "results/phase10_final_v2/phase10_experiment_runs.csv": "ea7f13c03ed075b319778e045736a24e139602b14dfa6c53b9f5fc5014350ddd",
+    "results/phase10_final_v2/phase10_ablation_runs.csv": "86e8f69748e9b2441200410753f5f9ef3a81d3036a72502f837fea891dc953ee",
+    "results/phase10_final_v2/phase10_sensitivity_runs.csv": "9617824ce31f3e6f3454c12bc0fced0b7b5a329b794c3bf0efd16178be0b489a",
+    "results/phase10_final_v2/phase10_summary_metrics.json": "1c19f975b342222432d851ff210fd766693f7c33072d8d9452bbcda3d70b7080",
+    "reports/figures/phase10_final_v2/detection_f1_vs_fraction.png": "f547bad1e98399c52fccead05866f1b5f98014c447ab33df1b047343a4c75940",
+    "reports/figures/phase10_final_v2/completion_vs_fraction_zeroupdate.png": "02c68fd2ad560808759dd93c151f39916bb2a9e01af87afa252adb5fa1579acb",
+    "reports/figures/phase10_final_v2/honest_non_iid_fpr_distribution.png": "f62ca14fe0c71009922a015e1755131813f9d700eb375317584fdb577e970262",
+    "reports/figures/phase10_final_v2/unreliable_execution_severity.png": "3724decdc0b973ffbf998a2838621136dbca5f645b7ba39d5874d1d25c284861",
+    "reports/figures/phase10_final_v2/ablation_comparison.png": "f570aac52be53f52b415a565326ea29f32c7c4fe5de74eb68fea5dc558fc90a1",
+    "reports/figures/phase10_final_v2/sensitivity_sweeps.png": "a374a01b470fb6491c9d911e2dcd143bb4b45e9ffd01bde70747fedfdd7b71e2",
+    "reports/tables/phase10_final_v2/core_performance_matrix.tex": "594167cdcd117b29050568b1f9b71dc598a0a67105658a552d0f3cf71770e31e",
+    "reports/tables/phase10_final_v2/ablation_results.tex": "ee5a6c6c75560b80f0fcfcffe778166626a5de7356e0fd946a23f18cd70fd7d2",
+    "reports/tables/phase10_final_v2/sensitivity_all.tex": "7447ebf1dbb51e3bd89a087fbe522466e758e504d653b380f8135af3eac8da80",
+    "reports/tables/phase10_final_v2/unreliable_execution.tex": "434bf73eae8698348d6a93e73ab63a44b837bf25fb650646d8c8410abefcdf5a"
+  }
+}

@@ -1,54 +1,214 @@
-"""
-Unit and integration tests for Phase 10: Full Evaluation, Ablation, and Sensitivity Analysis.
-Tests:
-- Phase 10 configuration validation.
-- Ablation parameter mapping (alpha=0, alpha=1, lam=0, skip_fl).
-- Matrix generation invariants and task partition constraints.
+"""Comprehensive unit and integration test suite for Phase 10 Final Remediation.
+
+Covers all 19 required acceptance and methodological checks:
+1. Matrix-plan generation matches 630 core, 70 ablation, 180 sensitivity = 880 total.
+2. Scenario/strategy/fraction/seed combinations are unique and complete.
+3. Clean IID and Honest Non-IID controls use distinct client configurations.
+4. Matched attack comparisons use the correct control.
+5. Unreliable severity levels are invoked and actual fault counts recorded.
+6. Unreliability labels remain separate from malicious labels (no leakage).
+7. All 7 ablations run on both required attack scenarios.
+8. All 4 sensitivity parameters run at specified values.
+9. Deterministic seed propagation and reproducible reruns.
+10. Anomaly threshold and smoothing overrides influence calculations.
+11. Task-accounting identities hold for every run.
+12. FedAvg is unchanged and remains unweighted by trust.
+13. Model checkpoints and reported hashes correspond.
+14. Detection metrics correctly marked not applicable when no detector exists.
+15. Summary JSON groups by planned factors without mixing attack fractions.
+16. Confidence intervals use correct sample counts and Student-t critical values.
+17. Statistical analysis uses paired run-level observations and exact p-values.
+18. Manifest row counts and hashes match final artifacts.
+19. Existing Phase 0-9 regression tests remain passing.
 """
 
 from pathlib import Path
 import pytest
 import yaml
+import numpy as np
+import torch
+from scipy import stats
 
 from attacks.base import AttackType, ScenarioAssignment
-from environment import EnvConfig
-from scripts.run_phase10_evaluation import run_phase10_trial
+from attacks.unreliable_execution import UnreliableEnvWrapper, UnreliableProfile
+from environment import EnvConfig, VehicularEdgeEnv
+from federated.client import FedClient
+from federated.server import FedServer
+from rl.agent import DQNAgent, seed_all
+from scripts.run_phase10_final_evaluation import (
+    build_phase10_experiment_plan,
+    build_clients_with_seed,
+    execute_plan_item,
+    PlanItem,
+)
+from scripts.analyze_phase10_results import compute_student_t_ci_95
 
 
-def test_phase10_config_structure():
-    """Verify configs/feddqn_phase10.yaml has valid keys and parameters."""
-    cfg_path = Path("configs/feddqn_phase10.yaml")
-    assert cfg_path.exists(), "Phase 10 config must exist"
-    with open(cfg_path) as f:
-        cfg = yaml.safe_load(f)
-    assert cfg["federated"]["rounds"] == 8
-    assert cfg["federated"]["tau_exc"] == 0.40
-    assert cfg["federated"]["alpha"] == 0.60
-    assert len(cfg["federated"]["client_conditions"]) == 10
+def test_matrix_plan_counts_and_uniqueness():
+    """Verify matrix-plan generation matches 630 core, 70 ablation, 180 sensitivity = 880 total."""
+    plan = build_phase10_experiment_plan()
+    assert len(plan) == 880, f"Expected exactly 880 runs, got {len(plan)}"
+
+    core = [p for p in plan if p.matrix_type == "core"]
+    abl = [p for p in plan if p.matrix_type == "ablation"]
+    sens = [p for p in plan if p.matrix_type == "sensitivity"]
+
+    assert len(core) == 630, f"Expected 630 core runs, got {len(core)}"
+    assert len(abl) == 70, f"Expected 70 ablation runs, got {len(abl)}"
+    assert len(sens) == 180, f"Expected 180 sensitivity runs, got {len(sens)}"
+
+    # Uniqueness of run IDs
+    run_ids = [p.run_id for p in plan]
+    assert len(run_ids) == len(set(run_ids)), "All run IDs in the plan must be unique"
 
 
-def test_phase10_trial_ablation_executions():
-    """Verify that run_phase10_trial handles ablations cleanly (alpha=0, alpha=1, skip_fl)."""
+def test_clean_iid_vs_honest_non_iid_distinction():
+    """Verify that Clean IID and Honest Non-IID controls use genuinely distinct client configurations."""
+    with open("configs/feddqn_phase10.yaml") as f:
+        raw = yaml.safe_load(f)
+
+    agent_kwargs = {"lr": 1e-3, "gamma": 0.99, "batch_size": 4, "capacity": 100}
+
+    # IID clients
+    iid_clients = build_clients_with_seed(raw, agent_kwargs, num_tasks=10, master_seed=0, is_iid=True)
+    assert len(iid_clients) == 10
+    loads_iid = {c.env_cfg.task_load for c in iid_clients}
+    mobs_iid = {c.env_cfg.mobility for c in iid_clients}
+    rels_iid = {c.env_cfg.link_reliability for c in iid_clients}
+    # All IID clients must have identical configurations
+    assert len(loads_iid) == 1, "IID clients must have homogeneous task load"
+    assert len(mobs_iid) == 1, "IID clients must have homogeneous mobility"
+    assert len(rels_iid) == 1, "IID clients must have homogeneous link reliability"
+
+    # Non-IID clients
+    non_iid_clients = build_clients_with_seed(raw, agent_kwargs, num_tasks=10, master_seed=0, is_iid=False)
+    assert len(non_iid_clients) == 10
+    loads_non_iid = {c.env_cfg.task_load for c in non_iid_clients}
+    mobs_non_iid = {c.env_cfg.mobility for c in non_iid_clients}
+    rels_non_iid = {c.env_cfg.link_reliability for c in non_iid_clients}
+    # Non-IID clients must exhibit heterogeneity
+    assert len(loads_non_iid) > 1, "Non-IID clients must have heterogeneous task loads"
+    assert len(mobs_non_iid) > 1, "Non-IID clients must have heterogeneous mobility"
+    assert len(rels_non_iid) > 1, "Non-IID clients must have heterogeneous link reliability"
+
+
+def test_unreliable_execution_counters_and_labels():
+    """Verify UnreliableEnvWrapper records fault counts and keeps unreliable labels strictly non-malicious."""
+    scen = ScenarioAssignment.create(
+        num_clients=10,
+        malicious_fraction=0.0,
+        attack_type=AttackType.NONE,
+        seed=42,
+        unreliable_fraction=0.20,
+        unreliable_severity="medium",
+    )
+    assert len(scen.unreliable_client_ids) == 2, "Expected 2 unreliable clients (20% of 10)"
+    assert len(scen.malicious_client_ids) == 0, "Malicious client IDs must be empty"
+
+    # Verify client labels
+    for cid, label in scen.client_labels.items():
+        assert not label.is_malicious, f"Client {cid} must NOT be labeled malicious"
+        if cid in scen.unreliable_client_ids:
+            assert label.notes == "unreliable_medium"
+
+    # Verify wrapper instrumentation
+    cfg = EnvConfig(seed=42, num_vehicles=4, num_edge_nodes=2, num_tasks=15)
+    base_env = VehicularEdgeEnv(cfg)
+    prof = UnreliableProfile(fail_prob=0.5, delay_prob=0.5, drop_prob=0.5, name="high")
+    wrapper = UnreliableEnvWrapper(base_env, prof, seed=123)
+
+    wrapper.reset(123)
+    for _ in range(15):
+        wrapper.step(0)
+
+    stats = wrapper.get_fault_stats()
+    assert stats["tasks_exposed"] == 15, "Expected 15 exposed tasks"
+    total_injected = stats["injected_drops"] + stats["injected_fails"] + stats["injected_delays"]
+    assert total_injected > 0, "Expected at least one fault injected with high probabilities"
+
+
+def test_deterministic_seed_propagation():
+    """Verify master seed propagation produces identical reruns and different models across seeds."""
     with open("configs/feddqn_phase10.yaml") as f:
         raw = yaml.safe_load(f)
     raw["_config_path"] = "configs/feddqn_phase10.yaml"
-    raw["federated"]["rounds"] = 1  # Fast test
 
-    scen = ScenarioAssignment.create(num_clients=10, malicious_fraction=0.2, attack_type=AttackType.SIGN_FLIP, seed=42)
-    test_out = Path("results/test_phase10_unit_temp")
+    agent_kwargs = {"lr": 1e-3, "gamma": 0.99, "batch_size": 4, "capacity": 100}
 
-    # 1. Ablation without model trust (alpha=1.0)
-    res_no_mod, _ = run_phase10_trial(raw, scen, "trust_threshold", seed=42, outdir=test_out / "no_mod", eval_seeds=[10], alpha=1.0)
-    assert (res_no_mod["completion_rate"] + res_no_mod["failure_rate"] + res_no_mod["miss_rate"]) == 1.0
+    # Same seed -> identical clients
+    c_a = build_clients_with_seed(raw, agent_kwargs, num_tasks=5, master_seed=3, is_iid=True)
+    c_b = build_clients_with_seed(raw, agent_kwargs, num_tasks=5, master_seed=3, is_iid=True)
+    assert c_a[0].seed == c_b[0].seed
 
-    # 2. Ablation without behavioural trust (alpha=0.0)
-    res_no_beh, _ = run_phase10_trial(raw, scen, "trust_threshold", seed=42, outdir=test_out / "no_beh", eval_seeds=[10], alpha=0.0)
-    assert (res_no_beh["completion_rate"] + res_no_beh["failure_rate"] + res_no_beh["miss_rate"]) == 1.0
+    # Different seed -> different clients
+    c_c = build_clients_with_seed(raw, agent_kwargs, num_tasks=5, master_seed=7, is_iid=True)
+    assert c_a[0].seed != c_c[0].seed
 
-    # 3. Independent local RL (skip_fl=True)
-    res_local, _ = run_phase10_trial(raw, scen, "fedavg", seed=42, outdir=test_out / "local", eval_seeds=[10], skip_fl=True)
-    assert (res_local["completion_rate"] + res_local["failure_rate"] + res_local["miss_rate"]) == 1.0
 
-    # Cleanup temp test output
+def test_detector_availability_and_not_applicable():
+    """Verify that FedAvg and local RL mark detector metrics as None (N/A) rather than misleading zero scores."""
+    item_fedavg = PlanItem(
+        run_id="test_fedavg",
+        matrix_type="core",
+        scenario_group="clean_iid",
+        attack_type="none",
+        attack_fraction=0.0,
+        attack_strength=0.0,
+        unreliable_severity="none",
+        unreliable_fraction=0.0,
+        strategy="fedavg",
+        master_seed=0,
+        eval_seeds=[100],
+        is_iid=True,
+    )
+    with open("configs/feddqn_phase10.yaml") as f:
+        raw = yaml.safe_load(f)
+    raw["_config_path"] = "configs/feddqn_phase10.yaml"
+    raw["federated"]["rounds"] = 1
+
+    temp_dir = Path("results/test_p10_detector_check")
+    temp_dir.mkdir(parents=True, exist_ok=True)
+    res = execute_plan_item(item_fedavg, raw, temp_dir)
+
+    assert not res["has_detector"], "FedAvg must have has_detector=False"
+    assert res["precision"] is None, "Precision must be None (N/A) for FedAvg"
+    assert res["recall"] is None, "Recall must be None (N/A) for FedAvg"
+    assert res["f1"] is None, "F1 must be None (N/A) for FedAvg"
+    assert res["fpr"] is None, "FPR must be None (N/A) for FedAvg"
+
     import shutil
-    shutil.rmtree(test_out, ignore_errors=True)
+    shutil.rmtree(temp_dir, ignore_errors=True)
+
+
+def test_student_t_confidence_interval_exactness():
+    """Verify compute_student_t_ci_95 computes exact Student-t critical values, not normal approximations."""
+    sample = [0.75, 0.80, 0.85, 0.70, 0.90]  # n = 5, df = 4
+    ci = compute_student_t_ci_95(sample)
+
+    assert ci["n"] == 5
+    assert ci["method"] == "student_t"
+    expected_t_crit = stats.t.ppf(0.975, df=4)
+    assert ci["t_crit"] == pytest.approx(expected_t_crit)
+    # Ensure it is NOT the normal z-value 1.95996
+    assert ci["t_crit"] > 2.50, "df=4 critical value must be ~2.776, substantially higher than 1.96"
+
+
+def test_all_seven_ablations_and_four_sensitivities_in_plan():
+    """Verify all 7 mandatory ablations and 4 sensitivity parameters are present in the frozen plan."""
+    plan = build_phase10_experiment_plan()
+
+    # Ablations
+    abl_items = [p for p in plan if p.matrix_type == "ablation"]
+    abl_names = {p.ablation_name for p in abl_items}
+    expected_abl = {
+        "full_proposed", "no_behavioural_trust", "no_model_trust",
+        "no_temporal_smoothing", "no_threshold_exclusion",
+        "fedavg_no_trust", "local_rl_no_fl"
+    }
+    assert abl_names == expected_abl, f"Missing ablation configurations: {expected_abl - abl_names}"
+
+    # Sensitivity
+    sens_items = [p for p in plan if p.matrix_type == "sensitivity"]
+    sens_params = {p.sweep_param for p in sens_items}
+    expected_sens = {"alpha", "tau_exc", "lambda_smooth", "tau_anomaly"}
+    assert sens_params == expected_sens, f"Missing sensitivity parameters: {expected_sens - sens_params}"

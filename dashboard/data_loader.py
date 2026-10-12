@@ -20,18 +20,32 @@ def get_available_datasets() -> Dict[str, Dict[str, Any]]:
     """Return dictionary of available result datasets and their paths."""
     datasets = {}
     
-    # Phase 10 (8 rounds, 10 seeds - full evaluation)
+    # Phase 10 Final Remediation (Full 880-run matrix - primary)
+    p10_final_csv = REPO_ROOT / "results" / "phase10_final_v2" / "phase10_experiment_runs.csv"
+    p10_final_json = REPO_ROOT / "results" / "phase10_final_v2" / "phase10_summary_metrics.json"
+    if p10_final_csv.exists():
+        datasets["Phase 10 Final (Full 880-Run Matrix, Paired Seeds)"] = {
+            "key": "phase10_final_v2",
+            "csv_path": p10_final_csv,
+            "json_path": p10_final_json,
+            "manifest_path": REPO_ROOT / "reports" / "PHASE10_FINAL_RUN_MANIFEST.json",
+            "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10_final_v2",
+            "rounds": 8,
+            "description": "Full remediated matrix (630 core runs, 70 ablations, 180 sensitivity runs, 10 seeds, 8 rounds)."
+        }
+
+    # Phase 10 (Superseded Preliminary - 540 Core Runs)
     p10_csv = REPO_ROOT / "results" / "phase10" / "phase10_experiment_runs.csv"
     p10_json = REPO_ROOT / "results" / "phase10" / "phase10_summary_metrics.json"
     if p10_csv.exists():
-        datasets["Phase 10 (Full Evaluation - 10 Seeds, 8 Rounds)"] = {
+        datasets["Phase 10 (Superseded Preliminary - 540 Core Runs)"] = {
             "key": "phase10",
             "csv_path": p10_csv,
             "json_path": p10_json,
             "manifest_path": REPO_ROOT / "reports" / "PHASE10_RUN_MANIFEST.json",
             "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10",
             "rounds": 8,
-            "description": "Full evaluation suite (540 core runs, 35 ablations, 55 sensitivity runs, 10 seeds, 8 rounds)."
+            "description": "Preliminary evaluation suite (540 core runs, 35 ablations, 55 sensitivity runs, 10 seeds, 8 rounds)."
         }
 
     # Phase 8 r4 (4 rounds - primary)
@@ -74,15 +88,16 @@ def load_experiment_data(csv_path: Path) -> pd.DataFrame:
     # Add display-friendly names if not present
     scenario_display_map = {
         "clean_control": "Clean Control (Baseline)",
+        "clean_iid": "Clean IID Control (Homogeneous)",
+        "honest_non_iid": "Honest Non-IID Control (Heterogeneous)",
         "poisoning_sign_flip": "Poisoning: Sign-Flip",
         "poisoning_perturbation": "Poisoning: Noise Perturbation",
         "freeriding_zero_update": "Free-Riding: Zero-Update",
         "freeriding_copy_update": "Free-Riding: Copy-Update",
         "freeriding_stale_replay": "Free-Riding: Stale-Replay",
-        "unreliable_low": "Unreliable Execution (p=0.2)",
-        "unreliable_medium": "Unreliable Execution (p=0.4)",
-        "unreliable_high": "Unreliable Execution (p=0.7)",
-        "honest_non_iid": "Honest Non-IID Heterogeneity"
+        "unreliable_low": "Unreliable Execution (Low: 10% fault)",
+        "unreliable_medium": "Unreliable Execution (Medium: 25% fault)",
+        "unreliable_high": "Unreliable Execution (High: 50% fault)",
     }
     strategy_display_map = {
         "fedavg": "FedAvg (Unweighted)",

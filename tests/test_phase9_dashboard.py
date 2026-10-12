@@ -40,7 +40,7 @@ def test_load_experiment_data_schema():
     
     df = load_experiment_data(csv_path)
     assert not df.empty, "DataFrame should not be empty"
-    assert len(df) in (225, 540), f"Expected 225 or 540 runs, got {len(df)}"
+    assert len(df) in (225, 540, 630), f"Expected 225, 540, or 630 runs, got {len(df)}"
     
     # Required columns
     expected_cols = [

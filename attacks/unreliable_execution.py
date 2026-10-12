@@ -47,6 +47,18 @@ class UnreliableEnvWrapper:
         self.env = base_env
         self.profile = profile
         self._fault_rng = np.random.default_rng(seed)
+        self.injected_tasks_exposed: int = 0
+        self.injected_drops: int = 0
+        self.injected_fails: int = 0
+        self.injected_delays: int = 0
+
+    def get_fault_stats(self) -> dict[str, int]:
+        return {
+            "tasks_exposed": self.injected_tasks_exposed,
+            "injected_drops": self.injected_drops,
+            "injected_fails": self.injected_fails,
+            "injected_delays": self.injected_delays,
+        }
 
     def __getattr__(self, name: str):
         return getattr(self.env, name)
@@ -62,11 +74,19 @@ class UnreliableEnvWrapper:
 
         # First execute normally through environment to compute base physical quantities
         res = self.env.step(action)
+        self.injected_tasks_exposed += 1
 
         # Check if fault is injected
         inject_drop = self._fault_rng.random() < self.profile.drop_prob
         inject_fail = self._fault_rng.random() < self.profile.fail_prob
         inject_delay = self._fault_rng.random() < self.profile.delay_prob
+
+        if inject_drop:
+            self.injected_drops += 1
+        elif inject_fail:
+            self.injected_fails += 1
+        elif inject_delay:
+            self.injected_delays += 1
 
         if not (inject_drop or inject_fail or inject_delay):
             return res
