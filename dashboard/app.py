@@ -199,6 +199,27 @@ def main():
         st.markdown("---")
         render_detection_metrics_chart(filtered_df)
 
+        # Unreliable Execution Fault Accounting Subsection
+        unrel_df = filtered_df[filtered_df["scenario_group"].str.startswith("unreliable")] if not filtered_df.empty else pd.DataFrame()
+        if not unrel_df.empty:
+            st.markdown("---")
+            st.markdown("#### Unreliable Execution Fault Accounting Breakdown")
+            st.caption(
+                "Aggregated injected fault counts across all unreliable wrappers (drop > fail > delay precedence). "
+                "Unreliable nodes are tracked with `is_malicious = False`."
+            )
+            fault_cols = ["unreliable_severity", "strategy_label", "tasks_exposed", "tasks_with_any_fault", "injected_drops", "injected_fails", "injected_delays"]
+            avail_fault_cols = [c for c in fault_cols if c in unrel_df.columns]
+            if len(avail_fault_cols) > 2:
+                unrel_agg = unrel_df.groupby(["unreliable_severity", "strategy_label"])[avail_fault_cols[2:]].mean().reset_index()
+                st.dataframe(unrel_agg.style.format({
+                    "tasks_exposed": "{:.1f}",
+                    "tasks_with_any_fault": "{:.1f}",
+                    "injected_drops": "{:.1f}",
+                    "injected_fails": "{:.1f}",
+                    "injected_delays": "{:.1f}"
+                }), use_container_width=True)
+
     # TAB 3: FEDERATED CONVERGENCE
     with tab_fl:
         st.subheader("Federated Learning Convergence & Reward Evolution")
@@ -206,13 +227,57 @@ def main():
             "Evaluation of global DQN convergence across communication rounds under clean and adversarial conditions."
         )
 
+        # Statistical Hypothesis Testing Findings
+        if summary_metrics and "primary_hypotheses" in summary_metrics:
+            st.markdown("#### Confirmatory Statistical Testing Findings")
+            h1 = summary_metrics["primary_hypotheses"].get("H1_zero_update_f40", {})
+            if h1:
+                col_h1, col_h2 = st.columns(2)
+                with col_h1:
+                    st.markdown("**Primary Hypothesis H1 (Zero-Update Free-Riding $f=0.40$)**")
+                    diff_m = h1.get("mean_paired_difference", 0.0)
+                    ci_l = h1.get("ci95_difference_low", 0.0)
+                    ci_h = h1.get("ci95_difference_high", 0.0)
+                    t_val = h1.get("t_statistic")
+                    p_val = h1.get("p_value_twotailed")
+                    t_str = f"{t_val:.3f}" if t_val is not None else "N/A"
+                    p_str = f"{p_val:.3f}" if p_val is not None else "N/A"
+                    st.info(
+                        f"- **Paired Diff (Trust - FedAvg):** {diff_m:+.4f} (95% CI: [{ci_l:+.4f}, {ci_h:+.4f}])\n"
+                        f"- **Paired Student's t-test:** t(9) = {t_str}, p = {p_str}\n"
+                        f"- **Statistical Significance:** {'Yes (p < 0.05)' if h1.get('statistically_significant_alpha_005') else 'No (Fail to reject null)'}"
+                    )
+                with col_h2:
+                    st.markdown("**Secondary Hypotheses (Holm-Bonferroni Corrected)**")
+                    sec = summary_metrics.get("secondary_hypotheses", {})
+                    sec_rows = []
+                    for k, v in sec.items():
+                        diff = v.get("mean_difference", 0.0)
+                        pval = v.get("p_value_raw")
+                        holm_a = v.get("holm_adjusted_alpha")
+                        sec_rows.append({
+                            "Test": k,
+                            "Scenario": v.get("scenario"),
+                            "Fraction": f"{v.get('attack_fraction'):.1f}",
+                            "Paired Diff": f"{diff:+.4f}",
+                            "Raw p": f"{pval:.3f}" if pval is not None else "N/A",
+                            "Holm Alpha": f"{holm_a:.3f}" if holm_a is not None else "N/A",
+                            "Significant": v.get("holm_significant", False)
+                        })
+                    if sec_rows:
+                        st.dataframe(pd.DataFrame(sec_rows), use_container_width=True)
+
         figs = get_available_figures(dataset_info["figures_dir"])
         if figs:
-            st.markdown("#### Generated Experiment Figures")
-            fig_cols = st.columns(len(figs))
-            for i, fig_path in enumerate(figs):
-                with fig_cols[i % len(fig_cols)]:
-                    st.image(str(fig_path), caption=fig_path.name, use_container_width=True)
+            st.markdown("#### Publication Experiment Figures")
+            # Render in a clean 2-column grid
+            for row_idx in range(0, len(figs), 2):
+                col_a, col_b = st.columns(2)
+                with col_a:
+                    st.image(str(figs[row_idx]), caption=figs[row_idx].name, use_container_width=True)
+                if row_idx + 1 < len(figs):
+                    with col_b:
+                        st.image(str(figs[row_idx + 1]), caption=figs[row_idx + 1].name, use_container_width=True)
         else:
             st.info("No pre-rendered figures found for this dataset.")
 

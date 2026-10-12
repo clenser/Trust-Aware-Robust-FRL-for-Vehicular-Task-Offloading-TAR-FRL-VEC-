@@ -57,40 +57,23 @@ tests/          shared / smoke tests
 Only the Phase 0 skeleton exists so far. Phase directories are created as
 placeholders with `.gitkeep` and no algorithm code.
 
-## Quick start (Phase 0)
+## Quick start & Dashboard Demo
 
 ```powershell
-# 1. Create and activate a virtual environment (Python 3.11+ recommended)
-py -3.11 -m venv .venv
+# 1. Activate virtual environment (Python 3.11+)
 .\.venv\Scripts\Activate.ps1
 
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Validate the config skeleton
-python scripts\validate_configs.py --configs configs
-
-# 4. Run the Phase 0 skeleton checks
+# 2. Run unit and integration tests (153 tests pass)
 pytest -q
+
+# 3. Verify Phase 10 v4 experimental manifest (894 artifacts verified)
+python scripts/verify_phase10_manifest.py --check
+
+# 4. Launch the Streamlit Research Dashboard (default dataset: Phase 10 Final v4)
+streamlit run dashboard/app.py
 ```
 
-> **Environment note (updated 2026-10-11):** Python 3.11.9 is installed and
-> the project `.venv` runs on 3.11 (see validation-fix report). The system
-> Python 3.10.11 remains present but is no longer used for validation.
-
-## Configurations
-
-| File                      | Purpose                                              |
-|---------------------------|------------------------------------------------------|
-| `configs/smoke.yaml`      | Tiny, fast smoke-test config (laptop / Colab safe)   |
-| `configs/default.yaml`    | Default small-scale dev config                       |
-| `configs/experiments.yaml`| Template matrix for Phase 10 sweeps (not executed)   |
-
-All configs are validated by `scripts/validate_configs.py` and covered by
-`tests/test_phase0_skeleton.py`. Random seeds are recorded in every config;
-no experiment has been run yet.
-
-## Status — progress so far (Phases 0–7 complete, Phase 8 needs approval)
+## Status — progress so far (Phases 0–10 complete)
 
 - [x] **Phase 0** — audit, plan, assumptions register, README outline, config skeleton (`configs/`, `docs/PLAN.md`, `docs/ASSUMPTIONS.md`).
 - [x] **Phase 1** — 40-paper verified literature DB (`reports/papers.csv`, `gap_matrix.md`), system-model math spec (`docs/PHASE1_SPEC.md`) and executable formula helpers (`specs/`) with tests.
@@ -99,9 +82,11 @@ no experiment has been run yet.
 - [x] **Phase 4** — single-agent DQN (`rl/`, train/eval scripts, `checkpoints/dqn_default/`); held-out 0.753±0.050, level with nearest_edge — no superiority claimed.
 - [x] **Phase 5** — dynamic behavioural trust (`trust/`, EQ-12/13, disconnect-neutral ageing) wired into env obs; exploratory `trust_aware` variant; trust logs + plots.
 - [x] **Phase 6** — federated DQN with standard FedAvg (`federated/` client/server, `scripts/train_feddqn.py`, `scripts/evaluate_feddqn.py`); held-out global 0.707±0.101 vs independent-local 0.738±0.080 — no superiority claimed.
-- [x] **Phase 7** — model-update trust (EQ-14–EQ-20, `trust/model_update.py`) + trust-weighted FedAvg with threshold exclusion and safe fallback (`federated/trust_aggregation.py`, EQ-22/23); honest-client strategy comparison (`scripts/evaluate_trust_aggregation.py`, `results/phase7/`, `reports/PHASE7_REPORT.md`); 93 tests pass.
-- [ ] Phase 8: adversarial and dynamic scenarios (needs approval)
-- [ ] Phases 8–11: not started
+- [x] **Phase 7** — model-update trust (EQ-14–EQ-20, `trust/model_update.py`) + trust-weighted FedAvg with threshold exclusion and safe fallback (`federated/trust_aggregation.py`, EQ-22/23); honest-client strategy comparison (`scripts/evaluate_trust_aggregation.py`, `results/phase7/`, `reports/PHASE7_REPORT.md`).
+- [x] **Phase 8** — adversarial pipeline and dynamic scenarios: sign-flip, perturbation, zero/copy/stale free-riding, and unreliable execution wrappers (`attacks/`).
+- [x] **Phase 9** — interactive Streamlit research dashboard (`dashboard/app.py`, `dashboard/components.py`, `dashboard/data_loader.py`).
+- [x] **Phase 10** — complete evaluation suite: 880-run matrix (630 core + 70 ablation + 180 sensitivity sweeps), statistical hypothesis testing, Holm-Bonferroni corrections, publication figures, and 894-artifact SHA-256 verified run manifest (`results/phase10_final_v4/`, `reports/PHASE10_FINAL_V4_*`).
+- [ ] **Phase 11** — final report and reproducibility closeout (not started).
 
 ### Smoke test (Phase 2)
 

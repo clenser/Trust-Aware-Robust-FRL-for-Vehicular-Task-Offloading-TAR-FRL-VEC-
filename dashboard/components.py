@@ -67,8 +67,8 @@ def render_kpi_header(df: pd.DataFrame, rounds: int) -> None:
         st.metric(
             label="Honest Non-IID FPR",
             value=f"{honest_fpr:.1f}%",
-            delta="Target < 5.0%",
-            delta_color="inverse" if honest_fpr > 5.0 else "normal"
+            delta="Observed in tested seeds",
+            delta_color="off"
         )
 
 
