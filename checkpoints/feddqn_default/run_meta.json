@@ -1,0 +1,85 @@
+{
+  "config_file": "configs\\feddqn_default.yaml",
+  "config": {
+    "project": "trust-aware-vanet-frl",
+    "config_name": "feddqn_default",
+    "seed": 0,
+    "scenario": {
+      "num_vehicles": 5,
+      "num_edge_nodes": 2,
+      "mobility": "low",
+      "task_load": "low",
+      "malicious_client_ratio": 0.0,
+      "connectivity_range_m": 150.0,
+      "num_steps": 25
+    },
+    "dqn": {
+      "hidden": [
+        64,
+        64
+      ],
+      "lr": 0.001,
+      "gamma": 0.99,
+      "batch_size": 32,
+      "capacity": 20000,
+      "warmup_steps": 200,
+      "target_sync_steps": 100,
+      "eps_start": 1.0,
+      "eps_end": 0.05,
+      "eps_decay_episodes": 12,
+      "max_grad_norm": 10.0
+    },
+    "federated": {
+      "num_clients": 3,
+      "rounds": 3,
+      "local_episodes": 4,
+      "participation_fraction": 1.0,
+      "dropout_prob": 0.1,
+      "client_conditions": [
+        {
+          "task_load": "low"
+        },
+        {
+          "task_load": "medium"
+        },
+        {
+          "task_load": "low",
+          "link_reliability": 0.8
+        }
+      ],
+      "run_name": "feddqn_default",
+      "eval_seeds": [
+        10,
+        11,
+        12
+      ],
+      "train_independent": true
+    },
+    "notes": "3 clients x 3 rounds x 4 local eps x 25 tasks. Heterogeneity is synthetic."
+  },
+  "agent_kwargs": {
+    "hidden": [
+      64,
+      64
+    ],
+    "lr": 0.001,
+    "gamma": 0.99,
+    "batch_size": 32,
+    "capacity": 20000,
+    "eps_start": 1.0,
+    "eps_end": 0.05,
+    "eps_decay_episodes": 12,
+    "max_grad_norm": 10.0
+  },
+  "final_global": "checkpoints\\feddqn_default\\global_final.pt",
+  "independent_models": [
+    "checkpoints\\feddqn_default\\independent\\client0_alone.pt",
+    "checkpoints\\feddqn_default\\independent\\client1_alone.pt",
+    "checkpoints\\feddqn_default\\independent\\client2_alone.pt"
+  ],
+  "note": "single-process synthetic FL simulation; payloads analytical (4B/param)",
+  "versions": {
+    "python": "3.11.9",
+    "torch": "2.14.1+cpu"
+  }
+}

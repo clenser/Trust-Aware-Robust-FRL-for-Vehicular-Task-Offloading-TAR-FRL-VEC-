@@ -40,3 +40,48 @@
 ## Change log
 
 - 2026-10-11: Phase 0 initial register created. No amendments yet.
+- 2026-10-11 (Phase 1): literature corpus of 40 verified papers completed
+  (`reports/papers.csv`, `reports/gap_matrix.md`). A1/A2 (synthetic sim, abstract
+  tasks) confirmed viable by DROO/FedDOVe/DRL-edge precedents. B2 (simulated
+  clients) positioned as horizontal FRL per Qi et al. taxonomy; sim-vs-real gap
+  remains open (U5). B3/C1–C4 binding constraints unchanged. C2/C3 parameters
+  still provisional (U2). D1–D3 metric/reporting rules frozen in
+  `docs/PHASE1_SPEC.md` §11. New uncertainties U1–U6 registered in spec §12;
+  novelty stays a provisional hypothesis (gap G-statements, not claims).
+- 2026-10-11 (Phase 2): U3 resolved — path-loss law, FIFO queue discipline,
+  task/mobility distributions, K=5, neutral-trust placeholder documented in
+  `environment/README.md`. A3/A4 now implemented. Found and documented one
+  Phase 1 erratum (state dim 7+3K, not 8+3K) and one ambiguity (EQ-11
+  latency/energy norms; provisional norms in smoke script only, calibration
+  deferred to Phase 4). Python still 3.10.11 (no 3.11 available); code kept
+  3.10/3.11-compatible.
+- 2026-10-11 (Phase 2 validation fix): SPEC §4 formula corrected in place to
+  `n = 7 + 3K` (history note retained); dimension declared once as
+  `EnvConfig.obs_dim` and asserted on every observation; component-order tests
+  added for K in {1,2,5,8}. Python 3.11.9 installed (winget), project `.venv`
+  created on 3.11 — see validation report for install/test outcomes.
+- 2026-10-11 (Phase 3): four baselines implemented on the real env API with
+  documented tie-breaks/fallbacks (`baselines/`); shared metrics + multi-seed
+  CSV/JSON evaluation (`scripts/run_baselines.py`); smoke-matrix results saved
+  to `results/baselines_smoke.*` (synthetic only, no real-world claims).
+  Fairness caveat recorded: per-link draws are consumed on demand, so exact
+  connectivity can diverge across policies per seed (aggregated over seeds).
+- 2026-10-12 (Phase 4): conventional DQN (MLP, replay, target net, masked
+  epsilon-greedy) trained on real env transitions; EQ-11 reward with explicit
+  provisional norms (10s, 10J, neutral trust); held-out eval seeds 10-12 vs
+  all four baselines. DQN competitive with nearest_edge within noise — no
+  superiority claimed. Training-curve variance partly reflects per-episode
+  seed changes, documented in `rl/README.md`.
+- 2026-10-12 (Phase 5): behavioural trust per SPEC §6 (`trust/` table, EQ-12
+  β=(0.4,0.25,0.2,0.15), λ=0.9, neutral ageing ρ=0.99); env obs trust slot now
+  per-candidate lookup, dim/order/mask unchanged; disconnects age neutrally,
+  never punished; s2 carried (not zeroed) on path failure — documented minimal
+  resolution. Additive `trust_aware` policy (threshold 0.3 fallback to local);
+  exploratory comparison only, no attackers present, no malice claims.
+- 2026-10-12 (Phase 6): federated DQN with standard FedAvg (`federated/`
+  client/server/validation); n_i = round-local transitions; global distributed
+  to online+target nets; staleness accepted+logged (no weighting — Phase 7);
+  buffers never leave clients (tested); synthetic per-client heterogeneity
+  recorded. Held-out: feddqn_global 0.707±0.101 vs local_alone 0.738±0.080,
+  single_dqn 0.753±0.050, nearest_edge 0.840±0.080 — no superiority claimed.
+  Phase 0 guard test rescoped to skeleton files (documented in-test).

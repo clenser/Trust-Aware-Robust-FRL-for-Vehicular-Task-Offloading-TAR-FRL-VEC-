@@ -33,13 +33,21 @@ def test_smoke_config_has_seed_and_scenario():
 
 
 def test_no_premature_algorithm_code():
-    """Phase 0 must not contain simulation/RL/FL/trust implementations."""
+    """Phase 0 skeleton files must stay free of algorithm implementations.
+
+    History: originally scanned all of scripts/ and tests/ when no
+    implementation existed. Since Phases 2-6 legitimately added documented
+    modules (environment/, rl/, trust/, federated/, baselines/) plus their
+    scripts/tests, the guard now covers only the Phase 0 skeleton files;
+    phase packages are expected to contain their documented implementations.
+    """
     premature_markers = ["class DQN", "FedAvg", "T_final", "replay_buffer", "SUMO"]
     hits = []
-    self_file = Path(__file__).name
-    for path in list((ROOT / "scripts").glob("*.py")) + list((ROOT / "tests").glob("*.py")):
-        if path.name == self_file:
-            continue  # do not match the marker list inside this guard test itself
+    skeleton_files = ["validate_configs.py", "run_smoke.py"]
+    for name in skeleton_files:
+        path = ROOT / "scripts" / name
+        if not path.is_file():
+            continue
         text = path.read_text(encoding="utf-8")
         for marker in premature_markers:
             if marker in text:

@@ -74,10 +74,9 @@ python scripts\validate_configs.py --configs configs
 pytest -q
 ```
 
-> **Environment note (verified 2026-10-11):** the audit machine runs
-> Python 3.10.11, which is **below** the required Python 3.11+.
-> Streamlit is **not installed**. See `docs/PLAN.md` §0.4 for the
-> dependency strategy. Upgrade to Python 3.11+ before Phase 2+.
+> **Environment note (updated 2026-10-11):** Python 3.11.9 is installed and
+> the project `.venv` runs on 3.11 (see validation-fix report). The system
+> Python 3.10.11 remains present but is no longer used for validation.
 
 ## Configurations
 
@@ -91,11 +90,23 @@ All configs are validated by `scripts/validate_configs.py` and covered by
 `tests/test_phase0_skeleton.py`. Random seeds are recorded in every config;
 no experiment has been run yet.
 
-## Status
+## Status — progress so far (Phases 0–6 complete, Phase 7 needs approval)
 
-- [x] Phase 0: audit, plan, assumptions, README outline, config skeleton
-- [ ] Phase 1: literature evidence + mathematical specification (needs approval)
-- [ ] Phases 2–11: not started
+- [x] **Phase 0** — audit, plan, assumptions register, README outline, config skeleton (`configs/`, `docs/PLAN.md`, `docs/ASSUMPTIONS.md`).
+- [x] **Phase 1** — 40-paper verified literature DB (`reports/papers.csv`, `gap_matrix.md`), system-model math spec (`docs/PHASE1_SPEC.md`) and executable formula helpers (`specs/`) with tests.
+- [x] **Phase 2** — reproducible synthetic VANET env (`environment/`, obs dim `n = 7 + 3K` verified, `scripts/run_smoke.py`); project `.venv` on Python 3.11.9.
+- [x] **Phase 3** — four baselines (local/random/nearest/resource-aware) + multi-seed CSV/JSON evaluation (`scripts/run_baselines.py`).
+- [x] **Phase 4** — single-agent DQN (`rl/`, train/eval scripts, `checkpoints/dqn_default/`); held-out 0.753±0.050, level with nearest_edge — no superiority claimed.
+- [x] **Phase 5** — dynamic behavioural trust (`trust/`, EQ-12/13, disconnect-neutral ageing) wired into env obs; exploratory `trust_aware` variant; trust logs + plots.
+- [x] **Phase 6** — federated DQN with standard FedAvg (`federated/` client/server, `scripts/train_feddqn.py`, `scripts/evaluate_feddqn.py`); held-out global 0.707±0.101 vs independent-local 0.738±0.080 — no superiority claimed.
+- [ ] Phase 7: model-update trust and robust aggregation (needs approval)
+- [ ] Phases 8–11: not started
+
+### Smoke test (Phase 2)
+
+```powershell
+.venv\Scripts\python.exe scripts\run_smoke.py --config configs\smoke.yaml   # random-valid policy, 50 tasks
+```
 
 ## Contributing / agent contract
 

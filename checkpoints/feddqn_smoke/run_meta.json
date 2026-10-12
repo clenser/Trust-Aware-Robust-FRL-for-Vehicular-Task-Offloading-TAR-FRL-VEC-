@@ -1,0 +1,79 @@
+{
+  "config_file": "configs\\feddqn_smoke.yaml",
+  "config": {
+    "project": "trust-aware-vanet-frl",
+    "config_name": "feddqn_smoke",
+    "seed": 0,
+    "scenario": {
+      "num_vehicles": 4,
+      "num_edge_nodes": 1,
+      "mobility": "low",
+      "task_load": "low",
+      "malicious_client_ratio": 0.0,
+      "connectivity_range_m": 150.0,
+      "num_steps": 10
+    },
+    "dqn": {
+      "hidden": [
+        16,
+        16
+      ],
+      "lr": 0.001,
+      "gamma": 0.99,
+      "batch_size": 4,
+      "capacity": 500,
+      "warmup_steps": 20,
+      "target_sync_steps": 20,
+      "eps_start": 1.0,
+      "eps_end": 0.2,
+      "eps_decay_episodes": 4,
+      "max_grad_norm": 10.0
+    },
+    "federated": {
+      "num_clients": 2,
+      "rounds": 1,
+      "local_episodes": 1,
+      "participation_fraction": 1.0,
+      "dropout_prob": 0.0,
+      "client_conditions": [
+        {
+          "task_load": "low"
+        },
+        {
+          "task_load": "medium"
+        }
+      ],
+      "run_name": "feddqn_smoke",
+      "eval_seeds": [
+        10,
+        11
+      ],
+      "train_independent": true
+    },
+    "notes": "Smoke pipeline check only. Synthetic heterogeneity, no real-world claim."
+  },
+  "agent_kwargs": {
+    "hidden": [
+      16,
+      16
+    ],
+    "lr": 0.001,
+    "gamma": 0.99,
+    "batch_size": 4,
+    "capacity": 500,
+    "eps_start": 1.0,
+    "eps_end": 0.2,
+    "eps_decay_episodes": 4,
+    "max_grad_norm": 10.0
+  },
+  "final_global": "checkpoints\\feddqn_smoke\\global_final.pt",
+  "independent_models": [
+    "checkpoints\\feddqn_smoke\\independent\\client0_alone.pt",
+    "checkpoints\\feddqn_smoke\\independent\\client1_alone.pt"
+  ],
+  "note": "single-process synthetic FL simulation; payloads analytical (4B/param)",
+  "versions": {
+    "python": "3.11.9",
+    "torch": "2.14.1+cpu"
+  }
+}
