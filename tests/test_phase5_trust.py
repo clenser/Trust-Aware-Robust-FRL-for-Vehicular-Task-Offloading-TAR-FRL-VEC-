@@ -179,3 +179,20 @@ def test_phase3_and_dqn_compatible_with_trust_env():
         a = agent.act(obs, mask)
         assert mask[a]
         env.step(a)
+
+
+def test_dqn_trust_slot_sensitivity():
+    """Verify that DQN Q-values respond to changes in candidate trust slots."""
+    from rl.dqn import build_q_network
+    import torch
+    net = build_q_network(22, 6, [32, 32])
+    # Obs with candidate 0 having neutral trust 0.5 vs high trust 0.9
+    obs1 = [0.2] * 22
+    obs1[6 + 1] = 0.5  # candidate 0 trust
+    obs2 = list(obs1)
+    obs2[6 + 1] = 0.9  # candidate 0 higher trust
+    with torch.no_grad():
+        q1 = net(torch.tensor([obs1], dtype=torch.float32))
+        q2 = net(torch.tensor([obs2], dtype=torch.float32))
+    # Network output depends on the trust input (not ignored or disconnected)
+    assert not torch.allclose(q1, q2)

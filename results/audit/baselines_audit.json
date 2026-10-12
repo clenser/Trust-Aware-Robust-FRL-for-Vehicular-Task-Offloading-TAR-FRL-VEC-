@@ -1,0 +1,409 @@
+{
+  "reward_note": "EQ-11 defaults, neutral trust 0.5, provisional norms (10s, 10J); illustrative only, calibrated in Phase 4.",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "num_tasks": 50,
+  "rows": [
+    {
+      "num_tasks": 50,
+      "successes": 41,
+      "deadline_misses": 9,
+      "failures": 0,
+      "completion_rate": 0.82,
+      "miss_rate": 0.18,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.0478970910086742,
+      "mean_energy_j": 12.773538585654098,
+      "offload_fraction": 0.0,
+      "mean_reward": 1.0274195125321006,
+      "config": "configs/smoke.yaml",
+      "policy": "local_only",
+      "seed": 0
+    },
+    {
+      "num_tasks": 50,
+      "successes": 38,
+      "deadline_misses": 12,
+      "failures": 0,
+      "completion_rate": 0.76,
+      "miss_rate": 0.24,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.2049808451039548,
+      "mean_energy_j": 11.379942937955896,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.787904972495197,
+      "config": "configs/smoke.yaml",
+      "policy": "local_only",
+      "seed": 1
+    },
+    {
+      "num_tasks": 50,
+      "successes": 38,
+      "deadline_misses": 12,
+      "failures": 0,
+      "completion_rate": 0.76,
+      "miss_rate": 0.24,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.5385588281355025,
+      "mean_energy_j": 11.969765540492794,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.801166817611191,
+      "config": "configs/smoke.yaml",
+      "policy": "local_only",
+      "seed": 2
+    },
+    {
+      "num_tasks": 50,
+      "successes": 26,
+      "deadline_misses": 24,
+      "failures": 0,
+      "completion_rate": 0.52,
+      "miss_rate": 0.48,
+      "failure_rate": 0.0,
+      "mean_latency_s": 6.552162436240267,
+      "mean_energy_j": 28.16659120989985,
+      "offload_fraction": 0.42,
+      "mean_reward": -0.3099124951077151,
+      "config": "configs/smoke.yaml",
+      "policy": "random_valid",
+      "seed": 0
+    },
+    {
+      "num_tasks": 50,
+      "successes": 30,
+      "deadline_misses": 18,
+      "failures": 2,
+      "completion_rate": 0.6,
+      "miss_rate": 0.36,
+      "failure_rate": 0.04,
+      "mean_latency_s": 4.777667736813529,
+      "mean_energy_j": 21.934892792024065,
+      "offload_fraction": 0.36,
+      "mean_reward": -0.08710747483819638,
+      "config": "configs/smoke.yaml",
+      "policy": "random_valid",
+      "seed": 1
+    },
+    {
+      "num_tasks": 50,
+      "successes": 39,
+      "deadline_misses": 11,
+      "failures": 0,
+      "completion_rate": 0.78,
+      "miss_rate": 0.22,
+      "failure_rate": 0.0,
+      "mean_latency_s": 2.6220077418410153,
+      "mean_energy_j": 33.97951693885541,
+      "offload_fraction": 0.16,
+      "mean_reward": 0.8873813580845972,
+      "config": "configs/smoke.yaml",
+      "policy": "random_valid",
+      "seed": 2
+    },
+    {
+      "num_tasks": 50,
+      "successes": 40,
+      "deadline_misses": 10,
+      "failures": 0,
+      "completion_rate": 0.8,
+      "miss_rate": 0.2,
+      "failure_rate": 0.0,
+      "mean_latency_s": 2.6845962549950775,
+      "mean_energy_j": 40.042690925935744,
+      "offload_fraction": 0.24,
+      "mean_reward": 0.9840882773591083,
+      "config": "configs/smoke.yaml",
+      "policy": "nearest_edge",
+      "seed": 0
+    },
+    {
+      "num_tasks": 50,
+      "successes": 39,
+      "deadline_misses": 11,
+      "failures": 0,
+      "completion_rate": 0.78,
+      "miss_rate": 0.22,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.339402084451606,
+      "mean_energy_j": 49.32374111477613,
+      "offload_fraction": 0.16,
+      "mean_reward": 0.8355789357536725,
+      "config": "configs/smoke.yaml",
+      "policy": "nearest_edge",
+      "seed": 1
+    },
+    {
+      "num_tasks": 50,
+      "successes": 38,
+      "deadline_misses": 11,
+      "failures": 1,
+      "completion_rate": 0.76,
+      "miss_rate": 0.22,
+      "failure_rate": 0.02,
+      "mean_latency_s": 3.0403340479542917,
+      "mean_energy_j": 56.442537701167936,
+      "offload_fraction": 0.22,
+      "mean_reward": 0.8029597150228134,
+      "config": "configs/smoke.yaml",
+      "policy": "nearest_edge",
+      "seed": 2
+    },
+    {
+      "num_tasks": 50,
+      "successes": 35,
+      "deadline_misses": 13,
+      "failures": 2,
+      "completion_rate": 0.7,
+      "miss_rate": 0.26,
+      "failure_rate": 0.04,
+      "mean_latency_s": 2.726914897630775,
+      "mean_energy_j": 16.950764358422287,
+      "offload_fraction": 0.76,
+      "mean_reward": 0.5041810419681638,
+      "config": "configs/smoke.yaml",
+      "policy": "resource_aware",
+      "seed": 0
+    },
+    {
+      "num_tasks": 50,
+      "successes": 31,
+      "deadline_misses": 18,
+      "failures": 1,
+      "completion_rate": 0.62,
+      "miss_rate": 0.36,
+      "failure_rate": 0.02,
+      "mean_latency_s": 3.9112618002372854,
+      "mean_energy_j": 19.113359858399257,
+      "offload_fraction": 0.56,
+      "mean_reward": 0.1082510240918188,
+      "config": "configs/smoke.yaml",
+      "policy": "resource_aware",
+      "seed": 1
+    },
+    {
+      "num_tasks": 50,
+      "successes": 44,
+      "deadline_misses": 6,
+      "failures": 0,
+      "completion_rate": 0.88,
+      "miss_rate": 0.12,
+      "failure_rate": 0.0,
+      "mean_latency_s": 1.8748902659894413,
+      "mean_energy_j": 51.326678749014434,
+      "offload_fraction": 0.28,
+      "mean_reward": 1.352704645195867,
+      "config": "configs/smoke.yaml",
+      "policy": "resource_aware",
+      "seed": 2
+    }
+  ],
+  "aggregate": {
+    "local_only": {
+      "completion_rate": {
+        "mean": 0.7799999999999999,
+        "stdev": 0.03464101615137751,
+        "min": 0.76,
+        "max": 0.82,
+        "n": 3
+      },
+      "miss_rate": {
+        "mean": 0.21999999999999997,
+        "stdev": 0.034641016151377546,
+        "min": 0.18,
+        "max": 0.24,
+        "n": 3
+      },
+      "failure_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 3
+      },
+      "mean_latency_s": {
+        "mean": 3.2638122547493773,
+        "stdev": 0.25056553262715486,
+        "min": 3.0478970910086742,
+        "max": 3.5385588281355025,
+        "n": 3
+      },
+      "mean_energy_j": {
+        "mean": 12.041082354700928,
+        "stdev": 0.699529680079724,
+        "min": 11.379942937955896,
+        "max": 12.773538585654098,
+        "n": 3
+      },
+      "offload_fraction": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 3
+      },
+      "mean_reward": {
+        "mean": 0.8721637675461628,
+        "stdev": 0.1346188281679946,
+        "min": 0.787904972495197,
+        "max": 1.0274195125321006,
+        "n": 3
+      }
+    },
+    "random_valid": {
+      "completion_rate": {
+        "mean": 0.6333333333333333,
+        "stdev": 0.13316656236958788,
+        "min": 0.52,
+        "max": 0.78,
+        "n": 3
+      },
+      "miss_rate": {
+        "mean": 0.35333333333333333,
+        "stdev": 0.13012814197295422,
+        "min": 0.22,
+        "max": 0.48,
+        "n": 3
+      },
+      "failure_rate": {
+        "mean": 0.013333333333333334,
+        "stdev": 0.023094010767585032,
+        "min": 0.0,
+        "max": 0.04,
+        "n": 3
+      },
+      "mean_latency_s": {
+        "mean": 4.650612638298271,
+        "stdev": 1.9681555398446438,
+        "min": 2.6220077418410153,
+        "max": 6.552162436240267,
+        "n": 3
+      },
+      "mean_energy_j": {
+        "mean": 28.027000313593106,
+        "stdev": 6.023525290339285,
+        "min": 21.934892792024065,
+        "max": 33.97951693885541,
+        "n": 3
+      },
+      "offload_fraction": {
+        "mean": 0.3133333333333333,
+        "stdev": 0.1361371857110809,
+        "min": 0.16,
+        "max": 0.42,
+        "n": 3
+      },
+      "mean_reward": {
+        "mean": 0.16345379604622856,
+        "stdev": 0.6367604381346545,
+        "min": -0.3099124951077151,
+        "max": 0.8873813580845972,
+        "n": 3
+      }
+    },
+    "nearest_edge": {
+      "completion_rate": {
+        "mean": 0.7799999999999999,
+        "stdev": 0.020000000000000018,
+        "min": 0.76,
+        "max": 0.8,
+        "n": 3
+      },
+      "miss_rate": {
+        "mean": 0.21333333333333335,
+        "stdev": 0.011547005383792509,
+        "min": 0.2,
+        "max": 0.22,
+        "n": 3
+      },
+      "failure_rate": {
+        "mean": 0.006666666666666667,
+        "stdev": 0.011547005383792516,
+        "min": 0.0,
+        "max": 0.02,
+        "n": 3
+      },
+      "mean_latency_s": {
+        "mean": 3.0214441291336587,
+        "stdev": 0.32781136396920507,
+        "min": 2.6845962549950775,
+        "max": 3.339402084451606,
+        "n": 3
+      },
+      "mean_energy_j": {
+        "mean": 48.60298991395994,
+        "stdev": 8.223646106374101,
+        "min": 40.042690925935744,
+        "max": 56.442537701167936,
+        "n": 3
+      },
+      "offload_fraction": {
+        "mean": 0.20666666666666667,
+        "stdev": 0.04163331998932265,
+        "min": 0.16,
+        "max": 0.24,
+        "n": 3
+      },
+      "mean_reward": {
+        "mean": 0.874208976045198,
+        "stdev": 0.09654583902580648,
+        "min": 0.8029597150228134,
+        "max": 0.9840882773591083,
+        "n": 3
+      }
+    },
+    "resource_aware": {
+      "completion_rate": {
+        "mean": 0.7333333333333334,
+        "stdev": 0.13316656236958788,
+        "min": 0.62,
+        "max": 0.88,
+        "n": 3
+      },
+      "miss_rate": {
+        "mean": 0.24666666666666667,
+        "stdev": 0.12055427546683416,
+        "min": 0.12,
+        "max": 0.36,
+        "n": 3
+      },
+      "failure_rate": {
+        "mean": 0.02,
+        "stdev": 0.02,
+        "min": 0.0,
+        "max": 0.04,
+        "n": 3
+      },
+      "mean_latency_s": {
+        "mean": 2.8376889879525002,
+        "stdev": 1.0226951797523463,
+        "min": 1.8748902659894413,
+        "max": 3.9112618002372854,
+        "n": 3
+      },
+      "mean_energy_j": {
+        "mean": 29.130267655278658,
+        "stdev": 19.253044016615075,
+        "min": 16.950764358422287,
+        "max": 51.326678749014434,
+        "n": 3
+      },
+      "offload_fraction": {
+        "mean": 0.5333333333333333,
+        "stdev": 0.24110855093366831,
+        "min": 0.28,
+        "max": 0.76,
+        "n": 3
+      },
+      "mean_reward": {
+        "mean": 0.6550455704186166,
+        "stdev": 0.6357957873627174,
+        "min": 0.1082510240918188,
+        "max": 1.352704645195867,
+        "n": 3
+      }
+    }
+  }
+}

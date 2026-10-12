@@ -78,7 +78,7 @@ def main(argv: list[str] | None = None) -> int:
             obs, mask = env.current_observation()
             action = agent.act(obs, mask)
             res = env.step(action)
-            reward = task_reward(res.latency_s, res.energy_j, res.success, res.failed, res.deadline_missed)
+            reward = task_reward(res.latency_s, res.energy_j, res.success, res.failed, res.deadline_missed, res.dest_trust)
             done = step_i == n_tasks - 1
             agent.buffer.push(Transition(obs, mask, action, reward, res.obs, res.mask, done))
             total_transitions += 1

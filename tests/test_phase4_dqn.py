@@ -99,11 +99,17 @@ def test_checkpoint_save_load_consistency(tmp_path):
                                      [0.02 * i] * 22, [True] * 6, False))
     agent.train_step()
     path = agent.save(tmp_path / "ckpt.pt")
+    # Loaded without hidden override restores saved [16, 16] automatically
+    loaded_auto = DQNAgent.load(path, batch_size=4, capacity=50)
+    assert loaded_auto.hidden == [16, 16]
+    assert loaded_auto.q_net[0].out_features == 16
+    assert loaded_auto.epsilon == agent.epsilon and loaded_auto.train_steps == agent.train_steps
+    # Loaded with explicit override works as well
     loaded = DQNAgent.load(path, hidden=[16, 16], batch_size=4, capacity=50)
     assert loaded.epsilon == agent.epsilon and loaded.train_steps == agent.train_steps
     obs = [0.05] * 22
-    agent.epsilon = loaded.epsilon = 0.0
-    assert loaded.act(obs, [True] * 6) == agent.act(obs, [True] * 6)
+    agent.epsilon = loaded.epsilon = loaded_auto.epsilon = 0.0
+    assert loaded.act(obs, [True] * 6) == agent.act(obs, [True] * 6) == loaded_auto.act(obs, [True] * 6)
 
 
 def test_reproducibility_fixed_seed():
@@ -125,7 +131,7 @@ def test_train_eval_separation_and_env_dims(tmp_path):
         res = env.step(agent.act(obs, mask))
         agent.buffer.push(Transition(obs, mask, res.action,
                                      task_reward(res.latency_s, res.energy_j, res.success,
-                                                 res.failed, res.deadline_missed),
+                                                 res.failed, res.deadline_missed, res.dest_trust),
                                      res.obs, res.mask, i == 5))
     agent.train_step()
     path = agent.save(tmp_path / "c.pt")
@@ -141,7 +147,10 @@ def test_train_eval_separation_and_env_dims(tmp_path):
 
 
 def test_reward_provisional_and_finite_guards():
-    r = task_reward(1.0, 1.0, True, False, False)
-    assert np.isfinite(r) and r > task_reward(9.0, 9.0, False, False, True)
+    r = task_reward(1.0, 1.0, True, False, False, 0.5)
+    assert np.isfinite(r) and r > task_reward(9.0, 9.0, False, False, True, 0.5)
+    r_high_trust = task_reward(1.0, 1.0, True, False, False, 0.9)
+    r_low_trust = task_reward(1.0, 1.0, True, False, False, 0.1)
+    assert r_high_trust > r_low_trust
     with pytest.raises(ValueError):
         task_reward(float("nan"), 1.0, True, False, False)

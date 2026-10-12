@@ -71,12 +71,18 @@ def run_federated(raw: dict, outdir: Path, train_independent: bool):
     warmup = int(dqn_cfg.get("warmup_steps", 200))
     sync_every = int(dqn_cfg.get("target_sync_steps", 100))
 
+    strategy = str(fed.get("strategy", raw.get("strategy", "fedavg")))
+    alpha = float(fed.get("alpha", raw.get("alpha", 0.6)))
+    tau_exc = float(fed.get("tau_exc", raw.get("tau_exc", 0.3)))
+    clip_c = float(fed.get("clip_c", raw.get("clip_c", 3.0)))
+
     seed_all(int(raw.get("seed", 0)))
     server_rng = np.random.default_rng(int(raw.get("seed", 0)) + 7)
     clients = build_clients(raw, agent_kwargs, num_tasks)
     template = DQNAgent(obs_dim=clients[0].env_cfg.obs_dim, action_dim=clients[0].env_cfg.action_dim,
                         seed=int(raw.get("seed", 0)), **agent_kwargs)
-    server = FedServer(template.q_net.state_dict())
+    server = FedServer(template.q_net.state_dict(), strategy=strategy, alpha=alpha,
+                       tau_exc=tau_exc, clip_c=clip_c)
     for c in clients:  # round 0 starts from the common init
         c.install_global(server.get_global())
 
@@ -94,19 +100,30 @@ def run_federated(raw: dict, outdir: Path, train_independent: bool):
                                 num_tasks=num_tasks, warmup_steps=warmup, sync_every=sync_every)
             updates.append(c.make_update(round_trained=r))
             train_rewards[c.client_id] = round(out["metrics"]["mean_reward"], 4)
-        log = server.aggregate_round(updates, current_round=r)
+        
+        # Collect client behavioural trust summary for server
+        beh_trust = {c.client_id: c.trust_summary()["mean_trust"] for c in clients}
+        log = server.aggregate_round(updates, current_round=r, behavioural_trusts=beh_trust)
         for c in clients:  # distribute to ALL clients (incl. non-participants)
             c.install_global(server.get_global())
         trust = {c.client_id: round(c.trust_summary()["mean_trust"], 4) for c in clients}
         row = {"round": r, "selected": selected, "train_rewards": train_rewards,
                "mean_trust": trust, **{k: log[k] for k in
-               ("status", "participants", "weights", "staleness", "upload_bytes",
-                "download_bytes_per_client", "agg_time_s")}}
+               ("strategy", "status", "participants", "accepted", "excluded", "weights",
+                "staleness", "upload_bytes", "download_bytes_per_client", "agg_time_s")}}
         round_rows.append(row)
-        print(f"round={r} status={log['status']} participants={log['participants']} "
+        print(f"round={r} strategy={log['strategy']} status={log['status']} "
+              f"accepted={log['accepted']} excluded={log['excluded']} "
               f"rewards={train_rewards} trust={trust}")
         torch.save(server.get_global(), outdir / f"global_round{r}.pt")
     torch.save(server.get_global(), outdir / "global_final.pt")
+
+    if round_rows:
+        with open(outdir / "rounds_log.csv", "w", newline="", encoding="utf-8") as fh:
+            w = csv.DictWriter(fh, fieldnames=list(round_rows[0].keys()))
+            w.writeheader()
+            w.writerows(round_rows)
+
 
     indep_paths: list[str] = []
     if train_independent:  # same budget, no server: isolated local learners

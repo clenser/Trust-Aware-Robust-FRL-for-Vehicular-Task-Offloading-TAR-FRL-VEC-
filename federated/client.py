@@ -59,7 +59,7 @@ class FedClient:
                 action = self.agent.act(obs, mask)
                 res = self.env.step(action)
                 reward = task_reward(res.latency_s, res.energy_j, res.success,
-                                     res.failed, res.deadline_missed)
+                                     res.failed, res.deadline_missed, res.dest_trust)
                 done = step_i == num_tasks - 1
                 self.agent.buffer.push(Transition(obs, mask, action, reward,
                                                   res.obs, res.mask, done))

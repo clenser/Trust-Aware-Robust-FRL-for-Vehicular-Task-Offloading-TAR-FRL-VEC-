@@ -48,7 +48,7 @@ def run_policy(config_path: str, policy_name: str, seed: int, num_tasks: int) ->
         F.compute_reward(
             F.clamp01(r.latency_s / LAT_NORM_S),
             F.clamp01(r.energy_j / ENE_NORM_J),
-            r.success, r.failed, r.deadline_missed, env.cfg.neutral_trust,
+            r.success, r.failed, r.deadline_missed, F.clamp01(r.dest_trust),
         )
         for r in results
     ]

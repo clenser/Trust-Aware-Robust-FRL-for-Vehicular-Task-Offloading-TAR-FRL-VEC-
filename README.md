@@ -90,7 +90,7 @@ All configs are validated by `scripts/validate_configs.py` and covered by
 `tests/test_phase0_skeleton.py`. Random seeds are recorded in every config;
 no experiment has been run yet.
 
-## Status — progress so far (Phases 0–6 complete, Phase 7 needs approval)
+## Status — progress so far (Phases 0–7 complete, Phase 8 needs approval)
 
 - [x] **Phase 0** — audit, plan, assumptions register, README outline, config skeleton (`configs/`, `docs/PLAN.md`, `docs/ASSUMPTIONS.md`).
 - [x] **Phase 1** — 40-paper verified literature DB (`reports/papers.csv`, `gap_matrix.md`), system-model math spec (`docs/PHASE1_SPEC.md`) and executable formula helpers (`specs/`) with tests.
@@ -99,7 +99,8 @@ no experiment has been run yet.
 - [x] **Phase 4** — single-agent DQN (`rl/`, train/eval scripts, `checkpoints/dqn_default/`); held-out 0.753±0.050, level with nearest_edge — no superiority claimed.
 - [x] **Phase 5** — dynamic behavioural trust (`trust/`, EQ-12/13, disconnect-neutral ageing) wired into env obs; exploratory `trust_aware` variant; trust logs + plots.
 - [x] **Phase 6** — federated DQN with standard FedAvg (`federated/` client/server, `scripts/train_feddqn.py`, `scripts/evaluate_feddqn.py`); held-out global 0.707±0.101 vs independent-local 0.738±0.080 — no superiority claimed.
-- [ ] Phase 7: model-update trust and robust aggregation (needs approval)
+- [x] **Phase 7** — model-update trust (EQ-14–EQ-20, `trust/model_update.py`) + trust-weighted FedAvg with threshold exclusion and safe fallback (`federated/trust_aggregation.py`, EQ-22/23); honest-client strategy comparison (`scripts/evaluate_trust_aggregation.py`, `results/phase7/`, `reports/PHASE7_REPORT.md`); 93 tests pass.
+- [ ] Phase 8: adversarial and dynamic scenarios (needs approval)
 - [ ] Phases 8–11: not started
 
 ### Smoke test (Phase 2)

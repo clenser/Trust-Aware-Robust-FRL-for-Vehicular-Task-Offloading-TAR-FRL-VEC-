@@ -1,0 +1,19 @@
+{
+  "config": "configs/smoke.yaml",
+  "policy": "resource_aware",
+  "seeds": [
+    0,
+    1
+  ],
+  "completion": {
+    "0": 0.8,
+    "1": 0.5333333333333333
+  },
+  "event_counts": {
+    "success": 20,
+    "idle_age": 180,
+    "deadline_miss": 9,
+    "path_failure": 1
+  },
+  "note": "synthetic env; no attack scenarios in Phase 5"
+}

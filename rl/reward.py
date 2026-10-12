@@ -24,9 +24,10 @@ REWARD_CAVEAT = (
 
 
 def task_reward(latency_s: float, energy_j: float, success: bool,
-                failed: bool, deadline_missed: bool) -> float:
-    """Compute one task's reward. Raises on non-finite latency/energy."""
-    for name, val in (("latency_s", latency_s), ("energy_j", energy_j)):
+                failed: bool, deadline_missed: bool,
+                trust_dest: float = NEUTRAL_TRUST) -> float:
+    """Compute one task's reward (EQ-11). Raises on non-finite values."""
+    for name, val in (("latency_s", latency_s), ("energy_j", energy_j), ("trust_dest", trust_dest)):
         if not math.isfinite(val):
             raise ValueError(f"non-finite {name}: {val}")
     if latency_s < 0 or energy_j < 0:
@@ -34,5 +35,5 @@ def task_reward(latency_s: float, energy_j: float, success: bool,
     return F.compute_reward(
         F.clamp01(latency_s / LAT_NORM_S),
         F.clamp01(energy_j / ENE_NORM_J),
-        success, failed, deadline_missed, NEUTRAL_TRUST,
+        success, failed, deadline_missed, F.clamp01(trust_dest),
     )

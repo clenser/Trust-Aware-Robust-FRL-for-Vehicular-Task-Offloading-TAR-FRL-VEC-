@@ -1,11 +1,16 @@
-# Phase 5 — Dynamic Behavioural Trust
+# Phase 5 & Phase 7 — Dynamic Behavioural and Model-Update Trust
 
-> Replaces the neutral-trust placeholder with evidence-driven scores.
-> No malice labels: disconnection ages trust neutrally, never punitively.
+> Standalone trust modules covering:
+> - Phase 5: Dynamic Behavioural Trust (EQ-12, EQ-13) in `trust/behavioural.py`
+> - Phase 7: Model-Update Trust & Multi-Signal Combined Trust (EQ-14 through EQ-20) in `trust/model_update.py`
+>
+> All trust scores live in \([0, 1]\). Neutral ageing and non-IID variations are never conflated with malice.
 
-## Equations (SPEC §6, implemented faithfully in `trust/behavioural.py`)
+---
 
-Per observed execution on node `i`:
+## 1. Behavioural Trust (SPEC §6, `trust/behavioural.py`)
+
+Per observed execution on node \(i\):
 ```text
 s1 = success ? 1 : 0                                   (verified outcome)
 s2 = path_ok ? clamp(1 - L/τ) : last_s2[i] (else 0.5)  (timeliness; missing carried, not punished)
@@ -16,36 +21,70 @@ T(i,t) = 0.9·T(i,t-1) + 0.1·T_beh                      (EQ-13 temporal update)
 idle:  T = 0.99·T + 0.01·0.5                           (EQ-13 neutral ageing toward prior)
 ```
 
-`expected_exe` uses the destination queue/freq captured at decision time
-(before dynamics advance); `actual_exe` is the realised execution part.
-Defaults (`β`, `λ=0.9`, `ρ=0.99`, prior `0.5`) live in `EnvConfig`
-(`trust_beta/lambda/rho/prior`) and are configurable, not hard-coded.
+`expected_exe` uses the destination queue/freq captured at decision time (before dynamics advance); `actual_exe` is the realised execution part.
+Defaults (\(\beta\), \(\lambda=0.9\), \(\rho=0.99\), prior 0.5) live in `EnvConfig` (`trust_beta/lambda/rho/prior`) and are configurable.
 
-## Minimal SPEC resolution (explicit)
+---
 
-`s2` on path failure is *missing* evidence (result never returned), so the
-node keeps its last timeliness instead of scoring 0 — otherwise communication
-failures would masquerade as slowness. `s1=0`/`s4=0` still record the failure
-factually. Cause uncertainty (congestion vs node slowness on deadline misses)
-is documented, not resolved by fiat.
+## 2. Model-Update Trust Indicators (SPEC §7, `trust/model_update.py`)
 
-## Observation integration (no redesign)
+For client update \(\Delta_i = \theta_i - \theta_{\text{prev\_global}}\) vs round aggregate / global model:
 
-Dimension stays **7+3K**, order unchanged, mask unchanged. The per-candidate
-trust slot now carries `env.trust.get(kind, id)` — the *candidate's own*
-score, so nodes are never confused. `reset()` rebuilds the table (prior 0.5,
-history cleared); same seed reproduces trust trajectories.
+### EQ-14: Norm Plausibility (\(m_1\))
+```text
+m_1 = 1.0  if ||Δ_i|| <= C · median({||Δ_j||})
+      clamp01(C · median / ||Δ_i||)  otherwise
+```
+Default clipping multiplier: \(C = 3.0\).
+If median is 0: returns 1.0 if \(||\Delta_i|| == 0\), else 0.0.
 
-## Trust-aware policy (exploratory)
+### EQ-15: Directional Agreement (\(m_2\))
+```text
+m_2 = (1 + cos(Δ_i, Δ_bar)) / 2
+```
+where \(\bar{\Delta} = \frac{1}{|P|} \sum_{j \in P} \Delta_j\) is the peer aggregate direction (no root dataset required).
+Evaluated with `float64` precision. Boundary cases (zero deltas) return 0.5 neutral agreement (or 1.0 if both zero).
 
-`trust_aware` (additive; the four Phase 3 policies are byte-untouched):
-picks the eligible candidate with max trust, tie-break (trust ↓, dist ↑,
-id ↑); falls back to local if none eligible **or** best trust <
-`trust_threshold` (0.3). Exploratory comparison only — no robustness claims
-(there are no attackers in Phase 5).
+### EQ-16: Staleness Trust (\(m_3\))
+```text
+m_3 = 1 / (1 + age_rounds)
+```
+where `age_rounds` = `current_round - round_trained`. Age 0 yields 1.0.
 
-## Logging
+### EQ-17: Copy / Zero Flags (\(m_4\))
+```text
+m_4 = 0.0  if ||Δ_i|| < tol OR ||Δ_i - Δ_j|| < tol for any peer j != i
+      1.0  otherwise
+```
+Default tolerance: `tol = 1e-7`. Detects zero parameter deltas and duplicated/copied updates without local training.
 
-`scripts/log_trust.py` writes per-task snapshots, per-update events with
-evidence (`s1..s4`, before/after), a JSON summary, and a trust-over-time plot
-from the actual run.
+### EQ-18: Local Progress Proxy (\(m_5\))
+```text
+m_5 = clamp01(progress_proxy)  (or 0.5 if unavailable / neutral prior)
+```
+Advisory low weight (\(\gamma_5 = 0.1\)) acknowledging gameability of self-reported indicators (limitation U4).
+
+### EQ-19: Composite Model-Update Trust (\(T_{\text{model}}\))
+```text
+T_model = Σ_l γ_l · m_l
+```
+Default indicator weights: \(\gamma = (0.25, 0.30, 0.15, 0.20, 0.10)\) for (norm, direction, staleness, originality, progress).
+
+---
+
+## 3. Combined Trust (SPEC §7, EQ-20)
+
+```text
+T_final = α · T_beh + (1 - α) · T_model
+```
+Default combination factor: \(\alpha = 0.60\).
+Both components are in \([0, 1]\), ensuring \(T_{\text{final}} \in [0, 1]\).
+
+---
+
+## 4. Key Properties & Invariants
+
+1. **Deterministic Execution:** Fixed seeds and sorted parameter keys guarantee byte-reproducible calculations.
+2. **Honest Non-IID Safety:** Legitimate gradient diversity across honest vehicles does not lead to unfair exclusion.
+3. **No Malice Assumptions:** Ageing and missing timeliness remain neutral, never automatically punitive.
+4. **Isolated Tensors:** Model updates only contain state dictionaries and metadata; no raw transitions or replay buffers are transmitted.

@@ -43,8 +43,9 @@ class DQNAgent:
         self.eps_start, self.eps_end, self.eps_decay = eps_start, eps_end, max(1, eps_decay_episodes)
         self.epsilon = eps_start
         self.obs_dim, self.action_dim = obs_dim, action_dim
-        self.q_net = build_q_network(obs_dim, action_dim, hidden or [64, 64])
-        self.target_net = build_q_network(obs_dim, action_dim, hidden or [64, 64])
+        self.hidden = list(hidden or [64, 64])
+        self.q_net = build_q_network(obs_dim, action_dim, self.hidden)
+        self.target_net = build_q_network(obs_dim, action_dim, self.hidden)
         self.sync_target()
         self.optim = optim.Adam(self.q_net.parameters(), lr=lr)
         self.buffer = ReplayBuffer(capacity)
@@ -109,6 +110,7 @@ class DQNAgent:
             "train_steps": self.train_steps,
             "obs_dim": self.obs_dim,
             "action_dim": self.action_dim,
+            "hidden": self.hidden,
             "seed": self.seed,
         }, path)
         return path
@@ -117,7 +119,8 @@ class DQNAgent:
     def load(cls, path: str | Path, **overrides) -> "DQNAgent":
         """Restore weights/optimizer/epsilon into a fresh agent (same hyperparams unless overridden)."""
         ckpt = torch.load(path, map_location="cpu", weights_only=True)
-        agent = cls(obs_dim=ckpt["obs_dim"], action_dim=ckpt["action_dim"], **overrides)
+        hidden = overrides.pop("hidden", ckpt.get("hidden", [64, 64]))
+        agent = cls(obs_dim=ckpt["obs_dim"], action_dim=ckpt["action_dim"], hidden=hidden, **overrides)
         agent.q_net.load_state_dict(ckpt["q_state"])
         agent.target_net.load_state_dict(ckpt["target_state"])
         agent.optim.load_state_dict(ckpt["optim_state"])

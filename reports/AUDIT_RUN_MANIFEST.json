@@ -1,0 +1,76 @@
+{
+  "audit_timestamp": "2026-10-12T11:54:00+05:30",
+  "environment": {
+    "python_version": "3.11.9",
+    "python_executable": "C:\\Users\\srbar\\Desktop\\VANNET\\.venv\\Scripts\\python.exe",
+    "pytorch_version": "2.14.1+cpu",
+    "cuda_available": false,
+    "os": "Windows-10-10.0.26300-SP0"
+  },
+  "git_branch": "main",
+  "test_suite_status": {
+    "total_tests": 82,
+    "passed": 82,
+    "failed": 0
+  },
+  "audit_runs": [
+    {
+      "phase": "Phase 2 Smoke Run",
+      "command": "python scripts/run_smoke.py",
+      "config": "configs/smoke.yaml",
+      "seed": 0,
+      "exit_code": 0
+    },
+    {
+      "phase": "Phase 3 Baselines Audit",
+      "command": "python scripts/run_baselines.py --config configs/smoke.yaml --seeds 0,1,2 --out results/audit/baselines_audit",
+      "config": "configs/smoke.yaml",
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "output_csv": "results/audit/baselines_audit.csv",
+      "sha256_csv": "31a25762cf4ea5b3716f8645b26cf0b4857cf671015ad517f6974c652d3ed4cb"
+    },
+    {
+      "phase": "Phase 4 DQN Smoke Audit",
+      "train_command": "python scripts/train_dqn.py --config configs/dqn_smoke.yaml",
+      "eval_command": "python scripts/evaluate_dqn.py --config configs/dqn_smoke.yaml --checkpoint checkpoints/dqn_smoke/checkpoint_final.pt --out results/audit/dqn_eval_audit",
+      "config": "configs/dqn_smoke.yaml",
+      "eval_seeds": [
+        10,
+        11
+      ],
+      "output_csv": "results/audit/dqn_eval_audit.csv",
+      "sha256_csv": "06f016eba9ea0d604253ed4322d72c68b93be9bfc360e38ec61626345d3bb3b7",
+      "checkpoint_final": "checkpoints/dqn_smoke/checkpoint_final.pt",
+      "sha256_checkpoint": "8f12b585da6f4b644271fa189089589f7bfbca19d023d894c40c1da3b42af096"
+    },
+    {
+      "phase": "Phase 5 Trust Logging Audit",
+      "command": "python scripts/log_trust.py --config configs/smoke.yaml --seeds 0,1 --tasks 15 --out results/audit/trust_smoke_audit",
+      "config": "configs/smoke.yaml",
+      "seeds": [
+        0,
+        1
+      ],
+      "output_json": "results/audit/trust_smoke_audit.json",
+      "sha256_json": "bcb4037889ec7475fb7394c0a6118adea71e8c8e0ed215361decbfd512e21204"
+    },
+    {
+      "phase": "Phase 6 Federated DQN Audit",
+      "train_command": "python scripts/train_feddqn.py --config configs/feddqn_smoke.yaml",
+      "eval_command": "python scripts/evaluate_feddqn.py --config configs/feddqn_smoke.yaml --out results/audit/fedeval_audit",
+      "config": "configs/feddqn_smoke.yaml",
+      "eval_seeds": [
+        10,
+        11
+      ],
+      "output_csv": "results/audit/fedeval_audit.csv",
+      "sha256_csv": "671f8c301da6fd61799211260ade1e9bd7a7cdd71e282674dc4aefa09accf53f",
+      "global_checkpoint": "checkpoints/feddqn_smoke/global_final.pt",
+      "sha256_checkpoint": "4ad4a647858387fa967e2a09c8dde0a478c8fd96dd24f31a82b8ea5639774acf"
+    }
+  ]
+}

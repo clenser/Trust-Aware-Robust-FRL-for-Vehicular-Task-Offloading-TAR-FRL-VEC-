@@ -1,0 +1,42 @@
+{
+  "phase": "Phase 7: Model-Update Trust and Trust-Aware Federated Aggregation",
+  "timestamp": "2026-10-12T12:18:00+05:30",
+  "system_info": {
+    "python_version": "3.11.9",
+    "torch_version": "2.10.0+cpu",
+    "os": "Windows"
+  },
+  "equations_implemented": {
+    "EQ-14": "Norm plausibility (m1) in trust/model_update.py",
+    "EQ-15": "Directional agreement (m2) in trust/model_update.py",
+    "EQ-16": "Staleness trust (m3) in trust/model_update.py",
+    "EQ-17": "Zero / copy flag (m4) in trust/model_update.py",
+    "EQ-18": "Local progress proxy (m5) in trust/model_update.py",
+    "EQ-19": "Composite model trust (T_model) in trust/model_update.py",
+    "EQ-20": "Combined multi-signal trust (T_final) in trust/model_update.py",
+    "EQ-22": "Trust-weighted parameter aggregation in federated/trust_aggregation.py",
+    "EQ-23": "Threshold exclusion with fallback retention in federated/trust_aggregation.py"
+  },
+  "test_summary": {
+    "suite": "pytest",
+    "tests_collected": 93,
+    "tests_passed": 93,
+    "phase7_tests": 11,
+    "phase7_test_file": "tests/test_phase7_trust_aggregation.py"
+  },
+  "artifacts_generated": {
+    "evaluation_script": "scripts/evaluate_trust_aggregation.py",
+    "summary_csv": "results/phase7/strategy_comparison_summary.csv",
+    "metrics_json": "results/phase7/strategy_comparison_metrics.json",
+    "plot": "reports/figures/phase7/phase7_strategy_comparison.png",
+    "checkpoints_dir": "results/phase7/checkpoints/"
+  },
+  "constraints_checked": {
+    "no_attacks_implemented": true,
+    "no_sign_flip_implemented": true,
+    "no_free_riders_simulated": true,
+    "no_dashboard_code_created": true,
+    "no_git_commits": true,
+    "obs_dim_unchanged": 22
+  }
+}

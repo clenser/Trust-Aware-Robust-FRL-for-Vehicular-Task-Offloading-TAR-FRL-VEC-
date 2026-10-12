@@ -1,5 +1,5 @@
 {
-  "config_file": "configs\\dqn_smoke.yaml",
+  "config_file": "configs/dqn_smoke.yaml",
   "config": {
     "project": "trust-aware-vanet-frl",
     "config_name": "dqn_smoke",

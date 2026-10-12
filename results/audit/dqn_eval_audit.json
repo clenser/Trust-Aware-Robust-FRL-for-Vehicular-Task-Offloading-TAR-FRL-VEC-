@@ -1,0 +1,432 @@
+{
+  "reward_note": "EQ-11 defaults; latency/energy norms provisional (10s, 10J); destination trust neutral 0.5 pending Phase 5.",
+  "checkpoint": "checkpoints/dqn_smoke/checkpoint_final.pt",
+  "eval_seeds": [
+    10,
+    11
+  ],
+  "fairness_caveat": "shared config+seeds; trajectories may diverge across policies (Phase 3 on-demand-draw caveat)",
+  "rows": [
+    {
+      "num_tasks": 20,
+      "successes": 12,
+      "deadline_misses": 8,
+      "failures": 0,
+      "completion_rate": 0.6,
+      "miss_rate": 0.4,
+      "failure_rate": 0.0,
+      "mean_latency_s": 2.4141265512289074,
+      "mean_energy_j": 15.78536743859361,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.18913802024832674,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "dqn",
+      "seed": 10,
+      "checkpoint": "checkpoints/dqn_smoke/checkpoint_final.pt",
+      "epsilon": 0.0
+    },
+    {
+      "num_tasks": 20,
+      "successes": 12,
+      "deadline_misses": 8,
+      "failures": 0,
+      "completion_rate": 0.6,
+      "miss_rate": 0.4,
+      "failure_rate": 0.0,
+      "mean_latency_s": 2.4141265512289074,
+      "mean_energy_j": 15.78536743859361,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.18913802024832674,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "local_only",
+      "seed": 10
+    },
+    {
+      "num_tasks": 20,
+      "successes": 12,
+      "deadline_misses": 8,
+      "failures": 0,
+      "completion_rate": 0.6,
+      "miss_rate": 0.4,
+      "failure_rate": 0.0,
+      "mean_latency_s": 1.8199268836626434,
+      "mean_energy_j": 50.532933609059704,
+      "offload_fraction": 0.35,
+      "mean_reward": 0.2200161589619311,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "random_valid",
+      "seed": 10
+    },
+    {
+      "num_tasks": 20,
+      "successes": 14,
+      "deadline_misses": 5,
+      "failures": 1,
+      "completion_rate": 0.7,
+      "miss_rate": 0.25,
+      "failure_rate": 0.05,
+      "mean_latency_s": 1.6679483668156252,
+      "mean_energy_j": 44.693200345673716,
+      "offload_fraction": 0.2,
+      "mean_reward": 0.5813101785947603,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "nearest_edge",
+      "seed": 10
+    },
+    {
+      "num_tasks": 20,
+      "successes": 11,
+      "deadline_misses": 8,
+      "failures": 1,
+      "completion_rate": 0.55,
+      "miss_rate": 0.4,
+      "failure_rate": 0.05,
+      "mean_latency_s": 2.7524085908984715,
+      "mean_energy_j": 59.103049156947556,
+      "offload_fraction": 0.5,
+      "mean_reward": -0.13501493183574795,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "resource_aware",
+      "seed": 10
+    },
+    {
+      "num_tasks": 20,
+      "successes": 16,
+      "deadline_misses": 4,
+      "failures": 0,
+      "completion_rate": 0.8,
+      "miss_rate": 0.2,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.2544433857987656,
+      "mean_energy_j": 10.609432382342879,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.9557271992007086,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "dqn",
+      "seed": 11,
+      "checkpoint": "checkpoints/dqn_smoke/checkpoint_final.pt",
+      "epsilon": 0.0
+    },
+    {
+      "num_tasks": 20,
+      "successes": 16,
+      "deadline_misses": 4,
+      "failures": 0,
+      "completion_rate": 0.8,
+      "miss_rate": 0.2,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.2544433857987656,
+      "mean_energy_j": 10.609432382342879,
+      "offload_fraction": 0.0,
+      "mean_reward": 0.9557271992007086,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "local_only",
+      "seed": 11
+    },
+    {
+      "num_tasks": 20,
+      "successes": 12,
+      "deadline_misses": 8,
+      "failures": 0,
+      "completion_rate": 0.6,
+      "miss_rate": 0.4,
+      "failure_rate": 0.0,
+      "mean_latency_s": 3.9750078587472615,
+      "mean_energy_j": 28.393731732960845,
+      "offload_fraction": 0.45,
+      "mean_reward": 0.044337457096991974,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "random_valid",
+      "seed": 11
+    },
+    {
+      "num_tasks": 20,
+      "successes": 18,
+      "deadline_misses": 2,
+      "failures": 0,
+      "completion_rate": 0.9,
+      "miss_rate": 0.1,
+      "failure_rate": 0.0,
+      "mean_latency_s": 1.7482461876409332,
+      "mean_energy_j": 63.25436878357359,
+      "offload_fraction": 0.3,
+      "mean_reward": 1.517721591589024,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "nearest_edge",
+      "seed": 11
+    },
+    {
+      "num_tasks": 20,
+      "successes": 16,
+      "deadline_misses": 4,
+      "failures": 0,
+      "completion_rate": 0.8,
+      "miss_rate": 0.2,
+      "failure_rate": 0.0,
+      "mean_latency_s": 5.568643488815995,
+      "mean_energy_j": 23.0474860555641,
+      "offload_fraction": 0.75,
+      "mean_reward": 0.8572273593132438,
+      "config": "configs/dqn_smoke.yaml",
+      "policy": "resource_aware",
+      "seed": 11
+    }
+  ],
+  "aggregate": {
+    "dqn": {
+      "completion_rate": {
+        "mean": 0.7,
+        "stdev": 0.14142135623730956,
+        "min": 0.6,
+        "max": 0.8,
+        "n": 2
+      },
+      "miss_rate": {
+        "mean": 0.30000000000000004,
+        "stdev": 0.1414213562373095,
+        "min": 0.2,
+        "max": 0.4,
+        "n": 2
+      },
+      "failure_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 2
+      },
+      "mean_latency_s": {
+        "mean": 2.8342849685138365,
+        "stdev": 0.5941937320695609,
+        "min": 2.4141265512289074,
+        "max": 3.2544433857987656,
+        "n": 2
+      },
+      "mean_energy_j": {
+        "mean": 13.197399910468246,
+        "stdev": 3.659938777256066,
+        "min": 10.609432382342879,
+        "max": 15.78536743859361,
+        "n": 2
+      },
+      "offload_fraction": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 2
+      },
+      "mean_reward": {
+        "mean": 0.5724326097245177,
+        "stdev": 0.542060406821457,
+        "min": 0.18913802024832674,
+        "max": 0.9557271992007086,
+        "n": 2
+      }
+    },
+    "local_only": {
+      "completion_rate": {
+        "mean": 0.7,
+        "stdev": 0.14142135623730956,
+        "min": 0.6,
+        "max": 0.8,
+        "n": 2
+      },
+      "miss_rate": {
+        "mean": 0.30000000000000004,
+        "stdev": 0.1414213562373095,
+        "min": 0.2,
+        "max": 0.4,
+        "n": 2
+      },
+      "failure_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 2
+      },
+      "mean_latency_s": {
+        "mean": 2.8342849685138365,
+        "stdev": 0.5941937320695609,
+        "min": 2.4141265512289074,
+        "max": 3.2544433857987656,
+        "n": 2
+      },
+      "mean_energy_j": {
+        "mean": 13.197399910468246,
+        "stdev": 3.659938777256066,
+        "min": 10.609432382342879,
+        "max": 15.78536743859361,
+        "n": 2
+      },
+      "offload_fraction": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 2
+      },
+      "mean_reward": {
+        "mean": 0.5724326097245177,
+        "stdev": 0.542060406821457,
+        "min": 0.18913802024832674,
+        "max": 0.9557271992007086,
+        "n": 2
+      }
+    },
+    "random_valid": {
+      "completion_rate": {
+        "mean": 0.6,
+        "stdev": 0.0,
+        "min": 0.6,
+        "max": 0.6,
+        "n": 2
+      },
+      "miss_rate": {
+        "mean": 0.4,
+        "stdev": 0.0,
+        "min": 0.4,
+        "max": 0.4,
+        "n": 2
+      },
+      "failure_rate": {
+        "mean": 0.0,
+        "stdev": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "n": 2
+      },
+      "mean_latency_s": {
+        "mean": 2.8974673712049523,
+        "stdev": 1.5238723714884506,
+        "min": 1.8199268836626434,
+        "max": 3.9750078587472615,
+        "n": 2
+      },
+      "mean_energy_j": {
+        "mean": 39.46333267101028,
+        "stdev": 15.65477977664744,
+        "min": 28.393731732960845,
+        "max": 50.532933609059704,
+        "n": 2
+      },
+      "offload_fraction": {
+        "mean": 0.4,
+        "stdev": 0.07071067811865478,
+        "min": 0.35,
+        "max": 0.45,
+        "n": 2
+      },
+      "mean_reward": {
+        "mean": 0.13217680802946155,
+        "stdev": 0.12422360139874823,
+        "min": 0.044337457096991974,
+        "max": 0.2200161589619311,
+        "n": 2
+      }
+    },
+    "nearest_edge": {
+      "completion_rate": {
+        "mean": 0.8,
+        "stdev": 0.14142135623730956,
+        "min": 0.7,
+        "max": 0.9,
+        "n": 2
+      },
+      "miss_rate": {
+        "mean": 0.175,
+        "stdev": 0.10606601717798213,
+        "min": 0.1,
+        "max": 0.25,
+        "n": 2
+      },
+      "failure_rate": {
+        "mean": 0.025,
+        "stdev": 0.035355339059327376,
+        "min": 0.0,
+        "max": 0.05,
+        "n": 2
+      },
+      "mean_latency_s": {
+        "mean": 1.7080972772282792,
+        "stdev": 0.05677913362007767,
+        "min": 1.6679483668156252,
+        "max": 1.7482461876409332,
+        "n": 2
+      },
+      "mean_energy_j": {
+        "mean": 53.97378456462366,
+        "stdev": 13.124728069184718,
+        "min": 44.693200345673716,
+        "max": 63.25436878357359,
+        "n": 2
+      },
+      "offload_fraction": {
+        "mean": 0.25,
+        "stdev": 0.07071067811865474,
+        "min": 0.2,
+        "max": 0.3,
+        "n": 2
+      },
+      "mean_reward": {
+        "mean": 1.0495158850918922,
+        "stdev": 0.6621428601087207,
+        "min": 0.5813101785947603,
+        "max": 1.517721591589024,
+        "n": 2
+      }
+    },
+    "resource_aware": {
+      "completion_rate": {
+        "mean": 0.675,
+        "stdev": 0.1767766952966369,
+        "min": 0.55,
+        "max": 0.8,
+        "n": 2
+      },
+      "miss_rate": {
+        "mean": 0.30000000000000004,
+        "stdev": 0.1414213562373095,
+        "min": 0.2,
+        "max": 0.4,
+        "n": 2
+      },
+      "failure_rate": {
+        "mean": 0.025,
+        "stdev": 0.035355339059327376,
+        "min": 0.0,
+        "max": 0.05,
+        "n": 2
+      },
+      "mean_latency_s": {
+        "mean": 4.160526039857233,
+        "stdev": 1.9913787937316851,
+        "min": 2.7524085908984715,
+        "max": 5.568643488815995,
+        "n": 2
+      },
+      "mean_energy_j": {
+        "mean": 41.07526760625583,
+        "stdev": 25.49513316848771,
+        "min": 23.0474860555641,
+        "max": 59.103049156947556,
+        "n": 2
+      },
+      "offload_fraction": {
+        "mean": 0.625,
+        "stdev": 0.1767766952966369,
+        "min": 0.5,
+        "max": 0.75,
+        "n": 2
+      },
+      "mean_reward": {
+        "mean": 0.3611062137387479,
+        "stdev": 0.7016212526515286,
+        "min": -0.13501493183574795,
+        "max": 0.8572273593132438,
+        "n": 2
+      }
+    }
+  }
+}

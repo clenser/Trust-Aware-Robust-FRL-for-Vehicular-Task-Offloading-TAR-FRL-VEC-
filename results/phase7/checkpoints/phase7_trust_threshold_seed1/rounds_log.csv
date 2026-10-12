@@ -1,0 +1,2 @@
+round,selected,train_rewards,mean_trust,strategy,status,participants,accepted,excluded,weights,staleness,upload_bytes,download_bytes_per_client,agg_time_s
+0,"[0, 1]","{0: 1.5423, 1: -1.0813}","{0: 0.5517, 1: 0.5059}",trust_threshold,aggregated,"[0, 1]","[0, 1]",[],"[0.511127005950596, 0.4888729940494041]","[0, 0]",5936,2968,0.0011

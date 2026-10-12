@@ -48,7 +48,7 @@ def main(argv: list[str] | None = None) -> int:
             r.success,
             r.failed,
             r.deadline_missed,
-            env.cfg.neutral_trust,
+            F.clamp01(r.dest_trust),
         )
         for r in results
     ]

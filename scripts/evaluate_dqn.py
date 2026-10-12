@@ -37,13 +37,16 @@ AGG_KEYS = ["completion_rate", "miss_rate", "failure_rate", "mean_latency_s",
 NAMES = ["dqn"] + list(POLICIES)
 
 
-def eval_dqn(config_path: str, checkpoint: str, seed: int, num_tasks: int) -> dict:
+def eval_dqn(config_path: str, checkpoint: str, seed: int, num_tasks: int, hidden: list[int] | None = None) -> dict:
     """Greedy (epsilon=0) held-out rollout of a trained checkpoint."""
     seed_all(10_000 + seed)
     env = VehicularEdgeEnv.from_yaml(config_path)
     env.cfg.num_tasks = num_tasks
     env.reset(seed)
-    agent = DQNAgent.load(checkpoint, eps_start=0.0, eps_end=0.0, seed=10_000 + seed)
+    kwargs = {"eps_start": 0.0, "eps_end": 0.0, "seed": 10_000 + seed}
+    if hidden:
+        kwargs["hidden"] = hidden
+    agent = DQNAgent.load(checkpoint, **kwargs)
     agent.epsilon = 0.0  # evaluation never explores, regardless of stored epsilon
     results = []
     for i in range(num_tasks):
@@ -52,7 +55,7 @@ def eval_dqn(config_path: str, checkpoint: str, seed: int, num_tasks: int) -> di
         assert mask[action], f"DQN selected masked action {action}"
         res = env.step(action)
         results.append(res)
-    rewards = [task_reward(r.latency_s, r.energy_j, r.success, r.failed, r.deadline_missed)
+    rewards = [task_reward(r.latency_s, r.energy_j, r.success, r.failed, r.deadline_missed, r.dest_trust)
                for r in results]
     row = episode_metrics(len(results), sum(r.success for r in results),
                           sum(r.deadline_missed for r in results), sum(r.failed for r in results),
@@ -75,11 +78,12 @@ def main(argv: list[str] | None = None) -> int:
     eval_seeds = list(raw.get("training", {}).get("eval_seeds", [10, 11, 12]))
     probe = VehicularEdgeEnv.from_yaml(args.config)
     num_tasks = probe.cfg.num_tasks
+    hidden = list(raw.get("dqn", {}).get("hidden", [64, 64]))
     ckpt = args.checkpoint or f"checkpoints/{run_name}/checkpoint_final.pt"
 
     rows: list[dict] = []
     for seed in eval_seeds:
-        rows.append(eval_dqn(args.config, ckpt, seed, num_tasks))
+        rows.append(eval_dqn(args.config, ckpt, seed, num_tasks, hidden=hidden))
         for name in POLICIES:
             rows.append(run_baseline_policy(args.config, name, seed, num_tasks))
     by_policy = {n: aggregate([r for r in rows if r["policy"] == n], AGG_KEYS) for n in NAMES}

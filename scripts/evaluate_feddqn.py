@@ -58,7 +58,7 @@ def greedy_rollout(config_path: str, checkpoint: str, seed: int, num_tasks: int,
         action = agent.act(obs, mask)
         assert mask[action], f"{policy_name} selected masked action {action}"
         results.append(env.step(action))
-    rewards = [task_reward(r.latency_s, r.energy_j, r.success, r.failed, r.deadline_missed)
+    rewards = [task_reward(r.latency_s, r.energy_j, r.success, r.failed, r.deadline_missed, r.dest_trust)
                for r in results]
     row = episode_metrics(len(results), sum(r.success for r in results),
                           sum(r.deadline_missed for r in results), sum(r.failed for r in results),

@@ -56,6 +56,7 @@ class StepResult:
     failed: bool
     deadline_missed: bool
     eligible_count: int
+    dest_trust: float = 0.5  # SPEC EQ-11 destination trust at decision time (Phase 5+)
     obs: list[float] = field(default_factory=list)  # EQ-9, for the NEXT task
     mask: list[bool] = field(default_factory=list)  # EQ-10, for the NEXT task
 
@@ -229,19 +230,21 @@ class VehicularEdgeEnv:
             raise InvalidActionError(f"action {action} targets ineligible/padded candidate")
 
         dt = max(0.0, t.arrival_s - self.now_s)
+        req = self.vehicles[t.requester_id]
         # Decision-time observables for the trust evidence (before dynamics run).
         if action == 0:
-            _dec_node = self.vehicles[t.requester_id]
+            _dec_node = req
             _dec_freq = _dec_node.effective_freq_hz
+            _dest_trust = self.trust.get("vehicle", req.vid)
         else:
             _dec_cand = cands[action - 1]
             _dec_node = self._node_of(_dec_cand)
             _dec_freq = (_dec_node.cpu_freq_hz if _dec_cand.kind == "edge"
                          else _dec_node.effective_freq_hz)  # type: ignore[attr-defined]
+            _dest_trust = self.trust.get(_dec_cand.kind, _dec_cand.node_id)
         _expected_exe = t.cycles / _dec_freq + _dec_node.queue_cycles / _dec_freq
         self._advance_dynamics(dt)
         self.now_s = t.arrival_s
-        req = self.vehicles[t.requester_id]
 
         if action == 0:
             dest_kind, dest_id = "local", req.vid
@@ -288,6 +291,7 @@ class VehicularEdgeEnv:
             failed=outcome["failed"],
             deadline_missed=outcome["deadline_missed"],
             eligible_count=len(cands),
+            dest_trust=_dest_trust,
             obs=obs,
             mask=mask,
         )

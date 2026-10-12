@@ -1,0 +1,837 @@
+[
+  {
+    "path": ".\\.gitignore",
+    "sha256": "b6f8c4095216b1087e639d71d168fbcf80e1b41c920fa535056c5bcc49dc3b44",
+    "size": 88
+  },
+  {
+    "path": ".\\AGENTS.md",
+    "sha256": "9761db29ea4768f2d8e555b1262ecbc5d604f98eee1fe426d3be4641f2f28d77",
+    "size": 17901
+  },
+  {
+    "path": ".\\PHASE_PROMPTS.md",
+    "sha256": "52045ac2c694d7548958ab58c669e898ee8163175d4bc5e78c15a2dc6d1f4c15",
+    "size": 17122
+  },
+  {
+    "path": ".\\pyproject.toml",
+    "sha256": "d4f04699ffc876cbce04843f4efe9ea14112682988d46a279e6eae1df24862cf",
+    "size": 604
+  },
+  {
+    "path": ".\\README.md",
+    "sha256": "e4fdc374aabc3428342ca6cd0631c925fa8e3c8d3f2c5eea86a2f5f26826f401",
+    "size": 5851
+  },
+  {
+    "path": ".\\requirements.txt",
+    "sha256": "592a93fac18b113d304a12ff6383b9314267f0e5c11c8d47f3d2a349f9e54564",
+    "size": 356
+  },
+  {
+    "path": ".\\run1.txt",
+    "sha256": "15d27c425995d47017d111e65a1190522e4ff69a99a405b0d298401ad2942b7b",
+    "size": 642
+  },
+  {
+    "path": ".\\run2.txt",
+    "sha256": "15d27c425995d47017d111e65a1190522e4ff69a99a405b0d298401ad2942b7b",
+    "size": 642
+  },
+  {
+    "path": ".\\attacks\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\baselines\\metrics.py",
+    "sha256": "3385f0d3213199bb192c3acdeb131e005b82814c75814a13baf3149c3ff81392",
+    "size": 1935
+  },
+  {
+    "path": ".\\baselines\\policies.py",
+    "sha256": "886c6c3507d7bcc99963aaa6647b1827d64a6c7ed4dc8584e342433acf12a911",
+    "size": 5508
+  },
+  {
+    "path": ".\\baselines\\README.md",
+    "sha256": "e6548000dc84c0fb862d642bde24608b06dc99c53d24ae64a0f2f22e9662dba1",
+    "size": 2071
+  },
+  {
+    "path": ".\\baselines\\__init__.py",
+    "sha256": "a8426a5ec5b082e4007c0dd1b825d27883ca8d7940c019e9cb25584e39ca6601",
+    "size": 564
+  },
+  {
+    "path": ".\\baselines\\__pycache__\\metrics.cpython-311.pyc",
+    "sha256": "e356e66077fdb8fbdcaff13ce355e1194e6a6a9584e5c0519dbee246bc4f2478",
+    "size": 3036
+  },
+  {
+    "path": ".\\baselines\\__pycache__\\policies.cpython-311.pyc",
+    "sha256": "6ea3d9aaaf383c0b22b528e8b91cc001c9ab76597ebc805839b4403e7f96339a",
+    "size": 7689
+  },
+  {
+    "path": ".\\baselines\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "f08c0db4102efa9bd62decc497c31bcf04810381b34b0d5f4beac09bf4c9a1fc",
+    "size": 779
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_ep10.pt",
+    "sha256": "d62f03126782ccce1193ec852c1e673e35eb6c00d413272274b85d41df981c30",
+    "size": 53327
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_ep15.pt",
+    "sha256": "c7d30126e1c1c6a52d14ab041316655455bee26efdf168f583e02497c656cfcf",
+    "size": 106089
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_ep20.pt",
+    "sha256": "e5585b4a2f3231da86344cd35c48c162b578adf3cb2f0dea597a7edd8c69b141",
+    "size": 106089
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_ep25.pt",
+    "sha256": "e7beea37dbc258747612bc115d7d9a0de2bd46a40062d0062c7a8b1ad23ffa54",
+    "size": 106089
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_ep5.pt",
+    "sha256": "c6a3e17c48f8dbec18c7a292f403f6d6c6ffd13ae47ade06980e7cd4d2398362",
+    "size": 53309
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\checkpoint_final.pt",
+    "sha256": "e7a6d7e6455ea16ee324bc56652730f0e36f840885a2f5de2b57ab7bcd019287",
+    "size": 106125
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\episode_log.csv",
+    "sha256": "822cdfad3beacc18b3366898c3ba9eede72ca0fc754adb5cf0fea8782486d524",
+    "size": 2028
+  },
+  {
+    "path": ".\\checkpoints\\dqn_default\\run_meta.json",
+    "sha256": "68ac7a170c9ed8388ac61f90b51d59894d6853b028697d6bde1fc83b77de3b27",
+    "size": 1745
+  },
+  {
+    "path": ".\\checkpoints\\dqn_smoke\\checkpoint_ep3.pt",
+    "sha256": "168b702efa816d4f7531bb06633902c5692aad66cbad56bd01f4341246246630",
+    "size": 41541
+  },
+  {
+    "path": ".\\checkpoints\\dqn_smoke\\checkpoint_final.pt",
+    "sha256": "4158882f3444fadc43e25e223cd5b22baa5e8c7eb11de46c76cb7761e3636f98",
+    "size": 41613
+  },
+  {
+    "path": ".\\checkpoints\\dqn_smoke\\episode_log.csv",
+    "sha256": "280177dbc59e0ea65a13232dec6bf62db91283d1c424ee2fe267072d62ec6b87",
+    "size": 368
+  },
+  {
+    "path": ".\\checkpoints\\dqn_smoke\\run_meta.json",
+    "sha256": "1e06d7a5a9b54d009c89255a368373901579189e9d49b0b162842c9d7d7f7f8b",
+    "size": 1451
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\global_final.pt",
+    "sha256": "52c826d50d4aab918877958946eed20edb9905a7be132c1073fe4a66ebf031b4",
+    "size": 27025
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\global_round0.pt",
+    "sha256": "d9982695308fdc93ac60264f5170c39e9f267133da241d05332a4a26a8e2b435",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\global_round1.pt",
+    "sha256": "6a7bee20a9316a3444d062fbb4bf7232e63d6cdea7301425c885914bc8d9d561",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\global_round2.pt",
+    "sha256": "af3f2529de5d33559df2cd71da75d57190586f8c3bbcf253da537557f767e1cf",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\rounds_log.csv",
+    "sha256": "79ead5b4071ec8847cd7b0a68c74f4c4d57547454ace55102a41e76aa1c63c67",
+    "size": 626
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\run_meta.json",
+    "sha256": "6b8d3534436d983b083d3733d713e403a8b67ca12839724e2a3e156042aa5d04",
+    "size": 2100
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\independent\\client0_alone.pt",
+    "sha256": "ebd98a1b5c54ac1474bd44a0617e3501032a36df9fa4cab796754161aeba0af6",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\independent\\client1_alone.pt",
+    "sha256": "7add21f0c0efe72d15fbe97c2f475f9edc0a1c141e2d00b9b8cca5d6797524e1",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_default\\independent\\client2_alone.pt",
+    "sha256": "d2ef2849936b4851e6d54ae82cae22a30349899a18057a8dc84d47166d456117",
+    "size": 27037
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\global_final.pt",
+    "sha256": "4ad4a647858387fa967e2a09c8dde0a478c8fd96dd24f31a82b8ea5639774acf",
+    "size": 5841
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\global_round0.pt",
+    "sha256": "9b72e1792668f515addd8e5fbe9200fa0f2b9c1761f8b06d84c099536c680550",
+    "size": 5917
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\rounds_log.csv",
+    "sha256": "048af8c6233320a46e05ebabb589b20d0bb9c5d08609edb8b660498b742efa2c",
+    "size": 252
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\run_meta.json",
+    "sha256": "0bf5e23063b978ab4332e6908b15e1424f564c58ef9ca5de76ced5f1943372b9",
+    "size": 1905
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\independent\\client0_alone.pt",
+    "sha256": "75d42d210b5787bd0b66e5253d26b1e67e073083ad0a8b83657a3a631d085375",
+    "size": 5917
+  },
+  {
+    "path": ".\\checkpoints\\feddqn_smoke\\independent\\client1_alone.pt",
+    "sha256": "31db875e1c2d928f102ff9939dbd294d88b046abca2f4e382706d8e80c256ab5",
+    "size": 5917
+  },
+  {
+    "path": ".\\configs\\default.yaml",
+    "sha256": "1f5176ca46140afc15b110a1434f8fab0891e5ba3cfab5a616a48e85233f7129",
+    "size": 724
+  },
+  {
+    "path": ".\\configs\\dqn_default.yaml",
+    "sha256": "3ac36945a82d70b2ae9199458a3356117ec0d0319d5252e101a03e03bc436f31",
+    "size": 756
+  },
+  {
+    "path": ".\\configs\\dqn_smoke.yaml",
+    "sha256": "e645137961c7313d30c8dbf98783066c64f5f751952ef34d6ba797cd7c3895ff",
+    "size": 718
+  },
+  {
+    "path": ".\\configs\\experiments.yaml",
+    "sha256": "b02bc5bfc4c59292f7e1e91af5e41a4d7eda622b60c55f52b74111cbbfb4a51c",
+    "size": 653
+  },
+  {
+    "path": ".\\configs\\feddqn_default.yaml",
+    "sha256": "97746eac00c7ca92f05522756e29ca811d8018be8e8af8d88bd3a68e93493534",
+    "size": 897
+  },
+  {
+    "path": ".\\configs\\feddqn_smoke.yaml",
+    "sha256": "95164d3d61c811a8ae650a4341e4ba458648b890a1c8d66dcaa927cf42feee8a",
+    "size": 835
+  },
+  {
+    "path": ".\\configs\\smoke.yaml",
+    "sha256": "a8c46676fc27d40453e320781fe887615ac640036f384d50df0e88ca02da4816",
+    "size": 563
+  },
+  {
+    "path": ".\\dashboard\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\docs\\ASSUMPTIONS.md",
+    "sha256": "1e0bc7fb10f6a2d670f037e9714ca559b98da78737254a150afc53cb125a96c7",
+    "size": 6584
+  },
+  {
+    "path": ".\\docs\\PHASE1_SPEC.md",
+    "sha256": "4ecb993f59306a7808ddec0c2791a279190e4a428514730db4d3ffd195270897",
+    "size": 8875
+  },
+  {
+    "path": ".\\docs\\PLAN.md",
+    "sha256": "afc26bb85dd5000bfeee419df1354b92d886e1e0e2023ed45ec4b6c9f8ab622a",
+    "size": 7242
+  },
+  {
+    "path": ".\\environment\\config.py",
+    "sha256": "dc03851a7488d35d160b81597aa3c3b78a6ad9e7ff413c61b411742b9d5d2be1",
+    "size": 5423
+  },
+  {
+    "path": ".\\environment\\edge_node.py",
+    "sha256": "3827b7d4b78a4360c80bdd9ce11ba27ca4577d337c0b54e5ffe85f09c68904d1",
+    "size": 795
+  },
+  {
+    "path": ".\\environment\\mobility.py",
+    "sha256": "f4362b7b09ff76e93d5926dd46055c6df77d2a36637a17c0c52bbc501e3603b1",
+    "size": 1184
+  },
+  {
+    "path": ".\\environment\\network.py",
+    "sha256": "4828029cf6dd2701c5b283d3201a2ed7bd44ff00cfc602583afb29d1af06714d",
+    "size": 1408
+  },
+  {
+    "path": ".\\environment\\README.md",
+    "sha256": "e49f5486438ce287f9151baa1789f16cf90dee969a7f4658f47887d0cd67443b",
+    "size": 3538
+  },
+  {
+    "path": ".\\environment\\task.py",
+    "sha256": "d0874955d2a4733c892fefe1f1b4cc6ba8c2e8b106f854c431cb024f5375dbfa",
+    "size": 2119
+  },
+  {
+    "path": ".\\environment\\vanet_env.py",
+    "sha256": "42a827bab8c02548c986bf2963dcf9568bedbc66f35b633d869f795e3f9f27ad",
+    "size": 14245
+  },
+  {
+    "path": ".\\environment\\vehicle.py",
+    "sha256": "d3fb82e5eb0855ef5e09b779cd8880d0316340724052ae4b12d2e0d68789d0be",
+    "size": 1490
+  },
+  {
+    "path": ".\\environment\\__init__.py",
+    "sha256": "5abd08f3c6870dca8fbdf0f89fdcefa646fda6b969715da00c2d04c5b4226538",
+    "size": 1005
+  },
+  {
+    "path": ".\\environment\\__pycache__\\config.cpython-310.pyc",
+    "sha256": "95a691bbe145f1a9286f3f5a8da0e17e2deb5ea13e347e1ac97a5ef5a645ea0a",
+    "size": 4389
+  },
+  {
+    "path": ".\\environment\\__pycache__\\config.cpython-311.pyc",
+    "sha256": "2789cdb7e950b410bb7768941bde80920be3a88c4c41fc14a731710fff42d423",
+    "size": 8021
+  },
+  {
+    "path": ".\\environment\\__pycache__\\edge_node.cpython-310.pyc",
+    "sha256": "c51f552441108faa52ed6ad038f5e6a335bbffb724538ca3f6f835f4480b5f6d",
+    "size": 1373
+  },
+  {
+    "path": ".\\environment\\__pycache__\\edge_node.cpython-311.pyc",
+    "sha256": "7d1a529fae42edcef4b4f2660d4e7c7ed2ae9730cf071bf06db1ad431ba0bd68",
+    "size": 1901
+  },
+  {
+    "path": ".\\environment\\__pycache__\\mobility.cpython-310.pyc",
+    "sha256": "2fa75bbd7b8e9ca18e75c842100ad833f0fbf67282bee2a8b3dc33ba8c53b61d",
+    "size": 1781
+  },
+  {
+    "path": ".\\environment\\__pycache__\\mobility.cpython-311.pyc",
+    "sha256": "e05ca4d42c0edb23cb200439d4659b7fbbfd43e7f3fd420dfafd3be414d01ca7",
+    "size": 2397
+  },
+  {
+    "path": ".\\environment\\__pycache__\\network.cpython-310.pyc",
+    "sha256": "55c7ff9816550b2914855434ba62b7fbb881e65ea31f0cbac67397183a217b8e",
+    "size": 1633
+  },
+  {
+    "path": ".\\environment\\__pycache__\\network.cpython-311.pyc",
+    "sha256": "290e48a6e116a2c9ba84c9f002a434661f4530ea44e22f388be761a5b3b59f42",
+    "size": 2089
+  },
+  {
+    "path": ".\\environment\\__pycache__\\task.cpython-310.pyc",
+    "sha256": "c40d2fe823bbd0ba48525dad5907f878eaea81b76827cad5e1be215ca01aeae7",
+    "size": 2668
+  },
+  {
+    "path": ".\\environment\\__pycache__\\task.cpython-311.pyc",
+    "sha256": "a1bf6feaaa94a08d5a115aa645402fe5fe9a67d4b516037b44d0ed45d8c4ce3a",
+    "size": 3911
+  },
+  {
+    "path": ".\\environment\\__pycache__\\vanet_env.cpython-310.pyc",
+    "sha256": "0aff900559a32e5ef0d33e36ac5724befbedf7b7dc8ffd3a6ab80c25424b7aa7",
+    "size": 11724
+  },
+  {
+    "path": ".\\environment\\__pycache__\\vanet_env.cpython-311.pyc",
+    "sha256": "c966449eceb9f86724f104fbb1fd03b9eb14ed4b1bd3b7e86b888b54c455a7a0",
+    "size": 23045
+  },
+  {
+    "path": ".\\environment\\__pycache__\\vehicle.cpython-310.pyc",
+    "sha256": "81a8e306a7e1af70fec0e0dc1baf07b837f0110caccb17e2852ce976f27ae468",
+    "size": 1982
+  },
+  {
+    "path": ".\\environment\\__pycache__\\vehicle.cpython-311.pyc",
+    "sha256": "06340e2b6912eed31baa331d5bf917d943ac4ff4da0830ba4a0935bceef2908f",
+    "size": 2820
+  },
+  {
+    "path": ".\\environment\\__pycache__\\__init__.cpython-310.pyc",
+    "sha256": "55a61fa8a6b372b115daf3ced1c764d7caf602652e9003d16069f92b1523a5a3",
+    "size": 1031
+  },
+  {
+    "path": ".\\environment\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "3a6950be8565a25c02b55f97af82f69fe498e1e1fc87c6506a1c56a3bc58cf69",
+    "size": 1294
+  },
+  {
+    "path": ".\\experiments\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\federated\\client.py",
+    "sha256": "9b944e4cb2c42be4afbd9a3218710f155d3af45ef619fed02d3810e0028169bc",
+    "size": 4562
+  },
+  {
+    "path": ".\\federated\\fedavg.py",
+    "sha256": "ce1f4ce007efd79703e00327289c960a4406939c40711c9b4e4c1cf1a014cc5a",
+    "size": 2660
+  },
+  {
+    "path": ".\\federated\\README.md",
+    "sha256": "c4218d90b08447353688424fc5bd461b7758e607b7e06c93d84da9c8ce358d70",
+    "size": 1998
+  },
+  {
+    "path": ".\\federated\\server.py",
+    "sha256": "4e03174d21ab344a893ad5948b2f33bd08699741010b3aeeaf84f8c6ddfbd946",
+    "size": 2881
+  },
+  {
+    "path": ".\\federated\\__init__.py",
+    "sha256": "aa82c1634e7ebf75a06285de268dec31be2022aa873a6bf1370906e33e4f13e3",
+    "size": 392
+  },
+  {
+    "path": ".\\federated\\__pycache__\\client.cpython-311.pyc",
+    "sha256": "b902fdb34be044790c1293f5df956b458c66cb4d3c47379e04a7d89282b05a9e",
+    "size": 7178
+  },
+  {
+    "path": ".\\federated\\__pycache__\\fedavg.cpython-311.pyc",
+    "sha256": "943ddef1e5b83863ad9118393a5c82a89db8d0fdabab52aefbf168349ab233f4",
+    "size": 4979
+  },
+  {
+    "path": ".\\federated\\__pycache__\\server.cpython-311.pyc",
+    "sha256": "5064548fd8d1b8159b38b338cf59bcfac646eb9fde0a8428168755513542c0cc",
+    "size": 6643
+  },
+  {
+    "path": ".\\federated\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "33d78e6fea475ab2ed5dba1a7b3f4a174ecdbc08d05dae1006fc4f37114051cb",
+    "size": 609
+  },
+  {
+    "path": ".\\reports\\gap_matrix.md",
+    "sha256": "16abf02e814d3dbc0d7fd12140636832dd9ce22c5743f85c3e839807e51926c4",
+    "size": 6722
+  },
+  {
+    "path": ".\\reports\\historical_file_inventory.csv",
+    "sha256": "2f6f0020e580aea3904a352b4ba3690aa1ce32fdddd569adb0baaeec0928403e",
+    "size": 4854673
+  },
+  {
+    "path": ".\\reports\\papers.csv",
+    "sha256": "e6bc5270f71690b62c5e1fdc24b644ab8964d4324b081661ca81dc80c03c1444",
+    "size": 15481
+  },
+  {
+    "path": ".\\reports\\papers.md",
+    "sha256": "b69d0e09ab35c0c01d819d9041d0eacfd12cb36f8f1563ce231fee33259d14ea",
+    "size": 4433
+  },
+  {
+    "path": ".\\reports\\figures\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\reports\\figures\\dqn_dqn_default_completion.png",
+    "sha256": "05b9beb991b9e94487a25f6024378a15595668e5630d9796ff982c1d49676c13",
+    "size": 22411
+  },
+  {
+    "path": ".\\reports\\figures\\dqn_dqn_default_training.png",
+    "sha256": "ac3d3b37a6926f2dd19a4115fdb8ea5b18227bc3718f13e737aa11f7a2d97fe8",
+    "size": 48890
+  },
+  {
+    "path": ".\\reports\\figures\\fedeval_feddqn_default_completion.png",
+    "sha256": "ee8e0fbc4ac49128eea882fa00daef86734499ade18b2960f39ccca17d72b89f",
+    "size": 24198
+  },
+  {
+    "path": ".\\reports\\figures\\trust_trust_smoke.png",
+    "sha256": "5441c37a4dd31d27f10dc2c1ebf82859a0cd1d32e7700414839696d385b268f2",
+    "size": 39759
+  },
+  {
+    "path": ".\\reports\\tables\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\results\\.gitkeep",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\results\\baselines_smoke.csv",
+    "sha256": "b672c5cd1172206aaed2c513020b2048d5fcd3ec45c0d0fb9eced812a81db783",
+    "size": 1614
+  },
+  {
+    "path": ".\\results\\baselines_smoke.json",
+    "sha256": "b6d12184e7e469dd4ea25fb2b1083f0b1c1fb49d48eeb09285e31561f2f68b45",
+    "size": 10846
+  },
+  {
+    "path": ".\\results\\baselines_trust_eval.csv",
+    "sha256": "6ca5d2531d05d60ee12ace4906cfb8cfa85ec84010c005ff27ed945ccfa38d2d",
+    "size": 1986
+  },
+  {
+    "path": ".\\results\\baselines_trust_eval.json",
+    "sha256": "4808e9bd509cfa93847247999b58a528b7954a4a9d6c65ba61841c3b6a19e34f",
+    "size": 13440
+  },
+  {
+    "path": ".\\results\\dqn_eval_dqn_default.csv",
+    "sha256": "95d1387374c764fb0ad9dad167ee35c33fdaf6fd417852f9688249ad060af958",
+    "size": 2043
+  },
+  {
+    "path": ".\\results\\dqn_eval_dqn_default.json",
+    "sha256": "85348e68a36aae944dd1949176d4b88a22ce92804eadf06a0afd8f211e8b4401",
+    "size": 13890
+  },
+  {
+    "path": ".\\results\\dqn_trusteval_dqn_default.csv",
+    "sha256": "c220892e5a248d76e5e7d15edd9c5ce13956a7d90e9d3f69a404373640158c6e",
+    "size": 2044
+  },
+  {
+    "path": ".\\results\\dqn_trusteval_dqn_default.json",
+    "sha256": "3b381bd0fe5b03ac096530b77124ea0a5ec7144f43ad4e90dfb4ff2fd94b023e",
+    "size": 13894
+  },
+  {
+    "path": ".\\results\\fedeval_feddqn_default.csv",
+    "sha256": "f78329b1765779df0cca4a3430a76306f855ef1361d62372a11118c7f92a0ac0",
+    "size": 4420
+  },
+  {
+    "path": ".\\results\\fedeval_feddqn_default.json",
+    "sha256": "a6db8ce16fef64e6ca9428e488e5cbcda366d5cf9c424be74a1f746388344b96",
+    "size": 25021
+  },
+  {
+    "path": ".\\results\\trust_smoke.json",
+    "sha256": "4f99a64bb0c866b6ae04514ad10c207077e17f977f477c0573ee98c09c9f6752",
+    "size": 363
+  },
+  {
+    "path": ".\\results\\trust_smoke_events.csv",
+    "sha256": "1de048fe37fb8f6686071f4e963e33b84d864b7175d58f7719901c993b3565aa",
+    "size": 57638
+  },
+  {
+    "path": ".\\results\\trust_smoke_snapshots.csv",
+    "sha256": "63b145405c8e9467c9e71b9b7f2fb6b24bbd230aae90d2dd71abb191d9659e27",
+    "size": 22321
+  },
+  {
+    "path": ".\\rl\\agent.py",
+    "sha256": "a019a97965f0aadfe927f2386c6e11b777e390784bc5d72246b69e6910c36361",
+    "size": 5520
+  },
+  {
+    "path": ".\\rl\\dqn.py",
+    "sha256": "c0119907a126047ec3f68b5ecff3f795e13dbe1342dd3567f9ddefc11cebacc6",
+    "size": 1703
+  },
+  {
+    "path": ".\\rl\\README.md",
+    "sha256": "215d3cdaccd82278e0d40b5c34dc9709f58265ad7c7a849ffcbbb428d8c0b0a7",
+    "size": 1530
+  },
+  {
+    "path": ".\\rl\\replay_buffer.py",
+    "sha256": "b1c3e06dc8116bf6ecff9f666f9927c6ba6b215a183ad588f63f525524fe81eb",
+    "size": 1865
+  },
+  {
+    "path": ".\\rl\\reward.py",
+    "sha256": "cead6f636a35af6e7479a0735b13f54999d687531fd82ce01d5959c6591f0a93",
+    "size": 1474
+  },
+  {
+    "path": ".\\rl\\__init__.py",
+    "sha256": "d6caaaf427d967090303110e9d4b238d9ce3f6ae1d8a21d98e806e57e89fc729",
+    "size": 487
+  },
+  {
+    "path": ".\\rl\\__pycache__\\agent.cpython-311.pyc",
+    "sha256": "74a96422ee5312991878ada045f316115e68dd837642b3df25eba132825f7936",
+    "size": 10636
+  },
+  {
+    "path": ".\\rl\\__pycache__\\dqn.cpython-311.pyc",
+    "sha256": "9634e36952684f9d05fc685d3578f93ef47aab53c9caed1b5b5d1eee051cf4e3",
+    "size": 3538
+  },
+  {
+    "path": ".\\rl\\__pycache__\\replay_buffer.cpython-311.pyc",
+    "sha256": "4c25c93df4d65e4f6eab41802cedfa8a9a0199eb27385a5aec33ea77d7484aac",
+    "size": 5232
+  },
+  {
+    "path": ".\\rl\\__pycache__\\reward.cpython-311.pyc",
+    "sha256": "ed3b1f4c3d8dc8b501363e908886f8b2980d8a514fc02f4a2fa0ca208afb7b7c",
+    "size": 2106
+  },
+  {
+    "path": ".\\rl\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "a931018655aa7b865e7bd1109a54b4adcd1289c4f34f276c1e03fb666c03b5d6",
+    "size": 719
+  },
+  {
+    "path": ".\\scripts\\evaluate_dqn.py",
+    "sha256": "35eb0ae22ff6b6caede25f6114a111c541d0e023513ee61d0176fa0948aadda7",
+    "size": 7083
+  },
+  {
+    "path": ".\\scripts\\evaluate_feddqn.py",
+    "sha256": "b998da6b97737cb8415588b68b9c94307e46bacea9fc6574a6f4f486c097ab90",
+    "size": 7952
+  },
+  {
+    "path": ".\\scripts\\log_trust.py",
+    "sha256": "abc09e70aa8cf5f24f1f61df3757b6dc6f2771067473d15ace0fc3981cc2cccd",
+    "size": 4791
+  },
+  {
+    "path": ".\\scripts\\run_baselines.py",
+    "sha256": "e88f506e9a230ce13eab654080afb2af626c6dd1f67620524940e6fb21563464",
+    "size": 5214
+  },
+  {
+    "path": ".\\scripts\\run_smoke.py",
+    "sha256": "e9253e62c3830b9657955ebfba26d310747b75ca10265b142f7c44f384b4b57f",
+    "size": 2509
+  },
+  {
+    "path": ".\\scripts\\train_dqn.py",
+    "sha256": "08a8d289e1055b3f0c7e99c40a27183e9a02d4f3ad8ff43a56f97f4c680eb102",
+    "size": 5652
+  },
+  {
+    "path": ".\\scripts\\train_feddqn.py",
+    "sha256": "b36915677c55e3f9f49dfce3dd0023746bf045c7e626f1e70d8194664dec1156",
+    "size": 7341
+  },
+  {
+    "path": ".\\scripts\\validate_configs.py",
+    "sha256": "007fca2f48c6478a73887c6053f64c60454137e2cb8820f1d1b0250a595aae35",
+    "size": 2447
+  },
+  {
+    "path": ".\\scripts\\__init__.py",
+    "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "size": 2
+  },
+  {
+    "path": ".\\scripts\\__pycache__\\log_trust.cpython-311.pyc",
+    "sha256": "7777f2b4ad2fed4d1e5fb624bbca4e622d887d093c2b2d6439d5813438c7c299",
+    "size": 9354
+  },
+  {
+    "path": ".\\scripts\\__pycache__\\run_baselines.cpython-311.pyc",
+    "sha256": "f9390aca0b3a287cf1e11b82826132a71fb0b3815209e98b349d9b4c15e8566e",
+    "size": 10576
+  },
+  {
+    "path": ".\\scripts\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "fc7dfc3f5606102e99a60643d426f20cc1d2a15082e17f1fcbcadf7d44ebfa13",
+    "size": 158
+  },
+  {
+    "path": ".\\specs\\formulas.py",
+    "sha256": "79b0e0f5215f2aef739fac880a2cb4e813d606ce8f0ac8c7cf93fd2a814f90f1",
+    "size": 7775
+  },
+  {
+    "path": ".\\specs\\__init__.py",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size": 0
+  },
+  {
+    "path": ".\\specs\\__pycache__\\formulas.cpython-310.pyc",
+    "sha256": "640d177c97663b9e70921b2eeb19599e60fcef0bf0aa6a0e8b81f38298e33ed5",
+    "size": 9893
+  },
+  {
+    "path": ".\\specs\\__pycache__\\formulas.cpython-311.pyc",
+    "sha256": "065b3c0caf078c34b1e222914478d46b9d910ab4e1a9027945c1c2c970e08956",
+    "size": 15028
+  },
+  {
+    "path": ".\\specs\\__pycache__\\__init__.cpython-310.pyc",
+    "sha256": "856d9d9ba0bf94c80a3319d1e4480d7f1f721d818e7721db019db5fb99fd1ff7",
+    "size": 140
+  },
+  {
+    "path": ".\\specs\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "aebb3f94597833407dddc7121a7ebbd6ccb9ab77efe78d91aee170f54fa139a9",
+    "size": 156
+  },
+  {
+    "path": ".\\tests\\test_phase0_skeleton.py",
+    "sha256": "5816bb7fdc09d4dc076010bf6328072ae9016ee0b4001cb70a51f245c9c5fcdc",
+    "size": 2603
+  },
+  {
+    "path": ".\\tests\\test_phase1_formulas.py",
+    "sha256": "d05e352c754693c36b960b135f5abe772051d132ed33ef258cedde1b3abe34ea",
+    "size": 4195
+  },
+  {
+    "path": ".\\tests\\test_phase2_environment.py",
+    "sha256": "16f9c617f76236d8bb6f4d0b10d5b4eaa309395032e0a6fa11fb895ab39515db",
+    "size": 7711
+  },
+  {
+    "path": ".\\tests\\test_phase3_baselines.py",
+    "sha256": "353ff310685fcc04cb422cb4f98bf7110de847df004cc63d1ae09ed876071fc4",
+    "size": 6194
+  },
+  {
+    "path": ".\\tests\\test_phase4_dqn.py",
+    "sha256": "23b769b01edbe54f7ed17d0aeb50609fbdfe83680d867acb278b25bf9c28fda3",
+    "size": 6078
+  },
+  {
+    "path": ".\\tests\\test_phase5_trust.py",
+    "sha256": "c999dca115d5e1dfd6555dcf77fb37e6f6ad4c40cda6b985a2d475407623b103",
+    "size": 6505
+  },
+  {
+    "path": ".\\tests\\test_phase6_federated.py",
+    "sha256": "63532f983a4086924effe9a24eff1269a1babbdad1fcad8ecbc9804af8e22483",
+    "size": 7618
+  },
+  {
+    "path": ".\\tests\\__init__.py",
+    "sha256": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "size": 2
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase0_skeleton.cpython-310-pytest-8.3.3.pyc",
+    "sha256": "60eabbb2eac6a823410f8a5920ee3f3cfa71db33fc42328cd1a3013cfdb1ee39",
+    "size": 4585
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase0_skeleton.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "3460879ad4aba7b6f55b62238941ea74b805e5f51c57de2b0633314fc0b5170b",
+    "size": 9885
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase1_formulas.cpython-310-pytest-8.3.3.pyc",
+    "sha256": "8aed02e0ea7b47a3ac43de23998a056616dfa532484e6d61c9c99b12f172fe73",
+    "size": 17171
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase1_formulas.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "c3ffe9f568d5f80d5e9f7b2538c982f5adc26cd20437252584d4effcd071d339",
+    "size": 46437
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase2_environment.cpython-310-pytest-8.3.3.pyc",
+    "sha256": "e4678a4d87bbfacfdbdcf2a9dba11d182cacac620c56410639ab1c11872d70b4",
+    "size": 28894
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase2_environment.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "b2d232000ba25dabdd1d13072b8ab0338d5eecc043db84980d4afbb3dfcb154d",
+    "size": 74972
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase3_baselines.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "b95fb315f7f1386c87f7ba713bb12c97a82243c409f5886323e6cb9c0137f2bc",
+    "size": 42307
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase4_dqn.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "8b412c3ba7ff09bfbcdeec8328eea157f880e531617bf4c2551f1721397d418a",
+    "size": 42209
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase5_trust.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "3bbe5f903c7be63cc73bb188c04cffef4f840095c80eb263a4d95270e11f0135",
+    "size": 47231
+  },
+  {
+    "path": ".\\tests\\__pycache__\\test_phase6_federated.cpython-311-pytest-9.1.1.pyc",
+    "sha256": "3e9679222f2598b496329410bd600bf8e66c0c017427d51d05c3267213efe29c",
+    "size": 44689
+  },
+  {
+    "path": ".\\tests\\__pycache__\\__init__.cpython-310.pyc",
+    "sha256": "0ff7dcc3d639b51d49c86354c3d6f1eab505d808dab9dbf75c1bda30889f77ac",
+    "size": 140
+  },
+  {
+    "path": ".\\tests\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "8295bec8eb2b1d6df41da37d4d6a9a8668a7c7bbb5d307d15fff535aab2141c8",
+    "size": 156
+  },
+  {
+    "path": ".\\trust\\behavioural.py",
+    "sha256": "a9e27f134f2810d9cc77dbda995f87c0f94026ff4e65c12b3ccf23c65180275b",
+    "size": 5384
+  },
+  {
+    "path": ".\\trust\\README.md",
+    "sha256": "48aeb87ce4824e467d8685c74f19259de7f0969677cb07dfaf48779cc0c77668",
+    "size": 2455
+  },
+  {
+    "path": ".\\trust\\__init__.py",
+    "sha256": "30a99ad03aa863893cafdfa4dd0660b0b1768ee0cb4d4f97393878da86798d35",
+    "size": 231
+  },
+  {
+    "path": ".\\trust\\__pycache__\\behavioural.cpython-311.pyc",
+    "sha256": "cb08c9e7295ff661942ca6c34b94710b4ea7b0d35b5abba51787390d15905b02",
+    "size": 8832
+  },
+  {
+    "path": ".\\trust\\__pycache__\\__init__.cpython-311.pyc",
+    "sha256": "d6e021438ef1c86c0b6e90883c9ba04567793cf80a9c73b745de3f20dd1ca71e",
+    "size": 416
+  }
+]

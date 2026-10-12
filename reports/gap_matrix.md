@@ -44,29 +44,20 @@ Columns: **V**ANET/VEC setting · **O**ffloading decisions · **R**L/DRL ·
 | E03 | PASS audit | – | P | – | Y | – | P | Y | P | Parameter auditing incl. >50% adversaries; IoT supervised FL, not DRL |
 | E04 | Zhao non-IID measurement | – | – | – | Y | – | – | – | – | Motivates non-IID study; no defence proposed |
 
-## Evidence-supported gaps (provisional)
+## Evidence-supported gaps (provisional, verified 2026 audit)
 
-- **G1. Behavioural + model-update trust for federated DQN is untested in-corpus.**
-  B-group covers behavioural trust without model updates; D05 covers update trust
-  without behaviour and needs a server root dataset; no paper combines both for FRL.
-  → RQ1, RQ2.
-- **G2. No trust/adversary study exists for federated DQN offloading.**
-  C06 (FedDOVe) and C05 do federated (D)RL offloading with honest participants only;
-  A-group likewise assumes honesty. → RQ3, RQ4.
-- **G3. Free-rider/poisoning defences are unevaluated on federated DRL updates.**
-  E01–E03, D01–D03, D05 target supervised FL with stationary targets; Q-network
-  updates are non-stationary (moving TD targets), so detector transfer is unproven
-  and false positives on honest non-IID clients are unquantified. → RQ2, RQ5.
-- **G4. FedRL theory stops at tabular Q-learning.**
-  C01–C02 give no guarantees for DQN function approximation, let alone
-  trust-weighted robust aggregation under Byzantine clients. Our claims must stay
-  empirical. → RQ5.
-- **G5. Disconnect-vs-malice disambiguation is unmeasured.**
-  B-group models mobility but rarely scores detectors with precision/recall against
-  ground-truth attacker labels under intermittent connectivity. → RQ1, RQ5.
-- **G6. Malicious-ratio sensitivity is missing for offloading.**
-  D06 shows adversary fraction drives backdoor success in supervised FL; no
-  offloading paper sweeps 0–40% malicious clients on latency/completion. → RQ4.
+- **G1. Combined behavioural + model-update trust for federated DQN offloading without server root datasets.**
+  B-group covers behavioural trust without model updates; D05 (FLTrust, NDSS 2021) covers update trust but requires a clean server root dataset; WWW 2025 (Fang et al.) uses ensemble voting. Combining peer-observed task outcomes ($T_{\text{beh}}$) with serverless model update metrics ($T_{\text{model}}$) in vehicular edge networks remains unmeasured. → RQ1, RQ2.
+- **G2. Adversarial & trust evaluation for federated DQN offloading.**
+  C06 (FedDOVe) and C05 evaluate federated DQN offloading under strictly honest, cooperative participants. Prior art lacks evaluation under model poisoning (sign-flip, perturbation), free-riding, and execution unreliability. → RQ3, RQ4.
+- **G3. Transferability of supervised-FL defences to non-stationary Q-networks.**
+  E01–E03, D01, and D05 address supervised learning with stationary distributions; in DQN, evolving policies and moving TD targets produce legitimate inter-client variance that risk false-positive exclusion of honest non-IID edge participants. → RQ2, RQ5.
+- **G4. Absence of Byzantine convergence guarantees for deep Q-networks.**
+  C01–C02 establish bounds only for tabular Q-learning; WWW 2025 bounds hold for policy ensembles. No guarantees exist for single-model FedAvg parameter aggregation of deep Q-networks under Byzantine poisoning; all robustness claims must remain strictly empirical. → RQ5.
+- **G5. Disconnect-vs-malice disambiguation under intermittent connectivity.**
+  B-group taxonomies model vehicular mobility but rarely evaluate detectors with precision/recall against ground-truth attacker labels while subject to channel dropouts and link volatility. → RQ1, RQ5.
+- **G6. Malicious-client-ratio sensitivity sweeps in vehicular offloading.**
+  D06 and D04 demonstrate that adversary fraction drives backdoor and poisoning impact in supervised FL, but vehicular task offloading literature lacks systematic sweeps from 0% to 40% malicious client populations. → RQ4.
 
 ## Provisional contribution hypothesis (NOT a claim)
 
