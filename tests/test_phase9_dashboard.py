@@ -137,3 +137,21 @@ def test_dashboard_filtering_logic():
     assert sub_seed.iloc[0]["attack_fraction"] == 0.2
     assert sub_seed.iloc[0]["seed"] == first_seed
 
+
+def test_verify_dataset_integrity_status():
+    """Verify that verify_dataset_integrity returns honest status across manifests."""
+    from dashboard.data_loader import verify_dataset_integrity
+    
+    # 1. Non-existent manifest
+    res_none = verify_dataset_integrity(Path("reports/non_existent_manifest.json"))
+    assert res_none["status"] == "unavailable"
+    assert "Unavailable" in res_none["label"]
+
+    # 2. Real Phase 10 v4 manifest
+    datasets = get_available_datasets()
+    v4_info = datasets["Phase 10 Final v4 (Full 880-Run Corrected Suite)"]
+    res_v4 = verify_dataset_integrity(v4_info["manifest_path"], max_check=20)
+    assert res_v4["status"] == "verified"
+    assert res_v4["checked_count"] == 20
+    assert "Integrity Verified" in res_v4["label"]
+

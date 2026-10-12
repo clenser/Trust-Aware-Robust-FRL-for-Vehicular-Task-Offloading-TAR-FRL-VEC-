@@ -23,6 +23,7 @@ from dashboard.data_loader import (
     load_experiment_data,
     load_summary_metrics,
     load_manifest,
+    verify_dataset_integrity,
     load_config_yaml,
     get_available_checkpoints,
     get_available_figures,
@@ -84,7 +85,11 @@ def main():
             "The main table shows the core matrix only. "
             "Ablation and sensitivity results are in the Federated Convergence tab."
         )
-    st.sidebar.markdown(f"**Status:** Verified ✅")
+    # Dynamic integrity check
+    integrity_info = verify_dataset_integrity(Path(dataset_info.get("manifest_path", "")))
+    st.sidebar.markdown(f"**Integrity:** {integrity_info['label']}")
+    if integrity_info["status"] != "verified":
+        st.sidebar.caption(integrity_info["message"])
 
     # Filter controls in sidebar
     st.sidebar.markdown("### Experiment Filters")
@@ -200,7 +205,11 @@ def main():
         render_detection_metrics_chart(filtered_df)
 
         # Unreliable Execution Fault Accounting Subsection
-        unrel_df = filtered_df[filtered_df["scenario_group"].str.startswith("unreliable")] if not filtered_df.empty else pd.DataFrame()
+        unrel_df = pd.DataFrame()
+        if not filtered_df.empty and "scenario_group" in filtered_df.columns:
+            unrel_mask = filtered_df["scenario_group"].astype(str).str.startswith("unreliable")
+            unrel_df = filtered_df[unrel_mask]
+
         if not unrel_df.empty:
             st.markdown("---")
             st.markdown("#### Unreliable Execution Fault Accounting Breakdown")
@@ -255,10 +264,12 @@ def main():
                         diff = v.get("mean_difference", 0.0)
                         pval = v.get("p_value_raw")
                         holm_a = v.get("holm_adjusted_alpha")
+                        af_val = v.get("attack_fraction")
+                        af_str = f"{af_val:.1f}" if af_val is not None else "N/A"
                         sec_rows.append({
                             "Test": k,
-                            "Scenario": v.get("scenario"),
-                            "Fraction": f"{v.get('attack_fraction'):.1f}",
+                            "Scenario": v.get("scenario", "N/A"),
+                            "Fraction": af_str,
                             "Paired Diff": f"{diff:+.4f}",
                             "Raw p": f"{pval:.3f}" if pval is not None else "N/A",
                             "Holm Alpha": f"{holm_a:.3f}" if holm_a is not None else "N/A",

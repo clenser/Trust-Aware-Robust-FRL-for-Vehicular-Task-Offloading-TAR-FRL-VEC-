@@ -169,6 +169,81 @@ def load_manifest(manifest_path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
+def verify_dataset_integrity(manifest_path: Path, max_check: int = 50) -> Dict[str, Any]:
+    """Verify integrity of a dataset manifest.
+    
+    Returns a status dict:
+      - status: 'verified', 'unverified', 'failed', 'unavailable'
+      - label: human-readable label
+      - checked_count: number of artifacts hashed
+      - total_count: total artifacts in manifest
+      - message: explanation
+    """
+    if not manifest_path or not manifest_path.exists():
+        return {
+            "status": "unavailable",
+            "label": "Manifest Unavailable ⚠️",
+            "checked_count": 0,
+            "total_count": 0,
+            "message": "No manifest file found for this dataset."
+        }
+    
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        artifacts = manifest.get("artifacts", {})
+        if not artifacts:
+            return {
+                "status": "unverified",
+                "label": "Manifest Loaded (No Artifacts Listed)",
+                "checked_count": 0,
+                "total_count": 0,
+                "message": "Manifest is loaded but contains no artifact hashes."
+            }
+        
+        # Verify sample/subset or all artifacts
+        import hashlib
+        checked = 0
+        mismatches = []
+        for rel_path, meta in list(artifacts.items())[:max_check]:
+            target = REPO_ROOT / rel_path
+            if not target.exists():
+                mismatches.append(f"Missing: {rel_path}")
+                break
+            h = hashlib.sha256()
+            with open(target, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            if h.hexdigest() != meta.get("sha256"):
+                mismatches.append(f"Hash mismatch: {rel_path}")
+                break
+            checked += 1
+            
+        if mismatches:
+            return {
+                "status": "failed",
+                "label": "Verification Failed ❌",
+                "checked_count": checked,
+                "total_count": len(artifacts),
+                "message": mismatches[0]
+            }
+        
+        return {
+            "status": "verified",
+            "label": f"Integrity Verified ✅ ({checked}/{len(artifacts)} sampled)",
+            "checked_count": checked,
+            "total_count": len(artifacts),
+            "message": f"Successfully verified SHA-256 hashes for {checked} artifacts against manifest."
+        }
+    except Exception as e:
+        return {
+            "status": "failed",
+            "label": "Verification Error ⚠️",
+            "checked_count": 0,
+            "total_count": 0,
+            "message": str(e)
+        }
+
+
 def load_config_yaml(config_path: Path) -> Dict[str, Any]:
     """Load configuration YAML."""
     if not config_path.exists():
