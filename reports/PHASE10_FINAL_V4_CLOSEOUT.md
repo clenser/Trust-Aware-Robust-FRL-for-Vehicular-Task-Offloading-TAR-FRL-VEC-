@@ -3,9 +3,9 @@
 ## 1. Executive Verdict & Summary
 
 - **Executive Verdict**: **PASS — ACCEPTED AND READY FOR HARD CLOSE**
-- **Repository Commit Baseline**: `be94090a50454d53df97164b80959f23573df81d` on branch `main` (synchronized with `origin/main`).
-- **Working Tree State**: Modified files in working tree (`dashboard/data_loader.py`, `scripts/verify_phase10_manifest.py`, `tests/test_phase9_dashboard.py`, `tests/test_phase10_v4_correctness.py`, `README.md`, `reports/PHASE10_FINAL_V4_CLOSEOUT.md`) preserved uncommitted as instructed.
-- **Remote Sync**: Branch `main` tracking `origin/main` is fully synchronized with commit `be94090`.
+- **Repository Commit Baseline**: `f53b7ce38c8999db8828c485dc78e31f3292d891` on branch `main` (synchronized with `origin/main`).
+- **Working Tree State**: Clean baseline at `f53b7ce`; subsequent documentation updates preserved uncommitted.
+- **Remote Sync**: Branch `main` tracking `origin/main` is fully synchronized with commit `f53b7ce`.
 - **Preservation Status**: All historical Phase 0–9, Phase 8 r4, and Phase 10 v2/v3 artifacts remain intact and unmodified. The 880 Phase 10 v4 experimental runs were preserved without re-running or alteration.
 
 ---
@@ -14,7 +14,7 @@
 
 | Gate | Status | Evidence & Test Output | Exit Code |
 |---|:---:|---|:---:|
-| **1. Baseline Alignment** | **PASS** | Validated commit `be94090`, branch `main`, verified tracking `origin/main` cleanly. | `0` |
+| **1. Baseline Alignment** | **PASS** | Validated commit `f53b7ce`, branch `main`, verified tracking `origin/main` cleanly. | `0` |
 | **2. Exact Matrix Counts** | **PASS** | 630 core, 70 ablation, 180 sensitivity = **880 total rows**. | `0` |
 | **3. Run-ID & Matrix Coverage** | **PASS** | **880 / 880 globally unique run IDs**; all 9 scenario groups, 3 strategies, and 10 seeds present. | `0` |
 | **4. Parameter Integrity** | **PASS** | Core $\alpha = 0.50$, $\tau_{\text{exc}} = 0.35$, $\lambda_{\text{smooth}} = 0.70$, $m2_{\text{dir}} = 0.45$, $m3_{\text{stale}} = 0.50$, $m4_{\text{orig}} = 0.00$, $\tau_{\text{anomaly}} = 0.50$. | `0` |
@@ -122,8 +122,9 @@ The `verify_dataset_integrity()` function in `dashboard/data_loader.py` implemen
 |---|---|---|---|---|
 | Initial verification baseline (Phase 10 v4 report) | `2449af8` | `main` | Clean | Reported in original closeout report as baseline |
 | Intermediate closeout commit | `229fd20` | `main` | Clean | "Complete Phase 10 v4 closeout: Verified experimental matrix..." |
-| Latest remote commit | `be94090` | `main` | Clean | "Enhance manifest integrity checks: distinguish sampled vs full..." |
-| Current local state | `be94090` | `main` | **Modified** (uncommitted) | Acceptance & reconciliation: hardened verifiers, 166 passing tests |
+| Follow-up integrity commit | `be94090` | `main` | Clean | "Enhance manifest integrity checks: distinguish sampled vs full..." |
+| Authoritative closeout commit | `f53b7ce` | `main` | Clean | "Harden manifest and dataset verifiers, expand regression test suite..." |
+| Current local state | `f53b7ce` | `main` | Clean baseline | Authoritative Phase 10 v4 closeout baseline; 166 tests pass |
 
 **Current Working Tree Changes** (uncommitted, as instructed):
 - `dashboard/data_loader.py` — Hardened `verify_dataset_integrity()` with safe path containment, `max_check` parameter validation, typing checks, and mixed-metadata failure reporting.
