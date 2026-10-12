@@ -40,61 +40,65 @@ federated:
   local_episodes: 1
   participation_fraction: 1.0
   strategy: trust_threshold
-  alpha: 0.6
-  tau_exc: 0.40
+  alpha: 0.5
+  tau_exc: 0.35
   clip_c: 3.0
   dropout_prob: 0.0
   train_independent: false
   eval_seeds: [10, 11]
 
+  # v4 honest Non-IID resource table (exact per-client CPU/bandwidth).
+  # All other conditions fixed to the declared IID baseline
+  # (mobility medium, task_load medium, link_reliability 0.90) so that
+  # resource heterogeneity is the isolated non-IID factor.
   client_conditions:
-    - mobility: low
-      task_load: low
-      link_reliability: 0.95
-      vehicle_cpu_ghz: 1.2
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
+      vehicle_cpu_ghz: 1.0
       bandwidth_hz: 5000000.0
-    - mobility: low
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
+      vehicle_cpu_ghz: 1.2
+      bandwidth_hz: 6500000.0
+    - mobility: medium
       task_load: medium
       link_reliability: 0.90
       vehicle_cpu_ghz: 1.5
-      bandwidth_hz: 10000000.0
-    - mobility: medium
-      task_load: high
-      link_reliability: 0.85
-      vehicle_cpu_ghz: 2.0
-      bandwidth_hz: 15000000.0
-    - mobility: high
-      task_load: low
-      link_reliability: 0.80
-      vehicle_cpu_ghz: 2.5
-      bandwidth_hz: 20000000.0
+      bandwidth_hz: 8000000.0
     - mobility: medium
       task_load: medium
-      link_reliability: 0.95
+      link_reliability: 0.90
       vehicle_cpu_ghz: 1.8
       bandwidth_hz: 10000000.0
-    - mobility: low
-      task_load: high
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
+      vehicle_cpu_ghz: 2.0
+      bandwidth_hz: 10000000.0
+    - mobility: medium
+      task_load: medium
       link_reliability: 0.90
       vehicle_cpu_ghz: 2.2
-      bandwidth_hz: 15000000.0
+      bandwidth_hz: 12000000.0
     - mobility: medium
-      task_load: low
-      link_reliability: 0.85
-      vehicle_cpu_ghz: 1.0
-      bandwidth_hz: 5000000.0
-    - mobility: high
       task_load: medium
-      link_reliability: 0.80
+      link_reliability: 0.90
+      vehicle_cpu_ghz: 2.4
+      bandwidth_hz: 14000000.0
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
+      vehicle_cpu_ghz: 2.6
+      bandwidth_hz: 16000000.0
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
       vehicle_cpu_ghz: 2.8
-      bandwidth_hz: 20000000.0
-    - mobility: high
-      task_load: high
-      link_reliability: 0.75
+      bandwidth_hz: 18000000.0
+    - mobility: medium
+      task_load: medium
+      link_reliability: 0.90
       vehicle_cpu_ghz: 3.0
       bandwidth_hz: 20000000.0
-    - mobility: low
-      task_load: low
-      link_reliability: 0.90
-      vehicle_cpu_ghz: 1.6
-      bandwidth_hz: 10000000.0

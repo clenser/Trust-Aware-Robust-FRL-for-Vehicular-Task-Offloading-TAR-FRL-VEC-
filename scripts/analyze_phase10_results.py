@@ -53,6 +53,32 @@ def compute_student_t_ci_95(values: list[float] | np.ndarray) -> dict[str, Any]:
     }
 
 
+def holm_adjust_pvalues(named_pvalues: list[tuple[str, float]]) -> dict[str, dict[str, float | bool]]:
+    """Holm-Bonferroni step-down adjusted p-values.
+
+    Input: list of (test_key, raw_p) with finite raw p-values.
+    Output per test: adjusted p-value adj_p[i] = max_{j<=i} (m-j+1)*p_(j) over
+    p-sorted order (capped at 1.0), the step-down critical alpha, and the
+    significance decision. Non-rejection means 'fail_to_reject', never
+    equivalence.
+    """
+    ordered = sorted(named_pvalues, key=lambda kv: kv[1])
+    m = len(ordered)
+    out: dict[str, dict[str, float | bool]] = {}
+    running_max = 0.0
+    for rank, (key, p_raw) in enumerate(ordered):
+        adj_p = min(1.0, (m - rank) * float(p_raw))
+        running_max = max(running_max, adj_p)
+        alpha_adj = 0.05 / (m - rank)
+        out[key] = {
+            "holm_adjusted_pvalue": running_max,
+            "holm_adjusted_alpha": alpha_adj,
+            "holm_significant": bool(p_raw < alpha_adj),
+            "holm_decision": "reject" if p_raw < alpha_adj else "fail_to_reject",
+        }
+    return out
+
+
 def analyze_phase10_results(
     results_dir: Path = Path("results/phase10_final_v3"),
     out_json: Path | None = None,
@@ -104,15 +130,22 @@ def analyze_phase10_results(
     se_diff = std_diff / np.sqrt(n_pairs) if n_pairs > 0 and std_diff > 0 else 0.0
     t_crit_9 = float(stats.t.ppf(0.975, df=n_pairs - 1)) if n_pairs > 1 else 0.0
     ci_diff_half = t_crit_9 * se_diff
-    cohen_dz = mean_diff / std_diff if std_diff > 0 else 0.0
 
     if std_diff > 1e-12:
         t_res = stats.ttest_rel(th_vals, fed_vals)
-        t_stat = float(t_res.statistic)
-        p_val = float(t_res.pvalue)
+        t_stat: float | None = float(t_res.statistic)
+        p_val: float | None = float(t_res.pvalue)
+        cohen_dz: float | None = mean_diff / std_diff
+        h1_status = "tested"
     else:
-        t_stat = float("nan")
-        p_val = float("nan")
+        # Degenerate zero-variance paired differences: the t statistic and
+        # p-value are UNDEFINED (not evidence of equality). Reported as null
+        # with an explicit status; failure to reject must never be presented
+        # as proof that the two methods are equivalent.
+        t_stat = None
+        p_val = None
+        cohen_dz = None
+        h1_status = "undefined_zero_variance"
 
     try:
         if np.any(paired_diff != 0):
@@ -142,9 +175,10 @@ def analyze_phase10_results(
         "t_statistic": t_stat,
         "p_value_twotailed": p_val,
         "cohen_dz": cohen_dz,
+        "status": h1_status,
         "wilcoxon_stat": w_stat,
         "wilcoxon_pvalue": w_pval,
-        "statistically_significant_alpha_005": bool(p_val < 0.05) if not np.isnan(p_val) else False,
+        "statistically_significant_alpha_005": bool(p_val is not None and p_val < 0.05),
     }
 
     # Secondary confirmatory tests across primary comparisons with Holm-Bonferroni
@@ -167,32 +201,32 @@ def analyze_phase10_results(
         m_diff = float(np.mean(diff))
         if s_diff > 1e-12:
             res_t = stats.ttest_rel(v_th, v_fed)
-            p_v = float(res_t.pvalue)
-            t_s = float(res_t.statistic)
+            p_v: float | None = float(res_t.pvalue)
+            t_s: float | None = float(res_t.statistic)
+            status_s = "tested"
         else:
-            p_v = float("nan")
-            t_s = float("nan")
+            p_v = None
+            t_s = None
+            status_s = "undefined_zero_variance"
 
         analysis_report["secondary_hypotheses"][t_key] = {
             "scenario": scen,
             "attack_fraction": frac,
+            "sample_size": len(diff),
             "mean_difference": m_diff,
             "std_difference": s_diff,
             "t_statistic": t_s,
             "p_value_raw": p_v,
+            "status": status_s,
         }
-        if not np.isnan(p_v):
+        if p_v is not None:
             p_values_for_correction.append(p_v)
             test_keys.append(t_key)
 
-    # Apply Holm-Bonferroni step-down correction if any valid p-values exist
+    # Holm-Bonferroni step-down: actual adjusted p-values plus decisions.
     if p_values_for_correction:
-        sorted_pairs = sorted(zip(p_values_for_correction, test_keys))
-        m_tests = len(sorted_pairs)
-        for rank, (p_raw, k_test) in enumerate(sorted_pairs):
-            alpha_adj = 0.05 / (m_tests - rank)
-            analysis_report["secondary_hypotheses"][k_test]["holm_adjusted_alpha"] = alpha_adj
-            analysis_report["secondary_hypotheses"][k_test]["holm_significant"] = bool(p_raw < alpha_adj)
+        for k_test, holm_res in holm_adjust_pvalues(list(zip(test_keys, p_values_for_correction))).items():
+            analysis_report["secondary_hypotheses"][k_test].update(holm_res)
 
     # ==============================================================
     # 2. Overall Scenario Group Summaries
@@ -303,8 +337,8 @@ def analyze_phase10_results(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", default="results/phase10_final_v3")
-    parser.add_argument("--out-json", default="results/phase10_final_v3/phase10_summary_metrics.json")
+    parser.add_argument("--results-dir", default="results/phase10_final_v4")
+    parser.add_argument("--out-json", default="results/phase10_final_v4/phase10_summary_metrics.json")
     args = parser.parse_args()
 
     rep = analyze_phase10_results(Path(args.results_dir), Path(args.out_json))
@@ -314,6 +348,7 @@ if __name__ == "__main__":
     print(f"  FedAvg completion:          {h1['fedavg_mean']:.3f} +/- {h1['fedavg_std']:.3f}")
     print(f"  Trust-Threshold completion: {h1['trust_threshold_mean']:.3f} +/- {h1['trust_threshold_std']:.3f}")
     print(f"  Mean paired diff:           {h1['mean_paired_difference']:+.4f} (95% CI: [{h1['ci95_difference_low']:+.4f}, {h1['ci95_difference_high']:+.4f}])")
+    print(f"  Status:                     {h1.get('status', 'tested')}")
     print(f"  Paired t-test:              t({h1['sample_size']-1}) = {h1['t_statistic']}, p = {h1['p_value_twotailed']}")
     print(f"  Statistically significant:  {h1['statistically_significant_alpha_005']}")
     print("=======================================================\n")

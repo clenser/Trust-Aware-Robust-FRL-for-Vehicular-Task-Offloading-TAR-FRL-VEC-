@@ -19,12 +19,31 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 def get_available_datasets() -> Dict[str, Dict[str, Any]]:
     """Return dictionary of available result datasets and their paths."""
     datasets = {}
-    
-    # Phase 10 Final v3 (Full 880-Run Corrected Suite - Primary)
+
+    # Phase 10 Final v4 (Full 880-Run Corrected Suite - Primary)
+    p10_v4_csv = REPO_ROOT / "results" / "phase10_final_v4" / "phase10_experiment_runs.csv"
+    p10_v4_json = REPO_ROOT / "results" / "phase10_final_v4" / "phase10_summary_metrics.json"
+    if p10_v4_csv.exists():
+        datasets["Phase 10 Final v4 (Full 880-Run Corrected Suite)"] = {
+            "key": "phase10_final_v4",
+            "csv_path": p10_v4_csv,
+            "ablation_csv_path": REPO_ROOT / "results" / "phase10_final_v4" / "phase10_ablation_runs.csv",
+            "sensitivity_csv_path": REPO_ROOT / "results" / "phase10_final_v4" / "phase10_sensitivity_runs.csv",
+            "json_path": p10_v4_json,
+            "manifest_path": REPO_ROOT / "reports" / "PHASE10_FINAL_V4_RUN_MANIFEST.json",
+            "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10_final_v4",
+            "rounds": 8,
+            "core_rows": 630,
+            "ablation_rows": 70,
+            "sensitivity_rows": 180,
+            "description": "Corrected full matrix suite (630 core runs, 70 ablations, 180 sensitivity sweeps, 10+5 seeds, 8 rounds)."
+        }
+
+    # Phase 10 Final v3 (Historical - 880 Runs, superseded parameter values)
     p10_v3_csv = REPO_ROOT / "results" / "phase10_final_v3" / "phase10_experiment_runs.csv"
     p10_v3_json = REPO_ROOT / "results" / "phase10_final_v3" / "phase10_summary_metrics.json"
     if p10_v3_csv.exists():
-        datasets["Phase 10 Final v3 (Full 880-Run Corrected Suite)"] = {
+        datasets["Phase 10 Final v3 (Historical 880-Run Suite)"] = {
             "key": "phase10_final_v3",
             "csv_path": p10_v3_csv,
             "ablation_csv_path": REPO_ROOT / "results" / "phase10_final_v3" / "phase10_ablation_runs.csv",
@@ -33,7 +52,10 @@ def get_available_datasets() -> Dict[str, Dict[str, Any]]:
             "manifest_path": REPO_ROOT / "reports" / "PHASE10_FINAL_V3_RUN_MANIFEST.json",
             "figures_dir": REPO_ROOT / "reports" / "figures" / "phase10_final_v3",
             "rounds": 8,
-            "description": "Corrected full matrix suite (630 core runs, 70 ablations, 180 sensitivity sweeps, 10 seeds, 8 rounds)."
+            "core_rows": 630,
+            "ablation_rows": 70,
+            "sensitivity_rows": 180,
+            "description": "Historical 880-run suite (superseded: alpha=0.60/tau_exc=0.40 core values)."
         }
 
     # Phase 10 Final v2 (Historical Reconciled - 880 Runs)

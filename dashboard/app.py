@@ -63,7 +63,7 @@ def main():
         "Experiment Horizon Dataset",
         options=list(datasets.keys()),
         index=0,
-        help="Select between current multi-round horizon (4 rounds) and historical baseline (2 rounds)."
+        help="Select a results suite. Phase 10 Final suites use an 8-round horizon; older Phase 8 suites use 4-round and 2-round horizons."
     )
     dataset_info = datasets[selected_dataset_label]
     df = load_experiment_data(dataset_info["csv_path"])
@@ -73,7 +73,17 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown(f"**Dataset:** `{dataset_info['key']}`")
     st.sidebar.markdown(f"**Horizon:** {dataset_info['rounds']} FL Rounds")
-    st.sidebar.markdown(f"**Total Runs:** {len(df)}")
+    st.sidebar.markdown(f"**Core Runs (this table):** {len(df)}")
+    if "ablation_csv_path" in dataset_info:
+        abl_df = load_experiment_data(Path(dataset_info["ablation_csv_path"]))
+        sens_df = load_experiment_data(Path(dataset_info["sensitivity_csv_path"]))
+        st.sidebar.markdown(f"**Ablation Runs:** {len(abl_df)}")
+        st.sidebar.markdown(f"**Sensitivity Runs:** {len(sens_df)}")
+        st.sidebar.markdown(f"**Suite Total:** {len(df) + len(abl_df) + len(sens_df)}")
+        st.sidebar.caption(
+            "The main table shows the core matrix only. "
+            "Ablation and sensitivity results are in the Federated Convergence tab."
+        )
     st.sidebar.markdown(f"**Status:** Verified ✅")
 
     # Filter controls in sidebar
@@ -139,20 +149,21 @@ def main():
             against Byzantine poisoning, free-riding, and unreliable nodes in vehicular edge networks:
             - **Behavioural Trust ($T_{\\text{beh}}$):** Evaluates runtime task execution timeliness, completion, and communication reliability.
             - **Model-Update Trust ($T_{\\text{mod}}$):** Evaluates directional alignment ($m_2$), staleness ($m_3$), originality ($m_4$), and learning progress.
-            - **Trust-Aware Aggregation:** Dynamically down-weights low-trust updates and excludes anomalous updates below $\\tau = 0.50$.
+            - **Trust-Aware Aggregation:** Dynamically down-weights low-trust updates and excludes anomalous updates below the configured exclusion threshold (v4 core $\\tau_{\\text{exc}} = 0.35$; see dataset manifest for exact values).
             """
         )
 
         render_scenario_overview_table(filtered_df)
 
         st.markdown("---")
-        render_performance_comparison_chart(filtered_df)
+        render_performance_comparison_chart(filtered_df, rounds=dataset_info["rounds"])
 
     # TAB 2: SCENARIOS & ATTACKS
     with tab_scenarios:
         st.subheader("Scenario Matrix & Attack Vulnerability Breakdown")
+        n_groups = int(df["scenario_group"].nunique()) if (not df.empty and "scenario_group" in df.columns) else 0
         st.markdown(
-            "Empirical results across 10 defined scenarios spanning clean control, model poisoning, "
+            f"Empirical results across {n_groups} scenario groups spanning clean control, model poisoning, "
             "free-riding variants, unreliable execution, and honest non-IID heterogeneity."
         )
 
@@ -205,6 +216,45 @@ def main():
         else:
             st.info("No pre-rendered figures found for this dataset.")
 
+        st.markdown("#### Ablation Results (per-configuration, per-scenario means)")
+        if "ablation_csv_path" in dataset_info and Path(dataset_info["ablation_csv_path"]).exists():
+            abl_view = load_experiment_data(Path(dataset_info["ablation_csv_path"]))
+            if not abl_view.empty:
+                abl_agg = abl_view.groupby(["ablation_name", "scenario_group"])[
+                    ["completion_rate", "mean_reward", "f1", "fpr", "exclusion_rate"]
+                ].mean().reset_index()
+                st.dataframe(abl_agg.style.format({
+                    "completion_rate": "{:.1%}",
+                    "mean_reward": "{:.3f}",
+                    "f1": "{:.3f}",
+                    "fpr": "{:.3f}",
+                    "exclusion_rate": "{:.1%}"
+                }), use_container_width=True)
+            else:
+                st.info("Ablation CSV present but empty.")
+        else:
+            st.info("No ablation dataset registered for this selection.")
+
+        st.markdown("#### Sensitivity Results (per-parameter, per-value, per-scenario means)")
+        if "sensitivity_csv_path" in dataset_info and Path(dataset_info["sensitivity_csv_path"]).exists():
+            sens_view = load_experiment_data(Path(dataset_info["sensitivity_csv_path"]))
+            if not sens_view.empty:
+                sens_agg = sens_view.groupby(["sweep_param", "param_value", "scenario_group"])[
+                    ["completion_rate", "mean_reward", "f1", "fpr", "exclusion_rate"]
+                ].mean().reset_index()
+                st.dataframe(sens_agg.style.format({
+                    "param_value": "{:.2f}",
+                    "completion_rate": "{:.1%}",
+                    "mean_reward": "{:.3f}",
+                    "f1": "{:.3f}",
+                    "fpr": "{:.3f}",
+                    "exclusion_rate": "{:.1%}"
+                }), use_container_width=True)
+            else:
+                st.info("Sensitivity CSV present but empty.")
+        else:
+            st.info("No sensitivity dataset registered for this selection.")
+
         st.markdown("#### Strategy Comparison on Degradation")
         if not filtered_df.empty and "degradation_completion" in filtered_df.columns:
             deg_df = filtered_df.groupby(["strategy_label", "scenario_label"])[["degradation_completion", "degradation_reward"]].mean().reset_index()
@@ -238,7 +288,8 @@ def main():
                 )
                 st.markdown(
                     "Observed anomaly false positive rate for honest non-IID clients across tested conditions, "
-                    "measuring whether heterogeneous local updates avoid being misclassified as adversarial."
+                    "measuring whether heterogeneous local updates avoid being misclassified as adversarial. "
+                    "Rates are descriptive for the tested seeds and sample sizes; no bounded-FPR guarantee is claimed."
                 )
                 
                 # Show seed by seed honest runs

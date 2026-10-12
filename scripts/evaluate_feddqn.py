@@ -35,10 +35,14 @@ AGG_KEYS = ["completion_rate", "miss_rate", "failure_rate", "mean_latency_s",
 
 
 def greedy_rollout(config_path: str, checkpoint: str, seed: int, num_tasks: int,
-                   policy_name: str, hidden: list[int]) -> dict:
+                   policy_name: str, hidden: list[int], trust_lambda: float | None = None) -> dict:
     seed_all(20_000 + seed)
     env = VehicularEdgeEnv.from_yaml(config_path)
     env.cfg.num_tasks = num_tasks
+    if trust_lambda is not None:
+        # Held-out evaluation must use the run's effective trust smoothing,
+        # not whatever the YAML default happens to be (no train/eval mismatch).
+        env.cfg.trust_lambda = float(trust_lambda)
     env.reset(seed)
     # Federated checkpoints store raw global parameters; Phase 4 checkpoints
     # store agent dicts with a "q_state" entry. Support both, documented.

@@ -63,33 +63,44 @@ def test_matrix_plan_counts_and_uniqueness():
 
 
 def test_clean_iid_vs_honest_non_iid_distinction():
-    """Verify that Clean IID and Honest Non-IID controls use genuinely distinct client configurations."""
+    """Verify IID homogeneity and the exact v4 Non-IID resource table.
+
+    v4 honest Non-IID varies ONLY per-client CPU/bandwidth (exact mandated
+    table); all other conditions equal the declared IID baseline so resource
+    heterogeneity is the isolated non-IID factor.
+    """
     with open("configs/feddqn_phase10.yaml") as f:
         raw = yaml.safe_load(f)
 
     agent_kwargs = {"lr": 1e-3, "gamma": 0.99, "batch_size": 4, "capacity": 100}
 
-    # IID clients
+    # IID clients: fully homogeneous, declared baseline conditions
     iid_clients = build_clients_with_seed(raw, agent_kwargs, num_tasks=10, master_seed=0, is_iid=True)
     assert len(iid_clients) == 10
-    loads_iid = {c.env_cfg.task_load for c in iid_clients}
-    mobs_iid = {c.env_cfg.mobility for c in iid_clients}
-    rels_iid = {c.env_cfg.link_reliability for c in iid_clients}
-    # All IID clients must have identical configurations
-    assert len(loads_iid) == 1, "IID clients must have homogeneous task load"
-    assert len(mobs_iid) == 1, "IID clients must have homogeneous mobility"
-    assert len(rels_iid) == 1, "IID clients must have homogeneous link reliability"
+    assert {c.env_cfg.task_load for c in iid_clients} == {"medium"}
+    assert {c.env_cfg.mobility for c in iid_clients} == {"medium"}
+    assert {c.env_cfg.link_reliability for c in iid_clients} == {0.90}
+    assert {c.env_cfg.vehicle_cpu_ghz for c in iid_clients} == {2.0}
+    assert {c.env_cfg.bandwidth_hz for c in iid_clients} == {10000000.0}
 
-    # Non-IID clients
+    # Non-IID clients: exact mandated resource table, fixed other conditions
+    expected_cpu = [1.0, 1.2, 1.5, 1.8, 2.0, 2.2, 2.4, 2.6, 2.8, 3.0]
+    expected_bw = [5.0e6, 6.5e6, 8.0e6, 10.0e6, 10.0e6, 12.0e6, 14.0e6, 16.0e6, 18.0e6, 20.0e6]
     non_iid_clients = build_clients_with_seed(raw, agent_kwargs, num_tasks=10, master_seed=0, is_iid=False)
     assert len(non_iid_clients) == 10
-    loads_non_iid = {c.env_cfg.task_load for c in non_iid_clients}
-    mobs_non_iid = {c.env_cfg.mobility for c in non_iid_clients}
-    rels_non_iid = {c.env_cfg.link_reliability for c in non_iid_clients}
-    # Non-IID clients must exhibit heterogeneity
-    assert len(loads_non_iid) > 1, "Non-IID clients must have heterogeneous task loads"
-    assert len(mobs_non_iid) > 1, "Non-IID clients must have heterogeneous mobility"
-    assert len(rels_non_iid) > 1, "Non-IID clients must have heterogeneous link reliability"
+    for i, c in enumerate(non_iid_clients):
+        assert c.env_cfg.vehicle_cpu_ghz == pytest.approx(expected_cpu[i]), f"client {i} CPU"
+        assert c.env_cfg.bandwidth_hz == pytest.approx(expected_bw[i]), f"client {i} bandwidth"
+        assert c.env_cfg.task_load == "medium", f"client {i} task_load must equal IID baseline"
+        assert c.env_cfg.mobility == "medium", f"client {i} mobility must equal IID baseline"
+        assert c.env_cfg.link_reliability == pytest.approx(0.90), f"client {i} reliability"
+
+    # ... and those settings must reach the simulated vehicles and links
+    for i, c in enumerate(non_iid_clients):
+        c.env.reset(seed=1000 + i)
+        for v in c.env.vehicles:
+            assert v.cpu_freq_hz == pytest.approx(expected_cpu[i] * 1e9)
+            assert v.bandwidth_hz == pytest.approx(expected_bw[i])
 
 
 def test_unreliable_execution_counters_and_labels():

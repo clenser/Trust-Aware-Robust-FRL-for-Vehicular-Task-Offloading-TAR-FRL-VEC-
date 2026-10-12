@@ -90,13 +90,14 @@ def test_copy_update_flagged_by_originality():
 def test_stale_replay_staleness_calculation():
     hist_u = {
         "client_id": 0,
-        "round_trained": 0,
+        "round_trained": 1,
         "num_samples": 10,
         "staleness": 0,
         "state": make_tensor_dict({"w": [1.0, 1.0]}),
     }
-    # Replay in round 3 with staleness_age 2 -> round_trained should be 1
-    stale_u = create_stale_update(hist_u, staleness_age=2, current_round=3)
+    # Origin metadata is preserved: replay in round 3 of a round-1 update
+    # yields round_trained == 1 and actual staleness 3 - 1 = 2.
+    stale_u = create_stale_update(hist_u, current_round=3)
     assert stale_u["round_trained"] == 1
     assert stale_u["staleness"] == 2
 

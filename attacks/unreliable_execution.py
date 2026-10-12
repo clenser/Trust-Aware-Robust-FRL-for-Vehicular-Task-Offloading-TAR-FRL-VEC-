@@ -1,12 +1,27 @@
 """Scenario C: Unreliable Execution and Intermittent Connectivity.
 
+Fault model (documented scope): corruption of an unreliable CLIENT's local
+training experience. The wrapper sits around one client's whole environment,
+so an injected fault perturbs whatever task that client executes next —
+its observed outcome, reward signal, and behavioural-trust update — regardless
+of which destination served it. This does NOT simulate destination-specific
+unreliable edge execution; no claim of that form is made anywhere downstream.
+Unreliable clients are honest participants (is_malicious=False); their updates
+are ordinary FedAvg inputs, and detectors must not treat them as adversaries.
+
 Simulates:
 - Execution failures: task fails on node (success=0, path_ok=1) -> observed failure.
 - Delay / deadline misses: task delayed beyond deadline (success=0, deadline_miss=1, path_ok=1).
 - Intermittent connectivity: return link drops (path_ok=0) -> unobserved disconnect.
   Per SPEC §6 and EQ-13, a lost link carries timeliness neutrally and is NEVER automatic malice.
 
-Updates behavioural trust through the authentic `BehaviouralTrustTable.observe()` path.
+Trust is updated through the authentic `BehaviouralTrustTable.observe()` path
+exactly once per task: the base environment's honest observation is retracted
+(trust restored) and replaced by the faulty-evidence observation.
+
+Event precedence for the applied outcome (counters still record every sampled
+event independently, so drops+fails+delays may overlap while
+tasks_with_any_fault counts the union): drop > fail > delay.
 """
 
 from __future__ import annotations
@@ -87,6 +102,16 @@ class UnreliableEnvWrapper:
         return self.env.reset(seed)
 
     def step(self, action: int) -> StepResult:
+        # Resolve the true destination BEFORE the base step consumes anything:
+        # action 0 runs on the requester's own vehicle, else candidates[action-1].
+        # (candidates are cached per task, so this is the exact set step() uses.)
+        pre_cands = self.env.candidates()
+        if action == 0:
+            req_id = self.env.pending.requester_id if self.env.pending is not None else 0
+            dest_kind, dest_id = "vehicle", req_id
+        else:
+            _cand = pre_cands[action - 1]
+            dest_kind, dest_id = _cand.kind, _cand.node_id
         current_task = self.env.pending
         deadline = current_task.deadline_s if current_task is not None else self.env.cfg.deadline_max_s
 
@@ -119,13 +144,7 @@ class UnreliableEnvWrapper:
         new_latency = (res.latency_s * self.profile.delay_factor) if inject_delay else res.latency_s
         new_energy = res.energy_j
 
-        # If dropped or failed or delayed beyond deadline
-        last_rec = self.env.trust.history[-1] if self.env.trust.history else None
-
-        dest_kind = last_rec.kind if last_rec else ("vehicle" if action == 0 else "edge")
-        dest_id = last_rec.node_id if last_rec else 0
-
-        # Outcome logic
+        # Outcome logic with documented precedence: drop > fail > delay
         if inject_drop:
             # Disconnect with no observed outcome on return link (path_ok=False)
             new_success = False
@@ -146,9 +165,12 @@ class UnreliableEnvWrapper:
             new_failed = res.failed
             new_deadline_missed = res.deadline_missed
 
-        # Pop previous trust record and re-observe with faulty evidence
-        if self.env.trust.history:
-            self.env.trust.history.pop()
+        # Retract the base environment's honest observation (trust restored to
+        # pre-task value) so this task is observed exactly once, then re-observe
+        # with the faulty evidence attributed to the TRUE destination.
+        base_ev = getattr(self.env, "last_evidence", None)
+        expected_exe = base_ev.expected_exe_s if base_ev is not None else max(new_latency, 1e-9)
+        self.env.trust.retract_observation(res.task_id)
 
         ev = Evidence(
             kind=dest_kind,
@@ -157,10 +179,10 @@ class UnreliableEnvWrapper:
             path_ok=new_path_ok,
             latency_s=new_latency,
             deadline_s=deadline,
-            expected_exe_s=last_rec.s3 if last_rec else 1.0,
+            expected_exe_s=expected_exe,
             actual_exe_s=new_latency,
         )
-        self.env.trust.observe(self.env._task_counter, ev)
+        self.env.trust.observe(res.task_id, ev)
 
         dest_trust = self.env.trust.get(dest_kind, dest_id)
         import dataclasses

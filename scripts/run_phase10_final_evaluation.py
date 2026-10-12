@@ -55,6 +55,52 @@ from scripts.evaluate_feddqn import greedy_rollout
 
 logger = logging.getLogger("phase10_final")
 
+# v4 fixed core proposed-method configuration (single source of truth for
+# defaults; ablation/sensitivity items override explicitly per-field).
+CORE_DEFAULTS = {
+    "alpha": 0.50,
+    "tau_exc": 0.35,
+    "trust_lambda": 0.70,
+    "m2_dir_threshold": 0.45,
+    "m3_stale_threshold": 0.50,
+    "m4_orig_threshold": 0.00,
+    "tau_anomaly": 0.50,
+    "rounds": 8,
+    "num_clients": 10,
+}
+
+
+def resolve_detector_params(raw_cfg: dict, item) -> dict[str, float]:
+    """Precedence: explicit PlanItem override > YAML config > CORE_DEFAULTS.
+
+    A PlanItem field value of None means 'not overridden'. The YAML lookup
+    spans the detector, federated, and scenario sections. CORE_DEFAULTS is
+    the final fallback so resolution can never yield None. Returns the
+    effective detector/aggregation parameters for the run.
+    """
+    det = (raw_cfg.get("detector", {}) or {})
+    fed = (raw_cfg.get("federated", {}) or {})
+    scen = (raw_cfg.get("scenario", {}) or {})
+
+    def pick(item_val, core_key: str, *keys):
+        if item_val is not None:
+            return float(item_val)
+        for section in (det, fed, scen):
+            for k in keys:
+                if k in section and section[k] is not None:
+                    return float(section[k])
+        return float(CORE_DEFAULTS[core_key])
+
+    return {
+        "alpha": pick(item.alpha, "alpha", "alpha"),
+        "tau_exc": pick(item.tau_exc, "tau_exc", "tau_exc"),
+        "trust_lambda": pick(item.lambda_smooth, "trust_lambda", "trust_lambda"),
+        "m2_dir_threshold": pick(item.m2_dir_threshold, "m2_dir_threshold", "m2_dir_threshold"),
+        "m3_stale_threshold": pick(item.m3_stale_threshold, "m3_stale_threshold", "m3_stale_threshold"),
+        "m4_orig_threshold": pick(item.m4_orig_threshold, "m4_orig_threshold", "m4_orig_threshold"),
+        "tau_anomaly": pick(item.tau_anomaly, "tau_anomaly", "tau_anomaly"),
+    }
+
 
 @dataclass
 class PlanItem:
@@ -73,13 +119,17 @@ class PlanItem:
     ablation_name: str = "none"
     sweep_param: str = "none"
     param_value: float = 0.0
-    alpha: float = 0.60
-    tau_exc: float = 0.40
+    # Detector/aggregation overrides. None means "not overridden": the runner
+    # resolves the effective value from YAML config, else CORE_DEFAULTS.
+    # Core plan items leave these as None; ablation/sensitivity items set
+    # only the parameter(s) they intentionally vary.
+    alpha: float | None = None
+    tau_exc: float | None = None
     lambda_smooth: float | None = None
-    m2_dir_threshold: float = 0.45
-    m3_stale_threshold: float = 0.50
-    m4_orig_threshold: float = 0.00
-    tau_anomaly: float = 0.50
+    m2_dir_threshold: float | None = None
+    m3_stale_threshold: float | None = None
+    m4_orig_threshold: float | None = None
+    tau_anomaly: float | None = None
     skip_fl: bool = False
 
 
@@ -186,14 +236,19 @@ def build_phase10_experiment_plan(
     # ==========================================
     # Matrix B: Mandatory Ablations (70 runs)
     # ==========================================
+    # Matrix B: Mandatory Ablations (70 runs = 7 configs x 2 scenarios x 5 seeds).
+    # Each tuple: (name, strategy, alpha, tau_exc, lambda, tau_anomaly, skip_fl).
+    # None = hold at core defaults. no_threshold_exclusion keeps the
+    # Trust-Threshold strategy with tau_exc=0.00 (switching to trust_weighted
+    # would confound aggregation strategy with the exclusion mechanism).
     ablation_specs = [
-        ("full_proposed", "trust_threshold", 0.60, 0.40, None, 0.50, False),
-        ("no_behavioural_trust", "trust_threshold", 0.00, 0.40, None, 0.50, False),
-        ("no_model_trust", "trust_threshold", 1.00, 0.40, None, 0.50, False),
-        ("no_temporal_smoothing", "trust_threshold", 0.60, 0.40, 0.0, 0.50, False),
-        ("no_threshold_exclusion", "trust_weighted", 0.60, 0.00, None, 0.50, False),
-        ("fedavg_no_trust", "fedavg", 0.60, 0.00, None, 0.50, False),
-        ("local_rl_no_fl", "fedavg", 0.60, 0.00, None, 0.50, True),
+        ("full_proposed", "trust_threshold", 0.50, 0.35, None, 0.50, False),
+        ("no_behavioural_trust", "trust_threshold", 0.00, 0.35, None, 0.50, False),
+        ("no_model_trust", "trust_threshold", 1.00, 0.35, None, 0.50, False),
+        ("no_temporal_smoothing", "trust_threshold", 0.50, 0.35, 0.0, 0.50, False),
+        ("no_threshold_exclusion", "trust_threshold", 0.50, 0.00, None, 0.50, False),
+        ("fedavg_no_trust", "fedavg", None, None, None, None, False),
+        ("local_rl_no_fl", "fedavg", None, None, None, None, True),
     ]
     ablation_scenarios = [
         ("poisoning_sign_flip", "sign_flip", 1.0),
@@ -250,7 +305,6 @@ def build_phase10_experiment_plan(
                     sweep_param="alpha",
                     param_value=a_val,
                     alpha=a_val,
-                    tau_exc=0.40,
                 ))
 
     # Sweep 2: Tau Exclusion (5 values)
@@ -272,7 +326,6 @@ def build_phase10_experiment_plan(
                     is_iid=False,
                     sweep_param="tau_exc",
                     param_value=tau_val,
-                    alpha=0.60,
                     tau_exc=tau_val,
                 ))
 
@@ -295,8 +348,6 @@ def build_phase10_experiment_plan(
                     is_iid=False,
                     sweep_param="lambda_smooth",
                     param_value=lam_val,
-                    alpha=0.60,
-                    tau_exc=0.40,
                     lambda_smooth=lam_val,
                 ))
 
@@ -319,11 +370,7 @@ def build_phase10_experiment_plan(
                     is_iid=False,
                     sweep_param="m2_dir_threshold",
                     param_value=anom_val,
-                    alpha=0.60,
-                    tau_exc=0.40,
-                    lambda_smooth=0.70,
                     m2_dir_threshold=anom_val,
-                    tau_anomaly=0.50,
                 ))
 
     return plan
@@ -337,13 +384,18 @@ def build_clients_with_seed(
     is_iid: bool = False,
     lambda_smooth: float | None = None,
 ) -> list[FedClient]:
-    """Build client environments with genuine master seed derivation and IID/Non-IID control."""
+    """Build client environments with genuine master seed derivation and IID/Non-IID control.
+
+    Effective trust lambda precedence: explicit lambda_smooth override, else the
+    YAML scenario trust_lambda already loaded into EnvConfig by from_raw
+    (v4 core: 0.70). No independent hard-coded default lives here.
+    """
     from environment.config import EnvConfig
     base = EnvConfig.from_raw(raw)
     fed = raw.get("federated", {})
     conds = fed.get("client_conditions", [{}])
     num_clients = int(fed.get("num_clients", 10))
-    eff_lam = float(lambda_smooth if lambda_smooth is not None else 0.70)
+    eff_lam = float(lambda_smooth if lambda_smooth is not None else base.trust_lambda)
     clients = []
 
     for i in range(num_clients):
@@ -401,7 +453,7 @@ def execute_plan_item(
     fed_cfg = raw_cfg.get("federated", {})
     dqn_cfg = raw_cfg.get("dqn", {})
     env_base = raw_cfg.get("scenario", {})
-    rounds = int(fed_cfg.get("rounds", 8))
+    rounds = int(fed_cfg.get("rounds", CORE_DEFAULTS["rounds"]))
     local_eps = int(fed_cfg.get("local_episodes", 1))
     frac = float(fed_cfg.get("participation_fraction", 1.0))
     clip_c = float(fed_cfg.get("clip_c", 3.0))
@@ -409,6 +461,19 @@ def execute_plan_item(
     warmup = int(dqn_cfg.get("warmup_steps", 0))
     sync_every = int(dqn_cfg.get("target_sync_steps", 20))
     hidden = list(dqn_cfg.get("hidden", [16, 16]))
+
+    # Resolve effective detector/aggregation parameters once (single source of
+    # truth): explicit PlanItem override > YAML config > CORE_DEFAULTS.
+    # These resolved values — not planned values — drive the server, the
+    # detection accounting, the clients, the evaluation resets, and the CSV.
+    resolved = resolve_detector_params(raw_cfg, item)
+    eff_alpha = resolved["alpha"]
+    eff_tau_exc = resolved["tau_exc"]
+    eff_lambda = resolved["trust_lambda"]
+    m2_dir_thresh = resolved["m2_dir_threshold"]
+    m4_orig_thresh = resolved["m4_orig_threshold"]
+    m3_stale_thresh = resolved["m3_stale_threshold"]
+    tau_anomaly = resolved["tau_anomaly"]
 
     agent_kwargs = {
         "lr": float(dqn_cfg.get("lr", 1e-3)),
@@ -422,14 +487,16 @@ def execute_plan_item(
         "hidden": hidden,
     }
 
-    # Deterministic client construction with master seed derivation
+    # Deterministic client construction with master seed derivation.
+    # Pass the resolved lambda explicitly so every client, env, wrapper,
+    # and reset in this run uses the effective value.
     clients = build_clients_with_seed(
         raw_cfg,
         agent_kwargs,
         num_tasks,
         item.master_seed,
         is_iid=item.is_iid,
-        lambda_smooth=item.lambda_smooth,
+        lambda_smooth=eff_lambda,
     )
 
     # Build scenario assignment
@@ -473,8 +540,8 @@ def execute_plan_item(
     server = FedServer(
         template.q_net.state_dict(),
         strategy=item.strategy if not item.skip_fl else "fedavg",
-        alpha=item.alpha,
-        tau_exc=item.tau_exc,
+        alpha=eff_alpha,
+        tau_exc=eff_tau_exc,
         clip_c=clip_c,
     )
 
@@ -485,12 +552,7 @@ def execute_plan_item(
     detection_history = {"y_true": [], "y_pred": [], "excluded": []}
     has_detector = (item.strategy != "fedavg" and not item.skip_fl)
 
-    # Configured detector thresholds
-    m2_dir_thresh = item.m2_dir_threshold
-    m4_orig_thresh = item.m4_orig_threshold
-    m3_stale_thresh = item.m3_stale_threshold
-    tau_anomaly = item.tau_anomaly
-
+    # Configured detector thresholds (resolved effective values, see above).
     server_rng = np.random.default_rng(40000 + item.master_seed)
 
     for r in range(rounds):
@@ -590,7 +652,8 @@ def execute_plan_item(
     fp_bytes = b"".join([v.numpy().tobytes() for k, v in sorted(final_state.items())])
     ckpt_hash = hashlib.sha256(fp_bytes).hexdigest()[:16]
 
-    # Clean held-out evaluation across eval seeds
+    # Clean held-out evaluation across eval seeds. The evaluation env uses the
+    # same effective trust lambda as training (no train/eval mismatch).
     eval_rows = []
     config_path = raw_cfg_base["_config_path"]
     for ev_seed in item.eval_seeds:
@@ -601,6 +664,7 @@ def execute_plan_item(
             num_tasks=num_tasks,
             policy_name=f"{item.strategy}_seed{item.master_seed}",
             hidden=hidden,
+            trust_lambda=eff_lambda,
         )
         validate_task_accounting(row["successes"], row["deadline_misses"], row["failures"], num_tasks)
         eval_rows.append(row)
@@ -644,12 +708,13 @@ def execute_plan_item(
         "ablation_name": item.ablation_name,
         "sweep_param": item.sweep_param,
         "param_value": item.param_value,
-        "alpha": item.alpha,
-        "tau_exc": item.tau_exc,
-        "tau_anomaly": item.tau_anomaly,
+        "alpha": eff_alpha,
+        "tau_exc": eff_tau_exc,
+        "tau_anomaly": tau_anomaly,
         "m2_dir_threshold": m2_dir_thresh,
         "m3_stale_threshold": m3_stale_thresh,
         "m4_orig_threshold": m4_orig_thresh,
+        "lambda_smooth": eff_lambda,
         "lambda_smooth": actual_runtime_lambda,
         "runtime_trust_lambda": actual_runtime_lambda,
         "effective_trust_lambda": actual_runtime_lambda,
@@ -687,6 +752,23 @@ def _worker_wrapper(args: tuple[PlanItem, dict, Path]) -> dict[str, Any]:
     return execute_plan_item(item, raw_cfg_base, checkpoints_dir)
 
 
+def assert_plan_counts(plan: list[PlanItem]) -> dict[str, int]:
+    """Pre-execution design assertion: the plan must total exactly 880 runs
+    (630 core + 70 ablation + 180 sensitivity) with unique run IDs. Raises on
+    any deviation so a misconfigured matrix can never run silently."""
+    core = [p for p in plan if p.matrix_type == "core"]
+    abl = [p for p in plan if p.matrix_type == "ablation"]
+    sens = [p for p in plan if p.matrix_type == "sensitivity"]
+    counts = {"core": len(core), "ablation": len(abl), "sensitivity": len(sens), "total": len(plan)}
+    assert counts["core"] == 630, f"core runs: {counts['core']} != 630"
+    assert counts["ablation"] == 70, f"ablation runs: {counts['ablation']} != 70"
+    assert counts["sensitivity"] == 180, f"sensitivity runs: {counts['sensitivity']} != 180"
+    assert counts["total"] == 880, f"total runs: {counts['total']} != 880"
+    run_ids = [p.run_id for p in plan]
+    assert len(set(run_ids)) == len(run_ids), "duplicate run_ids in plan"
+    return counts
+
+
 def run_full_phase10_matrix(
     config_path: str = "configs/feddqn_phase10.yaml",
     outdir: Path = Path("results/phase10_final_v3"),
@@ -711,10 +793,11 @@ def run_full_phase10_matrix(
         num_seeds_secondary=num_seeds_secondary,
     )
 
-    core_count = sum(1 for p in plan if p.matrix_type == "core")
-    abl_count = sum(1 for p in plan if p.matrix_type == "ablation")
-    sens_count = sum(1 for p in plan if p.matrix_type == "sensitivity")
-    total_count = len(plan)
+    # Fail fast on any matrix-shape deviation (design assertion, not a report).
+    design_counts = assert_plan_counts(plan)
+    core_count, abl_count, sens_count = (design_counts["core"], design_counts["ablation"],
+                                         design_counts["sensitivity"])
+    total_count = design_counts["total"]
 
     print("=================================================================")
     print(f"Phase 10 Remediation: Executing Complete Matrix ({total_count} runs)")
@@ -808,7 +891,9 @@ def run_full_phase10_matrix(
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default="configs/feddqn_phase10.yaml")
-    parser.add_argument("--outdir", default="results/phase10_final_v3")
+    parser.add_argument("--outdir", default="results/phase10_final_v4")
+    # v4 fixed design: 10 core seeds + 5 secondary seeds = 880 runs exactly.
+    # The pre-execution design assertion enforces these values.
     parser.add_argument("--seeds-core", type=int, default=10)
     parser.add_argument("--seeds-sec", type=int, default=5)
     args = parser.parse_args()

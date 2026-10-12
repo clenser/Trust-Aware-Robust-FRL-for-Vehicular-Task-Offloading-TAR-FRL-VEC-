@@ -154,11 +154,12 @@ def render_detection_metrics_chart(df: pd.DataFrame) -> None:
         st.altair_chart(pr_chart, use_container_width=True)
 
 
-def render_performance_comparison_chart(df: pd.DataFrame) -> None:
+def render_performance_comparison_chart(df: pd.DataFrame, rounds: int | None = None) -> None:
     """Render completion rate and latency degradation comparisons."""
     st.subheader("Held-Out Offloading Policy Performance Under Aggregation")
+    horizon_note = f"after {rounds} federated rounds" if rounds else "after the dataset's federated horizon"
     st.caption(
-        "Note: These metrics evaluate the global model produced after four federated rounds on a standardized, clean held-out test environment. "
+        f"Note: These metrics evaluate the global model produced {horizon_note} on a standardized, clean held-out test environment. "
         "Training-time execution faults (such as Scenario C unreliable execution) alter local client training updates "
         "and behavioural trust, while held-out rollout tests model generalization and robustness."
     )

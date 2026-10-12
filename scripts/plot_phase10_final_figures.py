@@ -1,8 +1,9 @@
-"""Phase 10 Final Remediation: Publication Figure and LaTeX Table Generator.
+"""Phase 10 Final v4: Publication Figure and LaTeX Table Generator.
 
-Reads from results/phase10_final_v2/ (or user-specified input dir) and writes to:
-- reports/figures/phase10_final_v2/
-- reports/tables/phase10_final_v2/
+Reads v4 CSVs and writes to reports/figures/phase10_final_v4/ and
+reports/tables/phase10_final_v4/. Every figure/table is generated from the
+given results dir only; error bars are Student-t 95% confidence intervals
+(computed here, not hard-coded); legends derive from the data.
 """
 
 from __future__ import annotations
@@ -14,14 +15,34 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from scipy import stats as sstats
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
 
+def ci95_half(vals) -> float:
+    """Student-t 95% CI half-width for a cell; 0.0 when undefined (n<2 or zero variance)."""
+    a = np.asarray(list(vals), dtype=float)
+    a = a[~np.isnan(a)]
+    n = len(a)
+    if n < 2:
+        return 0.0
+    s = float(a.std(ddof=1))
+    if s <= 0:
+        return 0.0
+    return float(sstats.t.ppf(0.975, df=n - 1) * s / np.sqrt(n))
+
+
+def group_mean_ci(sub: pd.DataFrame, group_keys: list[str], metric: str) -> pd.DataFrame:
+    """Per-cell mean and 95% CI half-width over seeds/runs."""
+    grp = sub.groupby(group_keys)[metric]
+    return pd.DataFrame({"mean": grp.mean(), "ci": grp.apply(ci95_half)}).reset_index()
+
+
 def generate_plots_and_tables(
-    results_dir: Path = Path("results/phase10_final_v3"),
-    out_figs: Path = Path("reports/figures/phase10_final_v3"),
-    out_tables: Path = Path("reports/tables/phase10_final_v3"),
+    results_dir: Path = Path("results/phase10_final_v4"),
+    out_figs: Path = Path("reports/figures/phase10_final_v4"),
+    out_tables: Path = Path("reports/tables/phase10_final_v4"),
 ) -> None:
     out_figs.mkdir(parents=True, exist_ok=True)
     out_tables.mkdir(parents=True, exist_ok=True)
@@ -43,15 +64,17 @@ def generate_plots_and_tables(
         ("poisoning_perturbation", "Gaussian Perturbation", "#dc2626", "v"),
     ]:
         sub = df_core[(df_core["scenario_group"] == sg) & (df_core["strategy"] == "trust_threshold")]
-        grp = sub.groupby("attack_fraction")["f1"].agg(["mean", "std"])
+        if sub.empty:
+            continue
+        cell = group_mean_ci(sub, ["attack_fraction"], "f1").sort_values("attack_fraction")
         ax.errorbar(
-            grp.index, grp["mean"], yerr=grp["std"],
+            cell["attack_fraction"], cell["mean"], yerr=cell["ci"],
             label=label, color=color, marker=marker, capsize=4, linewidth=1.8
         )
 
     ax.set_xlabel("Malicious / Free-Riding Fraction ($f$)", fontsize=11, fontweight="bold")
     ax.set_ylabel("Detection F1 Score", fontsize=11, fontweight="bold")
-    ax.set_title("Detection F1 Score Across Attack Fractions (10 Seeds, 8 Rounds)", fontsize=12, fontweight="bold")
+    ax.set_title("Detection F1 Score Across Attack Fractions (10 Seeds, 8 Rounds; bars: 95% CI)", fontsize=12, fontweight="bold")
     ax.set_ylim(-0.05, 1.05)
     ax.legend(frameon=True, loc="center right", fontsize=9)
     plt.tight_layout()
@@ -68,15 +91,15 @@ def generate_plots_and_tables(
         ("fedavg", "Standard FedAvg", "#dc2626", "x"),
     ]:
         sub = df_core[(df_core["scenario_group"] == "freeriding_zero_update") & (df_core["strategy"] == strat)]
-        grp = sub.groupby("attack_fraction")["completion_rate"].agg(["mean", "std"])
+        cell = group_mean_ci(sub, ["attack_fraction"], "completion_rate").sort_values("attack_fraction")
         ax.errorbar(
-            grp.index, grp["mean"], yerr=grp["std"],
+            cell["attack_fraction"], cell["mean"], yerr=cell["ci"],
             label=label, color=color, marker=marker, capsize=4, linewidth=1.8
         )
 
     ax.set_xlabel("Zero-Update Free-Rider Fraction ($f$)", fontsize=11, fontweight="bold")
     ax.set_ylabel("Held-Out Task Completion Rate", fontsize=11, fontweight="bold")
-    ax.set_title("Task Completion Under Zero-Update Free-Riding (10 Seeds)", fontsize=12, fontweight="bold")
+    ax.set_title("Task Completion Under Zero-Update Free-Riding (10 Seeds; bars: 95% CI)", fontsize=12, fontweight="bold")
     ax.set_ylim(0.55, 1.00)
     ax.legend(frameon=True, loc="lower left", fontsize=9)
     plt.tight_layout()
@@ -91,7 +114,7 @@ def generate_plots_and_tables(
     fprs = h_sub["fpr"].dropna()
     ax.hist(fprs, bins=6, color="#0284c7", edgecolor="black", alpha=0.8)
     ax.axvline(fprs.mean(), color="#dc2626", linestyle="--", linewidth=2, label=f"Mean Anomaly FPR: {fprs.mean():.1%}")
-    ax.axvline(0.05, color="#16a34a", linestyle=":", linewidth=2, label="5% Target Threshold")
+    ax.axvline(0.05, color="#16a34a", linestyle=":", linewidth=2, label="5% reference level (descriptive only; no bounded-FPR guarantee)")
     ax.set_xlabel("Honest Non-IID Anomaly Detection Rate (FPR)", fontsize=11, fontweight="bold")
     ax.set_ylabel("Seed Count (out of 10)", fontsize=11, fontweight="bold")
     ax.set_title("Honest Non-IID Anomaly Rate Across 10 Seeds (8 Rounds)", fontsize=12, fontweight="bold")
@@ -122,7 +145,8 @@ def generate_plots_and_tables(
         ax2.set_xlabel("Severity Profile", fontsize=10, fontweight="bold")
         ax2.set_ylabel("Held-Out Completion Rate", fontsize=10, fontweight="bold")
         ax2.set_ylim(0.50, 1.00)
-        ax2.legend(["FedAvg", "Trust-Threshold", "Trust-Weighted"], fontsize=9)
+        _handles2, _ = ax2.get_legend_handles_labels()
+        ax2.legend(_handles2, list(grp_comp.columns), fontsize=9)
 
     plt.tight_layout()
     fig.savefig(out_figs / "unreliable_execution_severity.png")
@@ -131,15 +155,22 @@ def generate_plots_and_tables(
     # ==============================================================
     # Figure 5: Ablation Study Comparison (7 Configurations)
     # ==============================================================
+    # Figure 5: Ablation Study Comparison (7 Configurations).
+    # Legend entries derive from the data columns present in the CSV.
     fig, ax = plt.subplots(figsize=(9, 4.5), dpi=300)
     abl_grp = df_abl.groupby(["ablation_name", "scenario_group"])["completion_rate"].mean().unstack()
+    _scen_order = list(abl_grp.columns)
+    _scen_labels = {"poisoning_sign_flip": "Sign-Flip Poisoning",
+                    "freeriding_zero_update": "Zero-Update Free-Riding",
+                    "freeriding_stale_replay": "Stale-Replay Free-Riding"}
     abl_grp.plot(kind="bar", ax=ax, colormap="tab10", edgecolor="black")
     ax.set_title("Mandatory Ablation Study: Held-Out Completion Rate (5 Seeds)", fontsize=12, fontweight="bold")
     ax.set_xlabel("Architectural Configuration", fontsize=11, fontweight="bold")
     ax.set_ylabel("Held-Out Task Completion", fontsize=11, fontweight="bold")
     ax.set_xticklabels(ax.get_xticklabels(), rotation=30, ha="right", fontsize=9)
     ax.set_ylim(0.50, 1.00)
-    ax.legend(["Zero-Update Free-Riding", "Sign-Flip Poisoning"], fontsize=9)
+    _handles5, _ = ax.get_legend_handles_labels()
+    ax.legend(_handles5, [_scen_labels.get(s, s) for s in _scen_order], fontsize=9)
     plt.tight_layout()
     fig.savefig(out_figs / "ablation_comparison.png")
     plt.close(fig)
@@ -157,13 +188,15 @@ def generate_plots_and_tables(
     for param_key, param_title, p_ax in params:
         sub = df_sens[df_sens["sweep_param"].isin([param_key, "tau_anomaly" if param_key == "m2_dir_threshold" else param_key])]
         if not sub.empty:
-            grp = sub.groupby(["param_value", "scenario_group"])["completion_rate"].mean().unstack()
-            grp.plot(ax=p_ax, marker="o", linewidth=2)
+            piv = sub.groupby(["param_value", "scenario_group"])["completion_rate"].mean().unstack()
+            present_scens = list(piv.columns)
+            piv.plot(ax=p_ax, marker="o", linewidth=2)
             p_ax.set_title(param_title, fontsize=11, fontweight="bold")
             p_ax.set_xlabel("Parameter Value", fontsize=10)
             p_ax.set_ylabel("Completion Rate", fontsize=10)
             p_ax.set_ylim(0.60, 1.00)
-            p_ax.legend(["Zero-Update / Replay", "Sign-Flip"], fontsize=8)
+            handles, _ = p_ax.get_legend_handles_labels()
+            p_ax.legend(handles, present_scens, fontsize=8, title="Scenario (per-panel data)")
 
     plt.tight_layout()
     fig.savefig(out_figs / "sensitivity_sweeps.png")
@@ -204,9 +237,9 @@ def generate_plots_and_tables(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", default="results/phase10_final_v3")
-    parser.add_argument("--out-figs", default="reports/figures/phase10_final_v3")
-    parser.add_argument("--out-tables", default="reports/tables/phase10_final_v3")
+    parser.add_argument("--results-dir", default="results/phase10_final_v4")
+    parser.add_argument("--out-figs", default="reports/figures/phase10_final_v4")
+    parser.add_argument("--out-tables", default="reports/tables/phase10_final_v4")
     args = parser.parse_args()
 
     generate_plots_and_tables(Path(args.results_dir), Path(args.out_figs), Path(args.out_tables))

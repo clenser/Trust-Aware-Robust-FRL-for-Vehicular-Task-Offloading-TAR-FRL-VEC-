@@ -78,6 +78,8 @@ class VehicularEdgeEnv:
         self.pending: Task | None = None
         self._cand_cache: list[Candidate] | None = None
         self._cand_task_id: int = -1
+        self.last_evidence: Evidence | None = None
+        self.last_evidence_task_id: int = -1
         self.trust = BehaviouralTrustTable(config.num_vehicles, config.num_edge_nodes,
                                            tuple(config.trust_beta), config.trust_lambda,
                                            config.trust_rho, config.trust_prior)
@@ -287,8 +289,14 @@ class VehicularEdgeEnv:
         # ageing for every node NOT observed this step (SPEC EQ-13).
         # Local execution updates the requester's own vehicle entry.
         key_kind = "vehicle" if dest_kind == "local" else dest_kind
-        self.trust.observe(t.task_id, Evidence(key_kind, dest_id, outcome["success"], path_ok,
-                                               latency, t.deadline_s, _expected_exe, exe_s))
+        honest_evidence = Evidence(key_kind, dest_id, outcome["success"], path_ok,
+                                   latency, t.deadline_s, _expected_exe, exe_s)
+        self.trust.observe(t.task_id, honest_evidence)
+        # Exposed for fault-injection wrappers: the exact decision-time evidence
+        # (expected_exe captured before dynamics advanced) behind this task's
+        # observation, so wrappers can retract-and-re-observe without guessing.
+        self.last_evidence = honest_evidence
+        self.last_evidence_task_id = t.task_id
         self.trust.age_all(t.task_id, except_key=(key_kind, dest_id))
         self.pending = self._next_task()
         obs, mask = self.current_observation()

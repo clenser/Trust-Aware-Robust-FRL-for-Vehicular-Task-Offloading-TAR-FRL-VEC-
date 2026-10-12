@@ -25,23 +25,18 @@ def apply_copy_update(target_state: dict[str, torch.Tensor]) -> dict[str, torch.
 def create_stale_update(
     historical_update: dict,
     current_round: int = 2,
-    staleness_age: int | None = None,
 ) -> dict:
-    """Stale-replay attack (B3): Replays a previous update with historical round metadata.
+    """Stale-replay attack (B3): replays a previous update with its genuine origin.
 
-    Preserves `round_trained = historical_update['round_trained']` so the server
-    computes the actual age `current_round - round_trained = staleness_age`.
+    Provenance rule: the originating `round_trained` is ALWAYS preserved and the
+    actual staleness is computed as `current_round - origin_round`. Origin
+    metadata is never rewritten to manufacture a target age. If the caller
+    needs a specific age but no matching update exists, it must select an
+    explicitly documented fallback itself (see AttackPipeline) and report the
+    actual resulting age.
     """
     stale_u = copy.deepcopy(historical_update)
-    if "round_trained" in historical_update and staleness_age is None:
-        origin_round = int(historical_update["round_trained"])
-        stale_u["round_trained"] = origin_round
-        stale_u["staleness"] = max(0, current_round - origin_round)
-    elif staleness_age is not None:
-        stale_u["round_trained"] = max(0, current_round - staleness_age)
-        stale_u["staleness"] = staleness_age
-    else:
-        origin_round = int(stale_u.get("round_trained", 0))
-        stale_u["round_trained"] = origin_round
-        stale_u["staleness"] = max(0, current_round - origin_round)
+    origin_round = int(stale_u.get("round_trained", 0))
+    stale_u["round_trained"] = origin_round
+    stale_u["staleness"] = max(0, current_round - origin_round)
     return stale_u

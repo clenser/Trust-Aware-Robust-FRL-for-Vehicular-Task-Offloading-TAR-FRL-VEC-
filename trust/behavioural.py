@@ -7,6 +7,7 @@ Phase 6+ can reuse it. All scores live in [0, 1]; every update is recorded.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import math
 
 from specs import formulas as F
 
@@ -96,6 +97,15 @@ class BehaviouralTrustTable:
         - s4: communication reliability, 1 iff the return path survived.
         """
         key = self._check(ev.kind, ev.node_id)
+        for name, val in (("latency_s", ev.latency_s), ("deadline_s", ev.deadline_s),
+                          ("expected_exe_s", ev.expected_exe_s), ("actual_exe_s", ev.actual_exe_s)):
+            if not math.isfinite(val):
+                raise ValueError(f"non-finite evidence {name}={val} for node {key}: "
+                                 "refusing to score NaN/inf as trust (would poison silently)")
+            if val < 0:
+                raise ValueError(f"negative evidence {name}={val} for node {key}")
+        if ev.deadline_s <= 0:
+            raise ValueError(f"non-positive deadline {ev.deadline_s} for node {key}")
         s1 = 1.0 if ev.success else 0.0
         if ev.path_ok:
             s2 = F.clamp01(1.0 - ev.latency_s / ev.deadline_s)
@@ -115,6 +125,27 @@ class BehaviouralTrustTable:
         rec = TrustRecord(task_id, ev.kind, ev.node_id, event, s1, s2, s3, s4, before, after)
         self.history.append(rec)
         return rec
+
+    def retract_observation(self, task_id: int) -> TrustRecord | None:
+        """Remove the latest non-idle observation record for a task and restore
+        the node's trust to its pre-observation value.
+
+        Support hook for fault-injection wrappers (Phase 8/10): the wrapper lets
+        the base environment record its honest observation, then retracts it and
+        re-observes once with faulty evidence. This preserves exactly-one-
+        observation semantics per task (no double temporal smoothing) and keeps
+        the audit history truthful. Returns the retracted record, or None if
+        no observation record exists for the task.
+        Note: the per-node carried timeliness (_last_s2) is intentionally left
+        in place, since it derives from the same task attempt's measured latency.
+        """
+        for idx in range(len(self.history) - 1, -1, -1):
+            rec = self.history[idx]
+            if rec.task_id == task_id and rec.event != "idle_age":
+                del self.history[idx]
+                self._t[(rec.kind, rec.node_id)] = rec.t_before
+                return rec
+        return None
 
     def age_all(self, task_id: int, except_key: tuple[str, int] | None = None) -> None:
         """EQ-13 disconnect rule: non-observed nodes age neutrally toward the
