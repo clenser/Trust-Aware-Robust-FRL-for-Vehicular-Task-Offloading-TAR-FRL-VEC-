@@ -110,7 +110,8 @@ def run_federated(raw: dict, outdir: Path, train_independent: bool):
         row = {"round": r, "selected": selected, "train_rewards": train_rewards,
                "mean_trust": trust, **{k: log[k] for k in
                ("strategy", "status", "participants", "accepted", "excluded", "weights",
-                "staleness", "upload_bytes", "download_bytes_per_client", "agg_time_s")}}
+                "staleness", "upload_bytes", "download_bytes_per_client", "agg_time_s", "trust_reports")}}
+
         round_rows.append(row)
         print(f"round={r} strategy={log['strategy']} status={log['status']} "
               f"accepted={log['accepted']} excluded={log['excluded']} "

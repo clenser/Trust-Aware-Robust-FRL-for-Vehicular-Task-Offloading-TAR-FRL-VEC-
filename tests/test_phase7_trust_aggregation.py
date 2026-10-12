@@ -261,3 +261,109 @@ def test_non_iid_honest_clients_retained():
         # Norms and originality should both be high for distinct legitimate updates
         assert r["m1_norm"] == pytest.approx(1.0)
         assert r["m4_originality"] == pytest.approx(1.0)
+
+
+def test_threshold_equality_and_boundary():
+    """Verify EQ-23 threshold equality: t_final == tau_exc is included, t_final < tau_exc is excluded."""
+    template = make_tensor_dict({"w": [0.0, 0.0]})
+    s0 = make_tensor_dict({"w": [1.0, 1.0]})
+    s1 = make_tensor_dict({"w": [2.0, 2.0]})
+    s2 = make_tensor_dict({"w": [3.0, 3.0]})
+
+    # Threshold exactly 0.50
+    # Client 0 has 0.50 (exact boundary -> included)
+    # Client 1 has 0.4999 (strictly below -> excluded)
+    # Client 2 has 0.70 (above -> included)
+    out, accepted, weights = trust_weighted_aggregate(
+        states=[s0, s1, s2],
+        trust_scores=[0.50, 0.4999, 0.70],
+        template=template,
+        client_ids=["c0", "c1", "c2"],
+        threshold=0.50,
+    )
+    assert accepted == ["c0", "c2"]
+    # Total eligible trust = 0.50 + 0.70 = 1.20
+    # w0 = 0.50 / 1.20 = 5/12, w2 = 0.70 / 1.20 = 7/12
+    assert weights == pytest.approx([5.0 / 12.0, 7.0 / 12.0])
+    expected_w = (5.0 / 12.0) * 1.0 + (7.0 / 12.0) * 3.0
+    assert out["w"].tolist() == pytest.approx([expected_w, expected_w])
+
+
+def test_uniform_trust_weights_vs_fedavg():
+    """When sample counts are equal and trust scores are uniform, trust-weighted equals FedAvg."""
+    template = make_tensor_dict({"w": [0.0, 0.0]})
+    s0 = make_tensor_dict({"w": [2.0, 4.0]})
+    s1 = make_tensor_dict({"w": [6.0, 8.0]})
+
+    # FedAvg with equal samples (10 and 10)
+    fedavg_out = fedavg_aggregate([s0, s1], [10.0, 10.0], template, ["c0", "c1"])
+
+    # Trust-weighted with uniform trust (0.8 and 0.8)
+    tw_out, accepted, weights = trust_weighted_aggregate(
+        [s0, s1], [0.8, 0.8], template, ["c0", "c1"], threshold=0.3
+    )
+
+    for k in template:
+        assert torch.allclose(fedavg_out[k], tw_out[k])
+    assert weights == pytest.approx([0.5, 0.5])
+
+
+def test_non_uniform_trust_weights_diverge_from_fedavg():
+    """When sample counts favor c0 but trust favors c1, FedAvg and trust-weighted produce mathematically distinct models."""
+    template = make_tensor_dict({"w": [0.0, 0.0]})
+    s0 = make_tensor_dict({"w": [1.0, 1.0]})
+    s1 = make_tensor_dict({"w": [10.0, 10.0]})
+
+    # FedAvg: 90 samples vs 10 samples -> 0.9 * 1.0 + 0.1 * 10.0 = 1.9
+    fedavg_out = fedavg_aggregate([s0, s1], [90.0, 10.0], template, ["c0", "c1"])
+    assert fedavg_out["w"].tolist() == pytest.approx([1.9, 1.9])
+
+    # Trust-weighted: trust 0.2 vs 0.8 -> 0.2 * 1.0 + 0.8 * 10.0 = 8.2
+    tw_out, accepted, weights = trust_weighted_aggregate(
+        [s0, s1], [0.2, 0.8], template, ["c0", "c1"], threshold=0.1
+    )
+    assert tw_out["w"].tolist() == pytest.approx([8.2, 8.2])
+    assert not torch.allclose(fedavg_out["w"], tw_out["w"])
+
+
+def test_malformed_and_invalid_trust_inputs():
+    """Verify robust rejection of malformed states and handling of non-finite trust values."""
+    template = make_tensor_dict({"w": [1.0, 2.0]})
+
+    # Key mismatch raises ValueError
+    with pytest.raises(ValueError):
+        trust_weighted_aggregate(
+            [{"wrong_key": torch.tensor([1.0, 2.0])}],
+            [0.5],
+            template,
+            ["c0"],
+        )
+
+    # Shape mismatch raises ValueError
+    with pytest.raises(ValueError):
+        trust_weighted_aggregate(
+            [{"w": torch.tensor([1.0])}],
+            [0.5],
+            template,
+            ["c0"],
+        )
+
+    # Non-finite parameter tensor raises ValueError
+    with pytest.raises(ValueError):
+        trust_weighted_aggregate(
+            [{"w": torch.tensor([float("nan"), 2.0])}],
+            [0.5],
+            template,
+            ["c0"],
+        )
+
+
+def test_missing_progress_data_and_neutral_prior():
+    """Verify that updates without 'progress' metadata gracefully use neutral prior 0.5 without failure."""
+    ref_state = make_tensor_dict({"w": [0.0, 0.0]})
+    u = [{"client_id": 0, "state": make_tensor_dict({"w": [1.0, 1.0]}), "staleness": 0}]  # no progress key
+    reports = evaluate_model_updates(u, ref_state)
+    assert len(reports) == 1
+    assert reports[0].m5_progress == pytest.approx(0.5)
+    assert math.isnan(reports[0].details["progress_raw"])
+

@@ -90,6 +90,12 @@ def run_strategy_comparison(
             num_tasks = probe.cfg.num_tasks
             hidden = list(raw.get("dqn", {}).get("hidden", [16, 16]))
 
+            # Deterministic fingerprint of global model checkpoint
+            import hashlib
+            st_blob = torch.load(gckpt, map_location="cpu", weights_only=True)
+            bytes_concat = b"".join([v.numpy().tobytes() for k, v in sorted(st_blob.items())])
+            ckpt_fingerprint = hashlib.sha256(bytes_concat).hexdigest()[:16]
+
             for ev_seed in eval_seeds:
                 eval_row = greedy_rollout(
                     config_path=config_path,
@@ -101,10 +107,12 @@ def run_strategy_comparison(
                 )
                 eval_row["strategy"] = strat
                 eval_row["train_seed"] = seed
+                eval_row["ckpt_fingerprint"] = ckpt_fingerprint
                 strat_rows.append(eval_row)
                 all_summary_rows.append(eval_row)
 
         run_records[strat] = strat_rows
+
 
     # Save summary CSV
     output_dir.mkdir(parents=True, exist_ok=True)
