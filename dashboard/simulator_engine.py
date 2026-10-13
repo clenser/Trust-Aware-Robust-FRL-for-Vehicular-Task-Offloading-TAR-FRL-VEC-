@@ -137,6 +137,9 @@ class StepSnapshot:
     policy_error: Optional[str] = None
     action_was_invalid: bool = False
 
+    # Microscopic handover transitions during this step
+    handovers: list[dict] = field(default_factory=list)
+
 
 def run_traced_episode(
     cfg: EnvConfig,
@@ -275,8 +278,25 @@ def run_traced_episode(
                 )
             action = 0
 
-        # Execute step
+        # Execute step while recording microscopic network handover events
+        ho_start = len(getattr(env, "handovers", []))
         res = env.step(action)
+        ho_end = len(getattr(env, "handovers", []))
+
+        step_handovers = []
+        if hasattr(env, "handovers"):
+            for h in env.handovers[ho_start:ho_end]:
+                step_handovers.append({
+                    "vid": h.vid,
+                    "from_rsu": h.from_rsu,
+                    "to_rsu": h.to_rsu,
+                    "event_type": h.event_type,
+                    "time_s": h.time_s,
+                    "x_m": h.x_m,
+                    "dist_to_prev_rsu_m": getattr(h, "dist_to_prev_rsu_m", None),
+                    "dist_to_new_rsu_m": getattr(h, "dist_to_new_rsu_m", None),
+                    "reason": getattr(h, "reason", ""),
+                })
 
         dest_name = (
             f"Local (V{req.vid})" if res.dest_kind == "local"
@@ -328,6 +348,7 @@ def run_traced_episode(
             updated_trust=updated_trust,
             policy_error=action_error,
             action_was_invalid=action_invalid,
+            handovers=step_handovers,
         )
         snapshots.append(snapshot)
 

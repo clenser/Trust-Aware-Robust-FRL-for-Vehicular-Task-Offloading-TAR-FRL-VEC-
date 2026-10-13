@@ -2,7 +2,7 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <input>
         <net-file value="highway.net.xml"/>
-        <route-files value="highway_low.rou.xml"/>
+        <route-files value="highway_medium.rou.xml"/>
     </input>
     <time>
         <begin value="0"/>
