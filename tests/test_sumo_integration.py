@@ -112,7 +112,8 @@ def test_rsu_coverage_and_handover_tracking():
     # Step through 15 tasks to allow vehicles to traverse coverage zones
     policy = baselines.make_policy("resource_aware", seed=42)
     for _ in range(15):
-        action = policy(obs, mask)
+        cands = env.candidates()
+        action = policy(obs, mask, {"candidates": cands, "env": env})
         res = env.step(action)
         obs, mask = res.obs, res.mask
 
@@ -146,3 +147,19 @@ def test_run_traced_episode_with_sumo():
     assert "lane" in v0
     assert "speed_mps" in v0
     assert "connected_rsu" in v0
+
+
+@pytest.mark.skipif(not is_sumo_available(), reason="Requires local Eclipse SUMO installation")
+def test_policy_differentiation_in_simulator_engine():
+    """Verify policies make distinct offloading choices in simulator_engine under SUMO traffic."""
+    env_cfg = EnvConfig(seed=42, num_vehicles=6, num_edge_nodes=2, num_tasks=20, road_length_m=1200.0)
+    
+    # 1. Local only must have offload_fraction == 0.0
+    _, summary_local = run_traced_episode(env_cfg, policy_name="local_only", max_tasks=15, mobility_mode="sumo")
+    assert summary_local["offload_fraction"] == 0.0
+
+    # 2. Nearest edge should offload when RSUs are reachable
+    _, summary_nearest = run_traced_episode(env_cfg, policy_name="nearest_edge", max_tasks=15, mobility_mode="sumo")
+    assert summary_nearest["offload_fraction"] > 0.0
+    assert summary_nearest["offload_fraction"] != summary_local["offload_fraction"]
+

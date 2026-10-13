@@ -26,7 +26,7 @@ OUTPUT_DIR = REPO_ROOT / "results" / "sumo_smoke"
 
 
 def run_sumo_smoke_experiment(
-    n_tasks: int = 25,
+    n_tasks: int = 60,
     seed: int = 42,
     density: str = "medium",
     output_dir: Path = OUTPUT_DIR,
@@ -63,6 +63,7 @@ def run_sumo_smoke_experiment(
         task_load="medium",
         num_tasks=n_tasks,
         road_length_m=1200.0,
+        comm_range_m=250.0,
     )
 
     summary_rows = []
@@ -121,7 +122,11 @@ def run_sumo_smoke_experiment(
         "road_length_m": cfg.road_length_m,
         "num_edge_nodes": cfg.num_edge_nodes,
         "summary": summary_rows,
-        "handover_count": len(all_handovers),
+        "handover_events_total": len(all_handovers),
+        "true_handovers_total": sum(1 for h in all_handovers if h.get("type") == "handover"),
+        "associations_total": sum(1 for h in all_handovers if h.get("type") == "associate"),
+        "disconnections_total": sum(1 for h in all_handovers if h.get("type") == "disconnect"),
+        "handover_count": sum(1 for h in all_handovers if h.get("type") == "handover"),
         "status": "PASS",
     }
     report_json = output_dir / "sumo_smoke_report.json"
@@ -135,7 +140,7 @@ def run_sumo_smoke_experiment(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run SUMO microscopic traffic smoke experiment.")
-    parser.add_argument("--tasks", type=int, default=25, help="Number of tasks per policy.")
+    parser.add_argument("--tasks", type=int, default=60, help="Number of tasks per policy.")
     parser.add_argument("--seed", type=int, default=42, help="Random PRNG seed.")
     parser.add_argument("--density", type=str, default="medium", choices=["low", "medium", "high"])
     args = parser.parse_args()

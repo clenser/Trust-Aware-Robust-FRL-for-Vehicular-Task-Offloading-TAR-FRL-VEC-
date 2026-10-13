@@ -76,7 +76,7 @@ def load_simulation_policy(
             try:
                 agent = DQNAgent.load(dqn_path)
                 agent.epsilon = 0.0  # Pure greedy evaluation
-                return (lambda obs, mask: agent.act(obs, mask)), "Trained Single-Agent DQN (checkpoint_final.pt)"
+                return (lambda obs, mask, ctx=None: agent.act(obs, mask)), "Trained Single-Agent DQN (checkpoint_final.pt)"
             except Exception as e:
                 # Fallback to resource aware
                 return baselines.make_policy("resource_aware", seed=seed), f"DQN Load Error ({e}), fallback: resource_aware"
@@ -90,7 +90,7 @@ def load_simulation_policy(
                 agent = DQNAgent(obs_dim=22, action_dim=6, seed=seed)
                 agent.q_net.load_state_dict(ckpt)
                 agent.epsilon = 0.0
-                return (lambda obs, mask: agent.act(obs, mask)), "Trained FedDQN Global Model (global_final.pt)"
+                return (lambda obs, mask, ctx=None: agent.act(obs, mask)), "Trained FedDQN Global Model (global_final.pt)"
             except Exception as e:
                 return baselines.make_policy("resource_aware", seed=seed), f"FedDQN Load Error ({e}), fallback: resource_aware"
 
@@ -236,8 +236,14 @@ def run_traced_episode(
 
         # Select action
         obs, mask = env.current_observation()
+        ctx = {"candidates": cands, "env": env}
         try:
-            action = int(policy(obs, mask))
+            action = int(policy(obs, mask, ctx))
+        except TypeError:
+            try:
+                action = int(policy(obs, mask))
+            except Exception:
+                action = 0
         except Exception:
             # Fallback to local
             action = 0

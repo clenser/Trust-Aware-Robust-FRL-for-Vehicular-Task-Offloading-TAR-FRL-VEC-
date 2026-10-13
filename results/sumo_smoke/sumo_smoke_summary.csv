@@ -1,6 +1,6 @@
 policy,policy_description,total_tasks,successes,deadline_misses,failures,success_rate,mean_latency_s,mean_energy_j,offload_fraction,total_handovers,total_associations,total_disconnections,mobility_engine
-resource_aware,Baseline heuristic: resource_aware,20,11,9,0,0.55,11.08444358994728,36.894918050813885,0.0,0,4,0,SUMO Microscopic Traffic (TraCI)
-nearest_edge,Baseline heuristic: nearest_edge,20,11,9,0,0.55,11.08444358994728,36.894918050813885,0.0,0,4,0,SUMO Microscopic Traffic (TraCI)
-random_valid,Baseline heuristic: random_valid,20,8,12,0,0.4,16.49095335222133,25.084403662858797,0.7,0,4,0,SUMO Microscopic Traffic (TraCI)
-local_only,Baseline heuristic: local_only,20,11,9,0,0.55,11.08444358994728,36.894918050813885,0.0,0,4,0,SUMO Microscopic Traffic (TraCI)
-feddqn_global_final,Trained FedDQN Global Model (global_final.pt),20,8,12,0,0.4,26.64298404224531,20.74375481135162,0.7,0,4,0,SUMO Microscopic Traffic (TraCI)
+resource_aware,Baseline heuristic: resource_aware,60,43,13,4,0.7166666666666667,3.655010066562451,329.1895630065529,1.0,8,13,1,SUMO Microscopic Traffic (TraCI)
+nearest_edge,Baseline heuristic: nearest_edge,60,48,10,2,0.8,3.702352422603467,362.0917408708285,0.7666666666666667,10,17,3,SUMO Microscopic Traffic (TraCI)
+random_valid,Baseline heuristic: random_valid,60,31,27,2,0.5166666666666667,11.22858416678211,78.97463115917218,0.7666666666666667,8,15,1,SUMO Microscopic Traffic (TraCI)
+local_only,Baseline heuristic: local_only,60,26,34,0,0.43333333333333335,13.674899948483379,33.71937801643012,0.0,9,17,3,SUMO Microscopic Traffic (TraCI)
+feddqn_global_final,Trained FedDQN Global Model (global_final.pt),60,18,40,2,0.3,22.72685660895199,27.761752958061955,0.85,6,13,0,SUMO Microscopic Traffic (TraCI)
