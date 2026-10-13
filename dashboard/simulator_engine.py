@@ -19,6 +19,8 @@ import torch
 
 import baselines
 from environment.vanet_env import VehicularEdgeEnv, EnvConfig, StepResult, Candidate
+from environment.sumo_env import SumoVehicularEdgeEnv
+from environment.sumo_adapter import is_sumo_available, get_sumo_status
 from environment.network import link_available, link_rate_hz
 from rl.agent import DQNAgent
 
@@ -135,12 +137,20 @@ class StepSnapshot:
 def run_traced_episode(
     cfg: EnvConfig,
     policy_name: str,
-    max_tasks: int = 30
+    max_tasks: int = 30,
+    mobility_mode: str = "synthetic",
 ) -> Tuple[list[StepSnapshot], dict]:
     """
-    Run an episode on VehicularEdgeEnv and capture granular per-step snapshots.
+    Run an episode on SumoVehicularEdgeEnv (or fallback VehicularEdgeEnv) and capture granular per-step snapshots.
     """
-    env = VehicularEdgeEnv(cfg)
+    use_sumo = (mobility_mode == "sumo") and is_sumo_available()
+    if use_sumo:
+        env = SumoVehicularEdgeEnv(cfg, use_sumo=True)
+        mobility_engine = "SUMO Microscopic Traffic (TraCI)"
+    else:
+        env = VehicularEdgeEnv(cfg)
+        mobility_engine = "Synthetic Fallback (Torus 1D)"
+
     obs, mask = env.reset()
     policy, pol_desc = load_simulation_policy(policy_name, seed=cfg.seed, top_k=cfg.top_k)
 
@@ -151,13 +161,13 @@ def run_traced_episode(
             break
 
         t = env.pending
-        req = env.vehicles[t.requester_id]
+        req = next((v for v in env.vehicles if v.vid == t.requester_id), env.vehicles[0])
         cands = env.candidates()
 
         # Capture pre-decision candidates
         cand_dicts = []
         for c in cands:
-            cand_node = env._node_of(c)
+            cand_node = env._node_of(c) if hasattr(env, "_node_of") else (env.edges[c.node_id] if c.kind == "edge" else next((v for v in env.vehicles if v.vid == c.node_id), req))
             ch_rate = link_rate_hz(
                 c.dist_m, req.bandwidth_hz, req.tx_power_w,
                 cfg.pl_k0, cfg.pl_gamma, cfg.noise_w
@@ -176,12 +186,32 @@ def run_traced_episode(
         # Pre-step snapshot of all vehicles
         veh_snapshots = []
         for v in env.vehicles:
-            lane = v.vid % 3  # 3-lane assignment
+            if hasattr(env, "_sumo_states") and v.vid in env._sumo_states:
+                s_state = env._sumo_states[v.vid]
+                lane = s_state.lane_idx
+                heading_deg = s_state.heading_deg
+                sumo_vid = s_state.vid
+                veh_type = s_state.veh_type
+                accel_mps2 = s_state.accel_mps2
+            else:
+                lane = v.vid % 3
+                heading_deg = 90.0
+                sumo_vid = f"v_{v.vid}"
+                veh_type = "passenger_sedan" if v.vid % 3 == 0 else ("passenger_suv" if v.vid % 3 == 1 else "commercial_van")
+                accel_mps2 = 0.0
+
+            connected_rsu = env.vehicle_associations.get(v.vid) if hasattr(env, "vehicle_associations") else None
+
             veh_snapshots.append({
                 "vid": v.vid,
+                "sumo_vid": sumo_vid,
+                "veh_type": veh_type,
                 "x_m": v.x_m,
                 "speed_mps": v.speed_mps,
+                "accel_mps2": accel_mps2,
+                "heading_deg": heading_deg,
                 "lane": lane,
+                "connected_rsu": connected_rsu,
                 "cpu_ghz": v.cpu_freq_hz / 1e9,
                 "effective_cpu_ghz": v.effective_freq_hz / 1e9,
                 "utilisation": v.utilisation,
@@ -279,6 +309,11 @@ def run_traced_episode(
     mean_ene = float(np.mean([s.energy_j for s in snapshots])) if snapshots else 0.0
     offload_frac = float(np.mean([s.action > 0 for s in snapshots])) if snapshots else 0.0
 
+    handovers_list = getattr(env, "handovers", [])
+    total_handovers = sum(1 for h in handovers_list if h.event_type == "handover")
+    total_associations = sum(1 for h in handovers_list if h.event_type == "associate")
+    total_disconnections = sum(1 for h in handovers_list if h.event_type == "disconnect")
+
     summary = {
         "total_tasks": n,
         "successes": successes,
@@ -290,7 +325,26 @@ def run_traced_episode(
         "offload_fraction": offload_frac,
         "policy_name": policy_name,
         "policy_description": pol_desc,
+        "mobility_engine": mobility_engine,
+        "total_handovers": total_handovers,
+        "total_associations": total_associations,
+        "total_disconnections": total_disconnections,
+        "handover_events": [
+            {
+                "step": h.step_idx,
+                "vid": h.vid,
+                "sumo_vid": h.sumo_vid,
+                "x_m": h.x_m,
+                "from_rsu": h.from_rsu,
+                "to_rsu": h.to_rsu,
+                "type": h.event_type
+            }
+            for h in handovers_list
+        ],
     }
+
+    if hasattr(env, "close"):
+        env.close()
 
     return snapshots, summary
 

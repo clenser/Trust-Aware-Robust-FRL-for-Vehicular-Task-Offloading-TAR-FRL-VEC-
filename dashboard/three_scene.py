@@ -1119,12 +1119,22 @@ def build_3d_simulation_html(
       document.getElementById('insp-trust').innerText = snap.dest_trust.toFixed(3);
 
       // Update Vehicle Positions and Realistic State Highlights
+      const activeVids = new Set(snap.vehicles.map(v => v.vid));
+      vehicleMeshes.forEach((mesh, vid) => {{
+        mesh.visible = activeVids.has(vid);
+      }});
+
       snap.vehicles.forEach(vData => {{
-        const vMesh = vehicleMeshes.get(vData.vid);
-        if (!vMesh) return;
+        let vMesh = vehicleMeshes.get(vData.vid);
+        if (!vMesh) {{
+          vMesh = buildRealistic3DVehicle(vData.vid);
+          vehicleMeshes.set(vData.vid, vMesh);
+        }}
+        vMesh.visible = true;
 
         const wx = toWorldX(vData.x_m);
-        const wz = laneZ[vData.lane];
+        const lIdx = (typeof vData.lane === 'number' && vData.lane >= 0 && vData.lane < laneZ.length) ? vData.lane : 1;
+        const wz = laneZ[lIdx];
         vMesh.position.set(wx, 0, wz);
 
         const isReq = (vData.vid === snap.requester_vid);
@@ -1311,8 +1321,10 @@ def build_3d_simulation_html(
           const snap = simTrace.steps[currentStepIdx];
           const vData = snap.vehicles.find(v => v.vid === vid);
           if (vData) {{
-            document.getElementById('insp-header').innerText = `Vehicle ${{vid}} Details`;
-            document.getElementById('insp-req').innerText = `V${{vid}} (Lane ${{vData.lane}})`;
+            const nameLabel = vData.sumo_vid ? `${{vData.sumo_vid}} (V${{vid}})` : `Vehicle ${{vid}}`;
+            const rsuLabel = (vData.connected_rsu !== null && vData.connected_rsu !== undefined) ? `RSU ${{vData.connected_rsu}}` : 'Out of range';
+            document.getElementById('insp-header').innerText = `${{nameLabel}} Telemetry`;
+            document.getElementById('insp-req').innerText = `Lane: ${{vData.lane}} | RSU: ${{rsuLabel}}`;
             document.getElementById('insp-dest').innerText = `Speed: ${{vData.speed_mps.toFixed(1)}} m/s`;
             document.getElementById('insp-size').innerText = `CPU: ${{vData.cpu_ghz.toFixed(2)}} GHz`;
             document.getElementById('insp-cycles').innerText = `Queue: ${{vData.queue_mcyc.toFixed(1)}} Mcyc`;

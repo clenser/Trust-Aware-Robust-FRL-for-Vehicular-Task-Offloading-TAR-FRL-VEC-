@@ -59,11 +59,11 @@ python scripts/run_smoke.py --config configs/smoke.yaml
 ```
 *Expected result:* 50 synthetic offloading tasks execute cleanly under a random-valid policy with zero errors.
 
-### Step 3: Run Full Test Suite (166 Tests)
+### Step 3: Run Full Test Suite (178 Tests)
 ```powershell
 pytest -q
 ```
-*Expected result:* `166 passed in ~10s` with exit code `0`.
+*Expected result:* `178 passed in ~14s` with exit code `0`.
 
 ### Step 4: Verify Experimental Artifact Manifest (894 Artifacts)
 ```powershell
@@ -84,6 +84,7 @@ streamlit run dashboard/app.py
 | Deliverable | File Path | Description |
 |---|---|---|
 | **Final Research Report** | [`reports/FINAL_RESEARCH_REPORT.md`](reports/FINAL_RESEARCH_REPORT.md) | Comprehensive 14-section research paper with architecture, pseudocode, results, and discussion |
+| **SUMO Mobility Spec** | [`docs/SUMO_MICROSCOPIC_MOBILITY_SPEC.md`](docs/SUMO_MICROSCOPIC_MOBILITY_SPEC.md) | Microscopic traffic simulation architecture, TraCI integration, and RSU handover model |
 | **Phase 10 Closeout Report** | [`reports/PHASE10_FINAL_V4_CLOSEOUT.md`](reports/PHASE10_FINAL_V4_CLOSEOUT.md) | Final verification audit and gate compliance report |
 | **Run Manifest** | [`reports/PHASE10_FINAL_V4_RUN_MANIFEST.json`](reports/PHASE10_FINAL_V4_RUN_MANIFEST.json) | SHA-256 cryptographic hashes for all 894 experimental outputs |
 | **Summary Metrics JSON** | [`results/phase10_final_v4/phase10_summary_metrics.json`](results/phase10_final_v4/phase10_summary_metrics.json) | Machine-readable metrics, hypothesis tests, and Holm-Bonferroni corrections |
@@ -102,19 +103,19 @@ streamlit run dashboard/app.py
 ```text
 trust-aware-vanet-frl/
   configs/         smoke.yaml, default.yaml, feddqn_phase10.yaml
-  docs/            PLAN.md, ASSUMPTIONS.md, PHASE1_SPEC.md
-  environment/     vehicle.py, edge_node.py, task.py, mobility.py, network.py, vanet_env.py
+  docs/            PLAN.md, ASSUMPTIONS.md, PHASE1_SPEC.md, SUMO_MICROSCOPIC_MOBILITY_SPEC.md
+  environment/     vehicle.py, edge_node.py, task.py, mobility.py, network.py, vanet_env.py, sumo_adapter.py, sumo_env.py, sumo/
   rl/              dqn.py, replay_buffer.py, agent.py, reward.py
   trust/           behavioural.py, model_update.py, temporal.py
   federated/       client.py, server.py, fedavg.py, trust_aggregation.py
   attacks/         poisoning.py, free_riding.py, unreliable_node.py
   baselines/       local.py, random_offload.py, nearest_node.py, resource_aware.py
   experiments/     runner.py, metrics.py, ablation.py, sensitivity.py
-  dashboard/       app.py, components.py, data_loader.py, styles.py
-  results/         phase10_final_v4/ (880 checkpoints, 3 CSVs, summary JSON)
+  dashboard/       app.py, components.py, simulator_engine.py, three_scene.py, data_loader.py, styles.py
+  results/         phase10_final_v4/ (880 checkpoints, 3 CSVs, summary JSON), sumo_smoke/
   reports/         FINAL_RESEARCH_REPORT.md, figures/, tables/, manifest
-  scripts/         CLI entry points (run_smoke.py, verify_phase10_manifest.py, etc.)
-  tests/           166 unit and integration tests
+  scripts/         CLI entry points (run_smoke.py, run_sumo_smoke_experiment.py, verify_phase10_manifest.py, etc.)
+  tests/           178 unit and integration tests
 ```
 
 ---

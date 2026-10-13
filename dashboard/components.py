@@ -198,6 +198,7 @@ try:
         StepSnapshot,
     )
     from dashboard.three_scene import build_3d_simulation_html
+    from environment.sumo_adapter import is_sumo_available, get_sumo_status
 except ModuleNotFoundError:
     from simulator_engine import (
         run_traced_episode,
@@ -207,6 +208,7 @@ except ModuleNotFoundError:
         StepSnapshot,
     )
     from three_scene import build_3d_simulation_html
+    from environment.sumo_adapter import is_sumo_available, get_sumo_status
 
 
 def render_interactive_simulator() -> None:
@@ -218,6 +220,30 @@ def render_interactive_simulator() -> None:
     )
 
     with st.expander("Simulation Parameters & Configuration", expanded=True):
+        sumo_status = get_sumo_status()
+        has_sumo = sumo_status["available"]
+
+        # Mobility Engine Mode Selection
+        st.markdown("##### 1. Vehicular Traffic Mobility Model")
+        m_opts = ["sumo", "synthetic"] if has_sumo else ["synthetic"]
+        m_labels = {
+            "sumo": "🚗 Eclipse SUMO Microscopic Traffic (Authentic car-following, lane changing & vehicle insertion)",
+            "synthetic": "🔄 Synthetic 1D Torus (Lightweight deterministic constant-velocity fallback)",
+        }
+        mobility_mode = st.radio(
+            "Mobility Simulation Engine",
+            options=m_opts,
+            format_func=lambda m: m_labels.get(m, m),
+            index=0,
+            horizontal=True,
+            help="Select Eclipse SUMO for authentic microscopic physics or Synthetic for fast deterministic testing."
+        )
+        if has_sumo and mobility_mode == "sumo":
+            st.success(f"🟢 **SUMO Active:** Microscopic multi-lane car-following & dynamic vehicle insertion enabled ({sumo_status['sumo_binary']}).")
+        else:
+            st.info("🟡 **Synthetic Engine Active:** 1D torus highway with constant-velocity motion.")
+
+        st.markdown("##### 2. Edge Environment & Workload Configuration")
         sim_col1, sim_col2, sim_col3 = st.columns(3)
         available_policies = get_available_policy_names()
         with sim_col1:
@@ -230,15 +256,15 @@ def render_interactive_simulator() -> None:
             )
             sim_seed = st.number_input("Random PRNG Seed", min_value=0, max_value=99999, value=42, step=1)
         with sim_col2:
-            num_v = st.slider("Number of Vehicles", min_value=2, max_value=12, value=6, step=1)
-            num_e = st.slider("Number of Roadside Edge Units (RSUs)", min_value=1, max_value=4, value=2, step=1)
+            num_v = st.slider("Vehicles on Corridor", min_value=2, max_value=12, value=6, step=1)
+            num_e = st.slider("Roadside Edge Units (RSUs)", min_value=1, max_value=4, value=2, step=1)
         with sim_col3:
-            mobility = st.selectbox("Mobility Dynamics", options=["low", "medium", "high"], index=0)
+            mobility = st.selectbox("Mobility Dynamics / Traffic Density", options=["low", "medium", "high"], index=1)
             task_load = st.selectbox("Task Arrival Load", options=["low", "medium", "high"], index=0)
             num_tasks = st.slider("Tasks in Episode", min_value=10, max_value=50, value=30, step=5)
 
     # Simulation execution button or state check
-    sim_key = f"sim_cache_{policy_name}_{sim_seed}_{num_v}_{num_e}_{mobility}_{task_load}_{num_tasks}"
+    sim_key = f"sim_cache_{policy_name}_{sim_seed}_{num_v}_{num_e}_{mobility}_{task_load}_{num_tasks}_{mobility_mode}"
     re_run = st.button("▶️ Run Simulation Episode", type="primary")
 
     if re_run or "sim_snapshots" not in st.session_state or st.session_state.get("sim_key") != sim_key:
@@ -251,7 +277,12 @@ def render_interactive_simulator() -> None:
                 task_load=task_load,
                 num_tasks=int(num_tasks)
             )
-            snapshots, summary = run_traced_episode(cfg, policy_name=policy_name, max_tasks=int(num_tasks))
+            snapshots, summary = run_traced_episode(
+                cfg,
+                policy_name=policy_name,
+                max_tasks=int(num_tasks),
+                mobility_mode=mobility_mode
+            )
             st.session_state["sim_snapshots"] = snapshots
             st.session_state["sim_summary"] = summary
             st.session_state["sim_key"] = sim_key
@@ -267,8 +298,8 @@ def render_interactive_simulator() -> None:
         return
 
     # Top KPI Metrics row for the episode
-    st.markdown("#### Episode Performance Summary")
-    ep_col1, ep_col2, ep_col3, ep_col4, ep_col5 = st.columns(5)
+    st.markdown("#### Episode Performance & Telemetry Summary")
+    ep_col1, ep_col2, ep_col3, ep_col4, ep_col5, ep_col6 = st.columns(6)
     with ep_col1:
         st.metric(
             "Tasks Evaluated",
@@ -300,6 +331,14 @@ def render_interactive_simulator() -> None:
             "Offload Fraction",
             f"{summary.get('offload_fraction', 0.0) * 100:.1f}%",
             delta="V2I / V2V ratio"
+        )
+    with ep_col6:
+        n_ho = summary.get("total_handovers", 0)
+        n_assoc = summary.get("total_associations", 0)
+        st.metric(
+            "RSU Handovers",
+            f"{n_ho}",
+            delta=f"{n_assoc} associations"
         )
 
     st.markdown("---")
@@ -427,7 +466,67 @@ def render_interactive_simulator() -> None:
 
     # Dynamic Evolution Charts Across Episode
     st.markdown("---")
-    st.markdown("#### Episode Trajectory Analytics")
+    st.markdown("#### Microscopic Vehicular Traffic & Spatial Dynamics")
+    st.caption("Live spatial and kinematic measurements derived directly from the active simulation episode trace.")
+    m_col1, m_col2, m_col3 = st.columns(3)
+
+    # M1. Active Vehicle Count & Traffic Density over Time
+    with m_col1:
+        st.markdown("**Active Vehicles on Highway Corridor**")
+        veh_count_records = []
+        for i, s in enumerate(snapshots):
+            veh_count_records.append({
+                "Task": i + 1,
+                "Vehicle Count": len(s.vehicles),
+            })
+        vc_df = pd.DataFrame(veh_count_records)
+        vc_chart = alt.Chart(vc_df).mark_line(point=True, color="#0284c7").encode(
+            x=alt.X("Task:Q", title="Task Index"),
+            y=alt.Y("Vehicle Count:Q", title="Active Vehicles"),
+            tooltip=["Task", "Vehicle Count"]
+        ).properties(height=220)
+        st.altair_chart(vc_chart, use_container_width=True)
+
+    # M2. Vehicle Speed Distribution
+    with m_col2:
+        st.markdown("**Vehicular Speed Distribution (km/h)**")
+        speed_records = []
+        for s in snapshots:
+            for v in s.vehicles:
+                speed_records.append({"Speed km/h": round(v["speed_mps"] * 3.6, 1)})
+        if speed_records:
+            spd_df = pd.DataFrame(speed_records)
+            spd_chart = alt.Chart(spd_df).mark_bar(color="#0ea5e9", opacity=0.85).encode(
+                x=alt.X("Speed km/h:Q", bin=alt.Bin(maxbins=15), title="Speed (km/h)"),
+                y=alt.Y("count()", title="Vehicle Observations"),
+                tooltip=["count()"]
+            ).properties(height=220)
+            st.altair_chart(spd_chart, use_container_width=True)
+
+    # M3. Active RSU Association & Handovers
+    with m_col3:
+        st.markdown("**RSU Association & Handover Dynamics**")
+        assoc_records = []
+        for i, s in enumerate(snapshots):
+            rsu_counts = {}
+            for v in s.vehicles:
+                conn = v.get("connected_rsu")
+                key = f"RSU {conn}" if conn is not None else "Out of Range"
+                rsu_counts[key] = rsu_counts.get(key, 0) + 1
+            for k, cnt in rsu_counts.items():
+                assoc_records.append({"Task": i + 1, "Connection": k, "Count": cnt})
+        if assoc_records:
+            assoc_df = pd.DataFrame(assoc_records)
+            assoc_chart = alt.Chart(assoc_df).mark_bar().encode(
+                x=alt.X("Task:Q", title="Task Index"),
+                y=alt.Y("Count:Q", title="Vehicles"),
+                color=alt.Color("Connection:N", title="Coverage Status"),
+                tooltip=["Task", "Connection", "Count"]
+            ).properties(height=220)
+            st.altair_chart(assoc_chart, use_container_width=True)
+
+    st.markdown("---")
+    st.markdown("#### Task Offloading & Edge Computing Performance")
     c_tab1, c_tab2, c_tab3 = st.columns(3)
 
     # 1. Latency vs Deadline Chart

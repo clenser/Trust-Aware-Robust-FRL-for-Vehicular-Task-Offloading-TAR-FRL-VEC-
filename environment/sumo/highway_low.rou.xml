@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <vType id="passenger_sedan" vClass="passenger" accel="2.6" decel="4.5" sigma="0.5" length="4.60" width="1.85" minGap="2.5" maxSpeed="33.33" lcStrategic="1.0" lcCooperative="1.0" lcSpeedGain="1.0"/>
+    <vType id="passenger_suv" vClass="passenger" accel="2.4" decel="4.2" sigma="0.5" length="4.85" width="1.95" minGap="2.5" maxSpeed="30.00" lcStrategic="1.0" lcCooperative="1.0" lcSpeedGain="1.0"/>
+    <vType id="commercial_van" vClass="delivery" accel="2.0" decel="4.0" sigma="0.5" length="5.20" width="2.00" minGap="3.0" maxSpeed="28.00" lcStrategic="1.0" lcCooperative="0.8" lcSpeedGain="0.8"/>
+
+    <route id="r_0" edges="highway"/>
+
+    <flow id="flow_sedan" type="passenger_sedan" route="r_0" begin="0" end="3600" vehsPerHour="400" departLane="random" departSpeed="max"/>
+    <flow id="flow_suv" type="passenger_suv" route="r_0" begin="0" end="3600" vehsPerHour="250" departLane="random" departSpeed="max"/>
+    <flow id="flow_van" type="commercial_van" route="r_0" begin="0" end="3600" vehsPerHour="100" departLane="0" departSpeed="25.0"/>
+</routes>
