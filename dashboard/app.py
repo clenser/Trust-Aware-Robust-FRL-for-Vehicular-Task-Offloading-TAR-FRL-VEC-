@@ -1,41 +1,68 @@
 """
 Streamlit Research Dashboard for Trust-Aware Federated RL in VANETs.
 Provides an interactive, publication-grade research interface:
-- High-level KPI cards and overview
-- Scenario and attack vulnerability matrix
-- Federated learning convergence & ablation
-- Trust estimation & anomaly detection diagnostics
-- Interactive vehicular environment simulator
-- Research reproducibility, manifest viewer, and data exports
+- 🚗 Simulation Lab: 2D multi-lane highway animation, RSU coverage discs, offload beams, step scrubber, telemetry
+- 📊 Performance Analysis: Scenario matrix, held-out policy comparisons, latency, completion rate, energy
+- 🛡️ Trust & Security: Anomaly detection F1, honest non-IID FPR, attack recall, fault accounting
+- 🔄 Federated Learning: 8-round convergence, hypothesis testing (t(9)=0.537, p=0.604), ablations, sensitivity
+- 📦 Dataset & Reproducibility: Cryptographic manifest verification, real mobility dataset audit, data exports
 """
 
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+# Ensure repository root is on sys.path regardless of how Streamlit is launched
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 import streamlit as st
 import pandas as pd
 import altair as alt
 
-from dashboard.styles import get_custom_css
-from dashboard.data_loader import (
-    get_available_datasets,
-    load_experiment_data,
-    load_summary_metrics,
-    load_manifest,
-    verify_dataset_integrity,
-    load_config_yaml,
-    get_available_checkpoints,
-    get_available_figures,
-    REPO_ROOT
-)
-from dashboard.components import (
-    render_kpi_header,
-    render_scenario_overview_table,
-    render_detection_metrics_chart,
-    render_performance_comparison_chart,
-    render_interactive_simulator
-)
+try:
+    from dashboard.styles import get_custom_css
+    from dashboard.data_loader import (
+        get_available_datasets,
+        load_experiment_data,
+        load_summary_metrics,
+        load_manifest,
+        verify_dataset_integrity,
+        load_config_yaml,
+        get_available_checkpoints,
+        get_available_figures,
+        REPO_ROOT
+    )
+    from dashboard.components import (
+        render_kpi_header,
+        render_scenario_overview_table,
+        render_detection_metrics_chart,
+        render_performance_comparison_chart,
+        render_interactive_simulator
+    )
+except ModuleNotFoundError:
+    from styles import get_custom_css
+    from data_loader import (
+        get_available_datasets,
+        load_experiment_data,
+        load_summary_metrics,
+        load_manifest,
+        verify_dataset_integrity,
+        load_config_yaml,
+        get_available_checkpoints,
+        get_available_figures,
+        REPO_ROOT
+    )
+    from components import (
+        render_kpi_header,
+        render_scenario_overview_table,
+        render_detection_metrics_chart,
+        render_performance_comparison_chart,
+        render_interactive_simulator
+    )
 
 # Page configuration
 st.set_page_config(
@@ -83,7 +110,7 @@ def main():
         st.sidebar.markdown(f"**Suite Total:** {len(df) + len(abl_df) + len(sens_df)}")
         st.sidebar.caption(
             "The main table shows the core matrix only. "
-            "Ablation and sensitivity results are in the Federated Convergence tab."
+            "Ablation and sensitivity results are in the Federated Learning tab."
         )
     # Dynamic integrity check
     integrity_info = verify_dataset_integrity(Path(dataset_info.get("manifest_path", "")))
@@ -137,19 +164,26 @@ def main():
 
     st.markdown("---")
 
-    # Main Tabs
-    tab_overview, tab_scenarios, tab_fl, tab_trust, tab_simulator, tab_repro = st.tabs([
-        "📊 Benchmark Overview",
-        "🎯 Scenarios & Attacks",
-        "🔄 Federated Convergence",
-        "🛡️ Trust & Anomaly Detection",
-        "🚗 Vehicular Simulation",
-        "📦 Reproducibility & Export"
+    # Main 5 Sections
+    tab_sim, tab_perf, tab_trust, tab_fl, tab_repro = st.tabs([
+        "🚗 Simulation Lab",
+        "📊 Performance Analysis",
+        "🛡️ Trust & Security",
+        "🔄 Federated Learning",
+        "📦 Dataset & Reproducibility"
     ])
 
-    # TAB 1: OVERVIEW
-    with tab_overview:
-        st.subheader("Executive Research Summary")
+    # -------------------------------------------------------------
+    # SECTION 1: SIMULATION LAB
+    # -------------------------------------------------------------
+    with tab_sim:
+        render_interactive_simulator()
+
+    # -------------------------------------------------------------
+    # SECTION 2: PERFORMANCE ANALYSIS
+    # -------------------------------------------------------------
+    with tab_perf:
+        st.subheader("Performance Analysis & Scenario Matrix")
         st.markdown(
             """
             This research evaluates a **multi-dimensional trust architecture** to protect Federated Reinforcement Learning (FRL)
@@ -165,15 +199,7 @@ def main():
         st.markdown("---")
         render_performance_comparison_chart(filtered_df, rounds=dataset_info["rounds"])
 
-    # TAB 2: SCENARIOS & ATTACKS
-    with tab_scenarios:
-        st.subheader("Scenario Matrix & Attack Vulnerability Breakdown")
-        n_groups = int(df["scenario_group"].nunique()) if (not df.empty and "scenario_group" in df.columns) else 0
-        st.markdown(
-            f"Empirical results across {n_groups} scenario groups spanning clean control, model poisoning, "
-            "free-riding variants, unreliable execution, and honest non-IID heterogeneity."
-        )
-
+        st.markdown("---")
         col_left, col_right = st.columns([1, 1])
 
         with col_left:
@@ -203,6 +229,48 @@ def main():
                 ).properties(height=340)
                 st.altair_chart(excl_chart, use_container_width=True)
 
+    # -------------------------------------------------------------
+    # SECTION 3: TRUST & SECURITY
+    # -------------------------------------------------------------
+    with tab_trust:
+        st.subheader("Trust Dynamics & Anomaly Detection Analysis")
+        st.markdown(
+            "Inspect anomaly detection diagnostics, false positive rate on honest non-IID clients, "
+            "and detection recall across attack vectors."
+        )
+
+        col_t1, col_t2 = st.columns(2)
+        with col_t1:
+            st.markdown("#### Honest Non-IID False Positive Rate (FPR)")
+            honest_runs = df[df["scenario_group"] == "honest_non_iid"]
+            if not honest_runs.empty:
+                trust_honest = honest_runs[honest_runs["strategy"] != "fedavg"]
+                tot_fp = trust_honest["fp"].sum()
+                tot_eval = (trust_honest["fp"] + trust_honest["tn"]).sum()
+                micro_fpr = (tot_fp / tot_eval) if tot_eval > 0 else 0.0
+                macro_fpr = honest_runs["fpr"].mean()
+
+                st.info(
+                    f"**Micro-Aggregated FPR (Trust Strategies):** **{micro_fpr:.2%}** ({int(tot_fp)} FP / {int(tot_eval)} update decisions across {len(trust_honest)} runs)\n\n"
+                    f"**Macro Mean Per-Run FPR (All Strategies):** **{macro_fpr:.2%}**"
+                )
+                st.markdown(
+                    "Observed anomaly false positive rate for honest non-IID clients across tested conditions, "
+                    "measuring whether heterogeneous local updates avoid being misclassified as adversarial. "
+                    "Rates are descriptive for the tested seeds and sample sizes; no bounded-FPR guarantee is claimed."
+                )
+                # Show seed by seed honest runs
+                st.dataframe(honest_runs[["seed", "strategy", "fp", "tn", "fpr", "precision", "recall"]], use_container_width=True)
+
+        with col_t2:
+            st.markdown("#### Detection Recall Breakdown by Attack Family")
+            attack_df = filtered_df[~filtered_df["scenario_group"].isin(["clean_control", "honest_non_iid"])] if not filtered_df.empty else pd.DataFrame()
+            if not attack_df.empty:
+                recall_by_attack = attack_df.groupby("scenario_label")["recall"].mean().reset_index()
+                st.dataframe(recall_by_attack.style.format({"recall": "{:.1%}"}), use_container_width=True)
+            else:
+                st.info("No adversarial scenario data in current filter.")
+
         st.markdown("---")
         render_detection_metrics_chart(filtered_df)
 
@@ -231,7 +299,9 @@ def main():
                     "injected_delays": "{:.1f}"
                 }), use_container_width=True)
 
-    # TAB 3: FEDERATED CONVERGENCE
+    # -------------------------------------------------------------
+    # SECTION 4: FEDERATED LEARNING
+    # -------------------------------------------------------------
     with tab_fl:
         st.subheader("Federated Learning Convergence & Reward Evolution")
         st.markdown(
@@ -279,6 +349,14 @@ def main():
                         })
                     if sec_rows:
                         st.dataframe(pd.DataFrame(sec_rows), use_container_width=True)
+
+        st.markdown("#### Strategy Comparison on Degradation")
+        if not filtered_df.empty and "degradation_completion" in filtered_df.columns:
+            deg_df = filtered_df.groupby(["strategy_label", "scenario_label"])[["degradation_completion", "degradation_reward"]].mean().reset_index()
+            st.dataframe(deg_df.style.format({
+                "degradation_completion": "{:.2%}",
+                "degradation_reward": "{:.3f}"
+            }), use_container_width=True)
 
         figs = get_available_figures(dataset_info["figures_dir"])
         if figs:
@@ -333,66 +411,27 @@ def main():
         else:
             st.info("No sensitivity dataset registered for this selection.")
 
-        st.markdown("#### Strategy Comparison on Degradation")
-        if not filtered_df.empty and "degradation_completion" in filtered_df.columns:
-            deg_df = filtered_df.groupby(["strategy_label", "scenario_label"])[["degradation_completion", "degradation_reward"]].mean().reset_index()
-            st.dataframe(deg_df.style.format({
-                "degradation_completion": "{:.2%}",
-                "degradation_reward": "{:.3f}"
-            }), use_container_width=True)
-
-    # TAB 4: TRUST & ANOMALY DETECTION
-    with tab_trust:
-        st.subheader("Trust Dynamics & Anomaly Detection Analysis")
-        st.markdown(
-            "Inspect anomaly detection diagnostics, false positive rate on honest non-IID clients, "
-            "and detection recall across attack vectors."
-        )
-
-        col_t1, col_t2 = st.columns(2)
-        with col_t1:
-            st.markdown("#### Honest Non-IID False Positive Rate (FPR)")
-            honest_runs = df[df["scenario_group"] == "honest_non_iid"]
-            if not honest_runs.empty:
-                trust_honest = honest_runs[honest_runs["strategy"] != "fedavg"]
-                tot_fp = trust_honest["fp"].sum()
-                tot_eval = (trust_honest["fp"] + trust_honest["tn"]).sum()
-                micro_fpr = (tot_fp / tot_eval) if tot_eval > 0 else 0.0
-                macro_fpr = honest_runs["fpr"].mean()
-
-                st.info(
-                    f"**Micro-Aggregated FPR (Trust Strategies):** **{micro_fpr:.2%}** ({int(tot_fp)} FP / {int(tot_eval)} update decisions across {len(trust_honest)} runs)\n\n"
-                    f"**Macro Mean Per-Run FPR (All Strategies):** **{macro_fpr:.2%}**"
-                )
-                st.markdown(
-                    "Observed anomaly false positive rate for honest non-IID clients across tested conditions, "
-                    "measuring whether heterogeneous local updates avoid being misclassified as adversarial. "
-                    "Rates are descriptive for the tested seeds and sample sizes; no bounded-FPR guarantee is claimed."
-                )
-                
-                # Show seed by seed honest runs
-                st.dataframe(honest_runs[["seed", "strategy", "fp", "tn", "fpr", "precision", "recall"]], use_container_width=True)
-
-        with col_t2:
-            st.markdown("#### Detection Recall Breakdown by Attack Family")
-            attack_df = filtered_df[~filtered_df["scenario_group"].isin(["clean_control", "honest_non_iid"])] if not filtered_df.empty else pd.DataFrame()
-            if not attack_df.empty:
-                recall_by_attack = attack_df.groupby("scenario_label")["recall"].mean().reset_index()
-                st.dataframe(recall_by_attack.style.format({"recall": "{:.1%}"}), use_container_width=True)
-            else:
-                st.info("No adversarial scenario data in current filter.")
-
-    # TAB 5: INTERACTIVE SIMULATOR
-    with tab_simulator:
-        render_interactive_simulator()
-
-    # TAB 6: REPRODUCIBILITY & EXPORT
+    # -------------------------------------------------------------
+    # SECTION 5: DATASET & REPRODUCIBILITY
+    # -------------------------------------------------------------
     with tab_repro:
         st.subheader("Research Reproducibility, Manifest & Data Export")
         st.markdown(
             "Review verified experiment manifests, configuration checksums, model checkpoints, "
-            "and download full tabular data."
+            "mobility dataset evaluation, and download full tabular data."
         )
+
+        # Real Mobility Dataset Evaluation Expander
+        with st.expander("Mobility Data & Trace Evaluation Audit (LuST, highD, SUMO)", expanded=True):
+            st.markdown(
+                """
+                **Comparative Assessment of External Mobility Sources vs. Synthetic Vehicular-Edge Engine:**
+                - **LuST SUMO Traffic Scenario:** Urban micro-traffic in Luxembourg. Evaluated but rejected as a baseline dependency due to required SUMO binary toolchain (`traci`), XML network compilers, and total absence of computational task / edge offloading semantics.
+                - **highD Drone Trajectory Dataset:** German highway drone recordings. Evaluated but rejected due to academic non-commercial license requiring individual manual approval, non-redistributable terms, multi-GB storage footprint, and lack of V2X communication telemetry.
+                - **SUMO Scenario Catalogue (InTAS, Bologna, Cologne):** Identical toolchain and binary dependencies.
+                - **Methodological Decision:** Synthetic multi-lane highway environment (`VehicularEdgeEnv`) provides exact 100% deterministic reproducibility, IEEE 802.11p/NR-V2X path loss modeling ($\gamma=3.0$), Poisson task arrivals, and heterogeneous CPU processing without external binary dependencies. Full audit documented in `reports/MOBILITY_DATA_EVALUATION.md`.
+                """
+            )
 
         col_exp1, col_exp2 = st.columns(2)
 
