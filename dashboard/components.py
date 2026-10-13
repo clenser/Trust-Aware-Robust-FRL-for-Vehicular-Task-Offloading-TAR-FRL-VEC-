@@ -305,12 +305,14 @@ def render_interactive_simulator() -> None:
     st.markdown("---")
 
     # Interactive 3D WebGL Vehicular Simulation
-    st.markdown("#### Interactive 3D Vehicular Edge Network Simulation")
+    st.markdown("#### Realistic Daylight 3D Vehicular Highway Simulation")
     st.caption(
-        "Real-time Three.js WebGL 3D simulation featuring 3D composite vehicles, roadside communication towers (RSUs), "
-        "3D radio coverage volumes ($R_{\\text{comm}} = 300\\text{m}$), and dynamic offload beams with traveling packet pulses. "
-        "**Camera Controls:** Left-click drag to rotate/orbit, scroll wheel to zoom, right-click drag to pan. Click camera preset buttons in top-right to change view. "
-        "Click any 3D vehicle or RSU to inspect live properties."
+        "Real-time Three.js WebGL 3D simulation featuring realistic daylight lighting, PBR materials, multi-lane highway "
+        "(3 lanes at 3.6m width, steel guardrails, roadside vegetation), detailed vehicle models (Sedans, SUVs, Delivery Vans), "
+        "and authentic roadside communication units (RSUs). "
+        "**Camera Controls:** Left-click drag to rotate/orbit, scroll wheel to zoom, right-click drag to pan. "
+        "Use camera view buttons (**Highway 3/4**, **Chase Cam**, **Roadside**, **Top-Down**) and toggles for coverage and network overlay. "
+        "Click any 3D vehicle or RSU to inspect live telemetry."
     )
 
     # Render standalone 3D WebGL scene

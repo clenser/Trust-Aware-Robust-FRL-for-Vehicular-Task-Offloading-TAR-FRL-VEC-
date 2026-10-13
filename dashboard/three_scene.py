@@ -1,15 +1,16 @@
 """
-Three.js 3D WebGL vehicular edge-network simulation renderer.
-Generates an interactive, production-grade 3D visualization featuring:
-- Multi-lane 3D highway with lane markings, road shoulders, and terrain
-- 3D composite vehicle meshes (chassis, cabin, wheels, headlights)
-- 3D roadside communication towers (RSUs) with visible radio coverage domes (R_comm = 300m)
-- Dynamic 3D curved offloading laser beams with animated traveling packet pulses
-- Local onboard CPU execution visual auras
-- OrbitControls (rotate, zoom, pan) with camera view presets (Isometric, Chase, Side, Top-Down)
-- Client-side 60 FPS timeline scrubber and play/pause animation loop
-- Interactive raycaster for clicking and inspecting vehicles and RSUs
-- Graceful WebGL error handling and 100% offline local asset bundling
+Three.js 3D WebGL realistic daylight vehicular edge-network simulation renderer.
+Generates an interactive, publication-grade realistic 3D daytime road scene featuring:
+- Natural daylight illumination, sky dome, atmospheric fog, and soft PBR shadows
+- Realistic multi-lane highway (3 lanes at 3.6m width, road shoulders, W-beam guardrails)
+- Roadside environment: grass verges, trees, shrubs, and distance marker posts
+- Highly detailed 3D composite vehicle models (Sedan, SUV, Commercial Van) with realistic automotive paints,
+  transparent windshields, side mirrors, wheels with rims, and directional headlights
+- Authentic roadside communication infrastructure (RSU): concrete pad, equipment cabinet,
+  galvanized steel pole (7.5m), directional sector antennas, microwave dish, and optional coverage footprint
+- Professional, restrained task offloading overlay with toggleable packet vectors
+- OrbitControls with daylight glassmorphic HUD, camera presets, timeline scrubber, and raycaster inspector
+- 100% offline local asset bundling with Three.js r128 and OrbitControls
 """
 
 from __future__ import annotations
@@ -28,7 +29,7 @@ def load_bundled_js_assets() -> tuple[str, str]:
     """Load locally bundled Three.js and OrbitControls libraries."""
     three_path = STATIC_DIR / "three.min.js"
     orbit_path = STATIC_DIR / "OrbitControls.js"
-    
+
     three_src = three_path.read_text(encoding="utf-8") if three_path.exists() else ""
     orbit_src = orbit_path.read_text(encoding="utf-8") if orbit_path.exists() else ""
     return three_src, orbit_src
@@ -39,7 +40,7 @@ def build_3d_simulation_html(
     summary: dict,
     cfg: EnvConfig
 ) -> str:
-    """Build standalone, self-contained Three.js 3D simulation HTML markup."""
+    """Build standalone, self-contained Three.js realistic daylight 3D simulation HTML markup."""
     three_js, orbit_js = load_bundled_js_assets()
 
     # Serialize snapshots into client-side JSON trace
@@ -81,7 +82,6 @@ def build_3d_simulation_html(
         "steps": steps_data,
     })
 
-    # CDN fallback scripts if local assets were empty
     cdn_fallback_three = '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>' if not three_js else f"<script>{three_js}</script>"
     cdn_fallback_orbit = '<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>' if not orbit_js else f"<script>{orbit_js}</script>"
 
@@ -89,7 +89,7 @@ def build_3d_simulation_html(
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>VANET FRL 3D Interactive Simulation</title>
+  <title>VANET FRL Realistic Daylight 3D Simulation</title>
   <style>
     * {{
       box-sizing: border-box;
@@ -98,8 +98,8 @@ def build_3d_simulation_html(
       user-select: none;
     }}
     body {{
-      background-color: #0b0f19;
-      color: #e2e8f0;
+      background-color: #dbeafe;
+      color: #0f172a;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       overflow: hidden;
       width: 100vw;
@@ -114,12 +114,12 @@ def build_3d_simulation_html(
       z-index: 1;
     }}
 
-    /* Top HUD Header */
+    /* Top HUD Header (Daylight Glassmorphism) */
     .hud-top {{
       position: absolute;
-      top: 12px;
-      left: 14px;
-      right: 14px;
+      top: 14px;
+      left: 16px;
+      right: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -127,79 +127,86 @@ def build_3d_simulation_html(
       pointer-events: none;
     }}
     .hud-badge {{
-      background: rgba(15, 23, 42, 0.88);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(51, 65, 85, 0.7);
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(203, 213, 225, 0.85);
       border-radius: 8px;
-      padding: 8px 14px;
+      padding: 8px 16px;
       font-size: 0.82rem;
       font-weight: 600;
-      color: #94a3b8;
+      color: #334155;
       pointer-events: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
     }}
     .hud-badge strong {{
-      color: #38bdf8;
+      color: #0369a1;
     }}
     .hud-badge .status-pill {{
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 4px;
       font-size: 0.75rem;
-      font-weight: bold;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: 0.02em;
     }}
-    .pill-success {{ background: #065f46; color: #34d399; border: 1px solid #10b981; }}
-    .pill-danger {{ background: #7f1d1d; color: #f87171; border: 1px solid #ef4444; }}
-    .pill-warning {{ background: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }}
+    .pill-success {{ background: #dcfce7; color: #15803d; border: 1px solid #86efac; }}
+    .pill-danger {{ background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }}
+    .pill-warning {{ background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }}
 
-    /* Camera View Presets */
+    /* Camera View Presets & Toggles */
     .cam-presets {{
       display: flex;
       gap: 6px;
       pointer-events: auto;
     }}
-    .cam-btn {{
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(51, 65, 85, 0.8);
-      color: #cbd5e1;
-      padding: 6px 11px;
+    .hud-btn {{
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(203, 213, 225, 0.9);
+      color: #334155;
+      padding: 6px 12px;
       border-radius: 6px;
       font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.15s ease;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }}
-    .cam-btn:hover {{
-      background: #1e293b;
-      border-color: #38bdf8;
-      color: #38bdf8;
+    .hud-btn:hover {{
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+    }}
+    .hud-btn.active {{
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
     }}
 
     /* Bottom Playback & Scrubber Controls */
     .hud-bottom {{
       position: absolute;
       bottom: 14px;
-      left: 14px;
-      right: 14px;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(51, 65, 85, 0.75);
+      left: 16px;
+      right: 16px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(203, 213, 225, 0.85);
       border-radius: 10px;
       padding: 10px 18px;
       display: flex;
       align-items: center;
       gap: 16px;
       z-index: 10;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.45);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10);
     }}
     .btn-ctrl {{
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #f1f5f9;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #1e293b;
       width: 34px;
       height: 34px;
       border-radius: 6px;
@@ -212,7 +219,8 @@ def build_3d_simulation_html(
     }}
     .btn-ctrl:hover {{
       background: #0284c7;
-      border-color: #38bdf8;
+      border-color: #0284c7;
+      color: #ffffff;
     }}
     .scrubber-wrap {{
       flex: 1;
@@ -224,15 +232,15 @@ def build_3d_simulation_html(
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
-      color: #94a3b8;
-      font-weight: 500;
+      color: #64748b;
+      font-weight: 600;
     }}
     .slider {{
       -webkit-appearance: none;
       width: 100%;
       height: 6px;
       border-radius: 3px;
-      background: #334155;
+      background: #e2e8f0;
       outline: none;
       cursor: pointer;
     }}
@@ -242,44 +250,45 @@ def build_3d_simulation_html(
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      background: #38bdf8;
-      border: 2px solid #0f172a;
+      background: #0284c7;
+      border: 2px solid #ffffff;
       cursor: pointer;
-      box-shadow: 0 0 6px #0284c7;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
     }}
     .speed-select {{
-      background: #1e293b;
-      border: 1px solid #334155;
-      color: #cbd5e1;
-      padding: 4px 8px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 5px 8px;
       border-radius: 6px;
       font-size: 0.75rem;
+      font-weight: 600;
       outline: none;
       cursor: pointer;
     }}
 
-    /* Floating Inspector Card */
+    /* Floating Inspector Panel */
     .inspector-panel {{
       position: absolute;
-      top: 60px;
-      right: 14px;
+      top: 64px;
+      right: 16px;
       width: 290px;
-      background: rgba(15, 23, 42, 0.94);
+      background: rgba(255, 255, 255, 0.94);
       backdrop-filter: blur(12px);
-      border: 1px solid rgba(51, 65, 85, 0.8);
+      border: 1px solid rgba(203, 213, 225, 0.9);
       border-radius: 8px;
       padding: 14px;
       z-index: 10;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
       font-size: 0.8rem;
     }}
     .inspector-title {{
       font-size: 0.82rem;
       font-weight: 700;
-      color: #38bdf8;
+      color: #0369a1;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid #e2e8f0;
       padding-bottom: 6px;
       margin-bottom: 8px;
       display: flex;
@@ -289,29 +298,31 @@ def build_3d_simulation_html(
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
-      color: #cbd5e1;
+      color: #475569;
     }}
     .prop-val {{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       font-weight: 600;
-      color: #f8fafc;
+      color: #0f172a;
     }}
 
     /* Legend Box */
     .legend-box {{
       position: absolute;
       bottom: 74px;
-      left: 14px;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(51, 65, 85, 0.6);
+      left: 16px;
+      background: rgba(255, 255, 255, 0.90);
+      border: 1px solid rgba(203, 213, 225, 0.85);
       border-radius: 6px;
-      padding: 6px 12px;
+      padding: 6px 14px;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       font-size: 0.72rem;
-      color: #94a3b8;
+      color: #475569;
+      font-weight: 600;
       z-index: 10;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }}
     .leg-item {{ display: flex; align-items: center; gap: 5px; }}
     .leg-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
@@ -322,13 +333,14 @@ def build_3d_simulation_html(
       top: 40%;
       left: 20%;
       right: 20%;
-      background: #7f1d1d;
-      color: #fef2f2;
+      background: #fef2f2;
+      color: #991b1b;
       padding: 20px;
       border-radius: 8px;
       text-align: center;
       z-index: 99;
       border: 1px solid #ef4444;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
     }}
   </style>
   {cdn_fallback_three}
@@ -337,8 +349,8 @@ def build_3d_simulation_html(
 <body>
   <div id="canvas-container"></div>
   <div id="webgl-error">
-    <h3>WebGL Rendering Unavailable</h3>
-    <p>Hardware acceleration or WebGL is required for the 3D vehicular simulation.</p>
+    <h3>WebGL Acceleration Unavailable</h3>
+    <p>Hardware WebGL support is required to render the 3D vehicular simulation.</p>
   </div>
 
   <!-- Top Header HUD -->
@@ -350,11 +362,13 @@ def build_3d_simulation_html(
       <span id="hud-outcome" class="status-pill pill-success">SUCCESS</span>
     </div>
     <div class="cam-presets">
-      <button class="cam-btn" onclick="setCameraPreset('iso')">🎥 Isometric</button>
-      <button class="cam-btn" onclick="setCameraPreset('chase')">🚗 Chase Cam</button>
-      <button class="cam-btn" onclick="setCameraPreset('side')">🔭 Side View</button>
-      <button class="cam-btn" onclick="setCameraPreset('top')">🗺️ Top-Down</button>
-      <button class="cam-btn" onclick="resetCamera()">🔄 Reset</button>
+      <button class="hud-btn" id="btn-cov" onclick="toggleCoverage()">📡 Coverage Footprint</button>
+      <button class="hud-btn" id="btn-net" onclick="toggleNetworkOverlay()">📶 Network Overlay</button>
+      <button class="hud-btn" onclick="setCameraPreset('iso')">🎥 Highway 3/4</button>
+      <button class="hud-btn" onclick="setCameraPreset('chase')">🚗 Chase Cam</button>
+      <button class="hud-btn" onclick="setCameraPreset('side')">🔭 Roadside</button>
+      <button class="hud-btn" onclick="setCameraPreset('top')">🗺️ Top-Down</button>
+      <button class="hud-btn" onclick="resetCamera()">🔄 Reset Cam</button>
     </div>
   </div>
 
@@ -362,7 +376,7 @@ def build_3d_simulation_html(
   <div class="inspector-panel" id="inspector-panel">
     <div class="inspector-title">
       <span id="insp-header">Step Telemetry</span>
-      <span style="font-size:0.7rem; color:#64748b;">(Click Object)</span>
+      <span style="font-size:0.7rem; color:#64748b;">(Click Entity)</span>
     </div>
     <div class="prop-row"><span>Requester:</span><span class="prop-val" id="insp-req">Vehicle 0</span></div>
     <div class="prop-row"><span>Destination:</span><span class="prop-val" id="insp-dest">RSU 0 (Edge)</span></div>
@@ -380,7 +394,7 @@ def build_3d_simulation_html(
   <div class="legend-box">
     <div class="leg-item"><div class="leg-dot" style="background:#2563eb;"></div> Vehicle</div>
     <div class="leg-item"><div class="leg-dot" style="background:#f59e0b;"></div> Requester</div>
-    <div class="leg-item"><div class="leg-dot" style="background:#0284c7;"></div> RSU Tower</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#475569;"></div> Roadside RSU</div>
     <div class="leg-item"><div class="leg-dot" style="background:#06b6d4;"></div> R_comm (300m)</div>
     <div class="leg-item"><div class="leg-dot" style="background:#10b981;"></div> Success Offload</div>
     <div class="leg-item"><div class="leg-dot" style="background:#ef4444;"></div> Deadline Miss</div>
@@ -412,12 +426,10 @@ def build_3d_simulation_html(
   </div>
 
   <script>
-    // Verify WebGL availability
     if (!window.WebGLRenderingContext) {{
       document.getElementById('webgl-error').style.display = 'block';
     }}
 
-    // Simulation Data Trace injected from Python
     const simTrace = {trace_json};
     const totalSteps = simTrace.steps.length;
     let currentStepIdx = 0;
@@ -425,18 +437,30 @@ def build_3d_simulation_html(
     let playTimer = null;
     let playIntervalMs = 800;
 
+    let showCoverageFootprint = true;
+    let showNetworkOverlay = true;
+
     document.getElementById('timeline-slider').max = Math.max(0, totalSteps - 1);
 
-    // Three.js Scene Setup
+    // -------------------------------------------------------------
+    // Three.js Scene Setup with Realistic Daylight & Color Management
+    // -------------------------------------------------------------
     const container = document.getElementById('canvas-container');
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b0f19);
-    scene.fog = new THREE.FogExp2(0x0b0f19, 0.0018);
 
-    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 1, 3500);
-    const renderer = new THREE.WebGLRenderer({{ antialias: true }});
+    // Natural daytime sky and atmospheric fog
+    scene.background = new THREE.Color(0xa7cbf0);
+    scene.fog = new THREE.FogExp2(0xa7cbf0, 0.0010);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 3500);
+    const renderer = new THREE.WebGLRenderer({{ antialias: true, powerPreference: 'high-performance' }});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio || 1);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+
+    // Official Three.js Photorealistic Lighting & Color Management Configuration
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(renderer.domElement);
@@ -444,304 +468,531 @@ def build_3d_simulation_html(
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.maxPolarAngle = Math.PI / 2 - 0.02; // Prevent camera clipping through ground
-    controls.minDistance = 20;
+    controls.maxPolarAngle = Math.PI / 2 - 0.02;
+    controls.minDistance = 15;
     controls.maxDistance = 1200;
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x94a3b8, 0.65);
-    scene.add(ambientLight);
+    // -------------------------------------------------------------
+    // Natural Sunlight & Hemispheric Sky Illumination
+    // -------------------------------------------------------------
+    // Sky blue ambient + warm grass ground bounce reflection
+    const hemiLight = new THREE.HemisphereLight(0xbfe0ff, 0x475535, 0.65);
+    scene.add(hemiLight);
 
-    const sunLight = new THREE.DirectionalLight(0xffffff, 0.85);
-    sunLight.position.set(200, 350, 150);
+    // Warm Sun Directional Light
+    const sunLight = new THREE.DirectionalLight(0xfffaea, 1.25);
+    sunLight.position.set(160, 240, 110);
     sunLight.castShadow = true;
     sunLight.shadow.mapSize.width = 2048;
     sunLight.shadow.mapSize.height = 2048;
     sunLight.shadow.camera.near = 10;
-    sunLight.shadow.camera.far = 1200;
-    const shadowD = 400;
-    sunLight.shadow.camera.left = -shadowD;
-    sunLight.shadow.camera.right = shadowD;
-    sunLight.shadow.camera.top = shadowD;
-    sunLight.shadow.camera.bottom = -shadowD;
+    sunLight.shadow.camera.far = 1000;
+    const sArea = 350;
+    sunLight.shadow.camera.left = -sArea;
+    sunLight.shadow.camera.right = sArea;
+    sunLight.shadow.camera.top = sArea;
+    sunLight.shadow.camera.bottom = -sArea;
+    sunLight.shadow.bias = -0.0003;
     scene.add(sunLight);
 
-    const blueRimLight = new THREE.DirectionalLight(0x0284c7, 0.35);
-    blueRimLight.position.set(-200, 100, -200);
-    scene.add(blueRimLight);
+    // Soft sky fill light
+    const fillLight = new THREE.DirectionalLight(0xcde3fa, 0.35);
+    fillLight.position.set(-160, 80, -110);
+    scene.add(fillLight);
 
     // -------------------------------------------------------------
-    // 3D Environment: Road, Terrain, Markers
+    // Physical Road Geometry & Roadside Environment (1:1 Metric Scale)
     // -------------------------------------------------------------
+    // 1 Three.js unit = 1 meter!
     const roadLengthM = simTrace.road_length_m || 1000.0;
-    const roadScale = 0.8; // 1 meter = 0.8 Three.js units
-    const roadLength3D = roadLengthM * roadScale;
-    const halfRoad3D = roadLength3D / 2;
+    const halfRoadM = roadLengthM / 2;
 
-    // Coordinate mapping: meter x in [0, roadLengthM] -> 3D X in [-halfRoad3D, +halfRoad3D]
     function toWorldX(xMeters) {{
       const wrapped = (xMeters % roadLengthM + roadLengthM) % roadLengthM;
-      return (wrapped - roadLengthM / 2) * roadScale;
+      return (wrapped - halfRoadM);
     }}
 
-    // Ground Terrain
-    const groundGeo = new THREE.PlaneGeometry(roadLength3D + 400, 600, 20, 20);
-    groundGeo.rotateX(-Math.PI / 2);
-    const groundMat = new THREE.MeshStandardMaterial({{
-      color: 0x090d16,
+    // 1. Natural Grass Terrain
+    const terrainGeo = new THREE.PlaneGeometry(roadLengthM + 400, 240, 32, 32);
+    terrainGeo.rotateX(-Math.PI / 2);
+    const terrainMat = new THREE.MeshStandardMaterial({{
+      color: 0x415b32,
       roughness: 0.95,
-      metalness: 0.1
+      metalness: 0.05
     }});
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.position.y = -0.1;
-    ground.receiveShadow = true;
-    scene.add(ground);
+    const terrain = new THREE.Mesh(terrainGeo, terrainMat);
+    terrain.position.y = -0.05;
+    terrain.receiveShadow = true;
+    scene.add(terrain);
 
-    // Subtle Ground Grid
-    const gridHelper = new THREE.GridHelper(roadLength3D + 200, 40, 0x1e293b, 0x0f172a);
-    gridHelper.position.y = 0;
-    scene.add(gridHelper);
-
-    // Highway Asphalt Bed (3 Lanes: width = 24 units, Z in [-12, +12])
-    const roadGeo = new THREE.PlaneGeometry(roadLength3D, 24);
-    roadGeo.rotateX(-Math.PI / 2);
-    const roadMat = new THREE.MeshStandardMaterial({{
-      color: 0x182030,
-      roughness: 0.8,
-      metalness: 0.2
+    // 2. Asphalt Highway Road Bed
+    // 3 Lanes (each 3.6m wide) = 10.8m driving corridor
+    // With paved shoulders = 15.6m total paved asphalt width (Z in [-7.8, +7.8])
+    const roadAsphaltGeo = new THREE.PlaneGeometry(roadLengthM, 15.6);
+    roadAsphaltGeo.rotateX(-Math.PI / 2);
+    const roadAsphaltMat = new THREE.MeshStandardMaterial({{
+      color: 0x22272e,
+      roughness: 0.85,
+      metalness: 0.08
     }});
-    const road = new THREE.Mesh(roadGeo, roadMat);
-    road.position.y = 0.1;
-    road.receiveShadow = true;
-    scene.add(road);
+    const roadBed = new THREE.Mesh(roadAsphaltGeo, roadAsphaltMat);
+    roadBed.position.y = 0.05;
+    roadBed.receiveShadow = true;
+    scene.add(roadBed);
 
-    // Yellow Shoulders
-    const shoulderMat = new THREE.MeshBasicMaterial({{ color: 0xeab308 }});
-    const s1Geo = new THREE.PlaneGeometry(roadLength3D, 0.4);
-    s1Geo.rotateX(-Math.PI / 2);
-    const shoulderTop = new THREE.Mesh(s1Geo, shoulderMat);
-    shoulderTop.position.set(0, 0.15, -11.8);
-    scene.add(shoulderTop);
+    // 3. Pavement Markings: Solid Edge Lines and Dashed Lane Dividers
+    // Solid Edge Lines (white 0.2m wide at Z = -5.4m and Z = +5.4m)
+    const lineWhiteMat = new THREE.MeshBasicMaterial({{ color: 0xf1f5f9 }});
+    const edgeLineGeo = new THREE.PlaneGeometry(roadLengthM, 0.22);
+    edgeLineGeo.rotateX(-Math.PI / 2);
 
-    const shoulderBottom = new THREE.Mesh(s1Geo, shoulderMat);
-    shoulderBottom.position.set(0, 0.15, 11.8);
-    scene.add(shoulderBottom);
+    const edgeNorth = new THREE.Mesh(edgeLineGeo, lineWhiteMat);
+    edgeNorth.position.set(0, 0.065, -5.4);
+    scene.add(edgeNorth);
 
-    // White Dashed Lane Dividers
-    // Lane 0: Z = -7.0, Lane 1: Z = 0.0, Lane 2: Z = +7.0
-    // Dividers at Z = -3.8 and Z = +3.8
-    const dashMat = new THREE.MeshBasicMaterial({{ color: 0xe2e8f0 }});
-    const dashGeo = new THREE.PlaneGeometry(3.5, 0.3);
-    dashGeo.rotateX(-Math.PI / 2);
+    const edgeSouth = new THREE.Mesh(edgeLineGeo, lineWhiteMat);
+    edgeSouth.position.set(0, 0.065, 5.4);
+    scene.add(edgeSouth);
 
-    for (let x = -halfRoad3D + 5; x < halfRoad3D - 5; x += 9) {{
-      const d1 = new THREE.Mesh(dashGeo, dashMat);
-      d1.position.set(x, 0.16, -3.8);
+    // Yellow Boundary Shoulder Lines (at Z = -7.3m and Z = +7.3m)
+    const lineYellowMat = new THREE.MeshBasicMaterial({{ color: 0xebb305 }});
+    const yellowLineGeo = new THREE.PlaneGeometry(roadLengthM, 0.25);
+    yellowLineGeo.rotateX(-Math.PI / 2);
+
+    const yellowNorth = new THREE.Mesh(yellowLineGeo, lineYellowMat);
+    yellowNorth.position.set(0, 0.065, -7.3);
+    scene.add(yellowNorth);
+
+    const yellowSouth = new THREE.Mesh(yellowLineGeo, lineYellowMat);
+    yellowSouth.position.set(0, 0.065, 7.3);
+    scene.add(yellowSouth);
+
+    // Dashed Lane Dividers (3.0m stripe, 6.0m gap at Z = -1.8m and Z = +1.8m)
+    const dashStripeGeo = new THREE.PlaneGeometry(3.0, 0.16);
+    dashStripeGeo.rotateX(-Math.PI / 2);
+
+    for (let x = -halfRoadM + 4; x < halfRoadM - 4; x += 9.0) {{
+      const d1 = new THREE.Mesh(dashStripeGeo, lineWhiteMat);
+      d1.position.set(x, 0.068, -1.8);
       scene.add(d1);
 
-      const d2 = new THREE.Mesh(dashGeo, dashMat);
-      d2.position.set(x, 0.16, 3.8);
+      const d2 = new THREE.Mesh(dashStripeGeo, lineWhiteMat);
+      d2.position.set(x, 0.068, 1.8);
       scene.add(d2);
     }}
 
-    // Roadside Distance Posts
-    for (let m = 0; m <= roadLengthM; m += 200) {{
-      const wx = toWorldX(m);
-      const postGeo = new THREE.CylinderGeometry(0.2, 0.2, 3.0, 8);
-      const postMat = new THREE.MeshStandardMaterial({{ color: 0x475569 }});
-      const post = new THREE.Mesh(postGeo, postMat);
-      post.position.set(wx, 1.5, 13.5);
-      scene.add(post);
+    // 4. Steel W-Beam Guardrails (along both sides at Z = -7.9m and Z = +7.9m)
+    const railMat = new THREE.MeshStandardMaterial({{
+      color: 0x94a3b8,
+      metalness: 0.85,
+      roughness: 0.35
+    }});
+    const railBeamGeo = new THREE.BoxGeometry(roadLengthM, 0.35, 0.08);
+
+    const railN = new THREE.Mesh(railBeamGeo, railMat);
+    railN.position.set(0, 0.75, -7.9);
+    railN.castShadow = true;
+    scene.add(railN);
+
+    const railS = new THREE.Mesh(railBeamGeo, railMat);
+    railS.position.set(0, 0.75, 7.9);
+    railS.castShadow = true;
+    scene.add(railS);
+
+    // Guardrail Support Posts (every 4.0m)
+    const postGeo = new THREE.BoxGeometry(0.12, 0.85, 0.12);
+    for (let x = -halfRoadM + 2; x < halfRoadM; x += 4.0) {{
+      const pN = new THREE.Mesh(postGeo, railMat);
+      pN.position.set(x, 0.42, -7.9);
+      pN.castShadow = true;
+      scene.add(pN);
+
+      const pS = new THREE.Mesh(postGeo, railMat);
+      pS.position.set(x, 0.42, 7.9);
+      pS.castShadow = true;
+      scene.add(pS);
     }}
 
-    // Lane Z coordinates mapping: lane in 0..2
-    const laneZ = [-7.0, 0.0, 7.0];
+    // 5. Roadside Vegetation (Procedural Trees & Shrubs along the highway)
+    function createTree(x, z, scaleFactor) {{
+      const treeGroup = new THREE.Group();
+      // Trunk
+      const trunkGeo = new THREE.CylinderGeometry(0.35 * scaleFactor, 0.5 * scaleFactor, 3.8 * scaleFactor, 8);
+      const trunkMat = new THREE.MeshStandardMaterial({{ color: 0x4a3728, roughness: 0.9 }});
+      const trunk = new THREE.Mesh(trunkGeo, trunkMat);
+      trunk.position.y = 1.9 * scaleFactor;
+      trunk.castShadow = true;
+      treeGroup.add(trunk);
+
+      // Layered Canopy
+      const leavesMat = new THREE.MeshStandardMaterial({{ color: 0x2e5a27, roughness: 0.85 }});
+      const c1Geo = new THREE.ConeGeometry(2.4 * scaleFactor, 3.8 * scaleFactor, 7);
+      const c1 = new THREE.Mesh(c1Geo, leavesMat);
+      c1.position.y = 4.2 * scaleFactor;
+      c1.castShadow = true;
+      treeGroup.add(c1);
+
+      const c2Geo = new THREE.ConeGeometry(1.8 * scaleFactor, 3.2 * scaleFactor, 7);
+      const c2 = new THREE.Mesh(c2Geo, leavesMat);
+      c2.position.y = 6.0 * scaleFactor;
+      c2.castShadow = true;
+      treeGroup.add(c2);
+
+      treeGroup.position.set(x, 0, z);
+      scene.add(treeGroup);
+    }}
+
+    // Plant trees deterministically outside the road clearance corridor (Z < -11m and Z > +11m)
+    for (let x = -halfRoadM + 15; x < halfRoadM - 15; x += 22.0) {{
+      const offsetZ1 = -13.0 - ((Math.abs(x * 13) % 17));
+      createTree(x, offsetZ1, 0.85 + ((Math.abs(x * 7) % 5) * 0.08));
+
+      const offsetZ2 = 13.0 + ((Math.abs(x * 19) % 17));
+      createTree(x + 10, offsetZ2, 0.90 + ((Math.abs(x * 11) % 5) * 0.08));
+    }}
+
+    // 6. Kilometer & Distance Marker Posts along Highway
+    for (let m = 0; m <= roadLengthM; m += 200) {{
+      const wx = toWorldX(m);
+      const mPostGeo = new THREE.BoxGeometry(0.25, 1.2, 0.25);
+      const mPostMat = new THREE.MeshStandardMaterial({{ color: 0x0284c7 }});
+      const mPost = new THREE.Mesh(mPostGeo, mPostMat);
+      mPost.position.set(wx, 0.6, -8.6);
+      mPost.castShadow = true;
+      scene.add(mPost);
+    }}
+
+    // Driving Lane Centers (3 Lanes: 3.6m width)
+    const laneZ = [-3.6, 0.0, 3.6];
 
     // -------------------------------------------------------------
-    // 3D Vehicle Models Construction
+    // Realistic 3D Procedural Vehicles (1:1 Metric Scale)
     // -------------------------------------------------------------
     const vehicleMeshes = new Map();
 
-    function build3DVehicle(vid) {{
+    // Realistic Automotive Paint Palette
+    const paintPalette = [
+      0x1c2d44, // Deep Sapphire Navy
+      0xc0c6cb, // Silver Metallic
+      0xeef2f5, // Glacier White
+      0x373e48, // Graphite Metallic
+      0x7a1820, // Crimson Red
+      0x14171a, // Obsidian Black
+    ];
+
+    function buildRealistic3DVehicle(vid) {{
       const group = new THREE.Group();
+      const vehType = vid % 3; // 0: Sedan, 1: SUV, 2: Delivery Van
+      const bodyColor = paintPalette[vid % paintPalette.length];
 
-      // Lower Chassis Body
-      const bodyGeo = new THREE.BoxGeometry(6.2, 1.3, 3.0);
-      const bodyMat = new THREE.MeshStandardMaterial({{
-        color: 0x2563eb,
-        roughness: 0.3,
-        metalness: 0.5
+      const paintMat = new THREE.MeshStandardMaterial({{
+        color: bodyColor,
+        roughness: 0.28,
+        metalness: 0.82
       }});
-      const body = new THREE.Mesh(bodyGeo, bodyMat);
-      body.position.y = 1.0;
-      body.castShadow = true;
-      body.receiveShadow = true;
-      group.add(body);
 
-      // Cabin / Windshield
-      const cabinGeo = new THREE.BoxGeometry(3.4, 1.1, 2.6);
-      const cabinMat = new THREE.MeshStandardMaterial({{
-        color: 0x0f172a,
-        roughness: 0.1,
-        metalness: 0.9,
+      const glassMat = new THREE.MeshStandardMaterial({{
+        color: 0x111827,
+        roughness: 0.05,
+        metalness: 0.95,
         transparent: true,
         opacity: 0.85
       }});
-      const cabin = new THREE.Mesh(cabinGeo, cabinMat);
-      cabin.position.set(-0.3, 2.0, 0);
-      cabin.castShadow = true;
-      group.add(cabin);
 
-      // Four Rubber Wheels
-      const wheelGeo = new THREE.CylinderGeometry(0.65, 0.65, 0.55, 14);
-      wheelGeo.rotateX(Math.PI / 2);
-      const wheelMat = new THREE.MeshStandardMaterial({{ color: 0x111827, roughness: 0.9 }});
-      const wheelPositions = [
-        [1.9, 0.65, 1.5],
-        [1.9, 0.65, -1.5],
-        [-1.9, 0.65, 1.5],
-        [-1.9, 0.65, -1.5]
+      const trimMat = new THREE.MeshStandardMaterial({{ color: 0x0f172a, roughness: 0.9 }});
+      const chromeMat = new THREE.MeshStandardMaterial({{ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 }});
+      const rubberMat = new THREE.MeshStandardMaterial({{ color: 0x171717, roughness: 0.95 }});
+      const rimMat = new THREE.MeshStandardMaterial({{ color: 0xcfd4dc, metalness: 0.9, roughness: 0.2 }});
+
+      if (vehType === 0) {{
+        // ------------------ SEDAN (4.6m L, 1.85m W, 1.45m H) ------------------
+        // Lower Chassis Body
+        const lowerBodyGeo = new THREE.BoxGeometry(4.6, 0.65, 1.85);
+        const lowerBody = new THREE.Mesh(lowerBodyGeo, paintMat);
+        lowerBody.position.y = 0.62;
+        lowerBody.castShadow = true;
+        lowerBody.receiveShadow = true;
+        group.add(lowerBody);
+
+        // Aerodynamic Hood Bonnet
+        const hoodGeo = new THREE.BoxGeometry(1.4, 0.25, 1.75);
+        const hood = new THREE.Mesh(hoodGeo, paintMat);
+        hood.position.set(1.4, 0.95, 0);
+        hood.castShadow = true;
+        group.add(hood);
+
+        // Rear Trunk Deck
+        const trunkGeo = new THREE.BoxGeometry(1.0, 0.28, 1.75);
+        const trunk = new THREE.Mesh(trunkGeo, paintMat);
+        trunk.position.set(-1.6, 0.95, 0);
+        trunk.castShadow = true;
+        group.add(trunk);
+
+        // Cabin Greenhouse (Windshields & Roof)
+        const cabinGeo = new THREE.BoxGeometry(2.3, 0.65, 1.6);
+        const cabin = new THREE.Mesh(cabinGeo, glassMat);
+        cabin.position.set(-0.15, 1.25, 0);
+        cabin.castShadow = true;
+        group.add(cabin);
+
+        // Roof Panel
+        const roofGeo = new THREE.BoxGeometry(1.8, 0.08, 1.55);
+        const roof = new THREE.Mesh(roofGeo, paintMat);
+        roof.position.set(-0.15, 1.58, 0);
+        roof.castShadow = true;
+        group.add(roof);
+
+        // Side Mirrors
+        const mirrorGeo = new THREE.BoxGeometry(0.12, 0.12, 0.22);
+        const mLeft = new THREE.Mesh(mirrorGeo, paintMat);
+        mLeft.position.set(0.7, 1.05, 0.95);
+        const mRight = new THREE.Mesh(mirrorGeo, paintMat);
+        mRight.position.set(0.7, 1.05, -0.95);
+        group.add(mLeft);
+        group.add(mRight);
+
+      }} else if (vehType === 1) {{
+        // ------------------ SUV / CROSSOVER (4.85m L, 1.95m W, 1.72m H) ------------------
+        const lowerBodyGeo = new THREE.BoxGeometry(4.85, 0.85, 1.95);
+        const lowerBody = new THREE.Mesh(lowerBodyGeo, paintMat);
+        lowerBody.position.y = 0.78;
+        lowerBody.castShadow = true;
+        group.add(lowerBody);
+
+        // Matte Black Underbody Cladding
+        const trimGeo = new THREE.BoxGeometry(4.88, 0.25, 1.98);
+        const trimMesh = new THREE.Mesh(trimGeo, trimMat);
+        trimMesh.position.y = 0.45;
+        group.add(trimMesh);
+
+        // Taller Cabin & Cargo Tailgate
+        const cabinGeo = new THREE.BoxGeometry(2.9, 0.82, 1.75);
+        const cabin = new THREE.Mesh(cabinGeo, glassMat);
+        cabin.position.set(-0.35, 1.45, 0);
+        cabin.castShadow = true;
+        group.add(cabin);
+
+        const roofGeo = new THREE.BoxGeometry(2.6, 0.10, 1.7);
+        const roof = new THREE.Mesh(roofGeo, paintMat);
+        roof.position.set(-0.35, 1.88, 0);
+        group.add(roof);
+
+        // Roof Luggage Rails
+        const railGeo = new THREE.BoxGeometry(2.2, 0.06, 0.06);
+        const rL = new THREE.Mesh(railGeo, chromeMat);
+        rL.position.set(-0.35, 1.95, 0.75);
+        const rR = new THREE.Mesh(railGeo, chromeMat);
+        rR.position.set(-0.35, 1.95, -0.75);
+        group.add(rL);
+        group.add(rR);
+
+      }} else {{
+        // ------------------ COMMERCIAL CARGO VAN (5.2m L, 2.0m W, 2.15m H) ------------------
+        const vanBodyGeo = new THREE.BoxGeometry(5.2, 1.45, 2.0);
+        const vanBody = new THREE.Mesh(vanBodyGeo, paintMat);
+        vanBody.position.set(-0.2, 1.15, 0);
+        vanBody.castShadow = true;
+        group.add(vanBody);
+
+        // Front Cab Windshield
+        const cabGeo = new THREE.BoxGeometry(1.3, 0.75, 1.85);
+        const cab = new THREE.Mesh(cabGeo, glassMat);
+        cab.position.set(1.4, 1.35, 0);
+        group.add(cab);
+
+        // Bumper Grille
+        const bumperGeo = new THREE.BoxGeometry(0.4, 0.5, 1.95);
+        const bumper = new THREE.Mesh(bumperGeo, trimMat);
+        bumper.position.set(2.4, 0.55, 0);
+        group.add(bumper);
+      }}
+
+      // 4 Realistic Wheels (Tire + Alloy Spoke Rims)
+      const wheelRadius = (vehType === 1) ? 0.38 : 0.34;
+      const wheelWidth = 0.24;
+      const tireGeo = new THREE.CylinderGeometry(wheelRadius, wheelRadius, wheelWidth, 18);
+      tireGeo.rotateX(Math.PI / 2);
+
+      const rimGeo = new THREE.CylinderGeometry(wheelRadius * 0.65, wheelRadius * 0.65, wheelWidth + 0.02, 12);
+      rimGeo.rotateX(Math.PI / 2);
+
+      const wheelZ = (vehType === 1) ? 0.98 : 0.92;
+      const wheelFrontX = (vehType === 2) ? 1.6 : 1.45;
+      const wheelRearX = (vehType === 2) ? -1.7 : -1.45;
+
+      const wheelCoords = [
+        [wheelFrontX, wheelRadius, wheelZ],
+        [wheelFrontX, wheelRadius, -wheelZ],
+        [wheelRearX, wheelRadius, wheelZ],
+        [wheelRearX, wheelRadius, -wheelZ]
       ];
-      wheelPositions.forEach(p => {{
-        const w = new THREE.Mesh(wheelGeo, wheelMat);
-        w.position.set(...p);
-        w.castShadow = true;
-        group.add(w);
+
+      wheelCoords.forEach(pos => {{
+        const wMesh = new THREE.Mesh(tireGeo, rubberMat);
+        const rMesh = new THREE.Mesh(rimGeo, rimMat);
+        wMesh.add(rMesh);
+        wMesh.position.set(...pos);
+        wMesh.castShadow = true;
+        group.add(wMesh);
       }});
 
-      // Headlights (+X forward)
-      const hlGeo = new THREE.BoxGeometry(0.15, 0.25, 0.45);
-      const hlMat = new THREE.MeshBasicMaterial({{ color: 0xfef08a }});
-      const hl1 = new THREE.Mesh(hlGeo, hlMat);
-      hl1.position.set(3.15, 1.1, 0.95);
-      const hl2 = new THREE.Mesh(hlGeo, hlMat);
-      hl2.position.set(3.15, 1.1, -0.95);
-      group.add(hl1);
-      group.add(hl2);
+      // Realistic Front Headlights (Projector LED White)
+      const hlMat = new THREE.MeshBasicMaterial({{ color: 0xffffff }});
+      const hlGeo = new THREE.BoxGeometry(0.12, 0.18, 0.38);
+      const hlL = new THREE.Mesh(hlGeo, hlMat);
+      hlL.position.set(2.28, 0.75, 0.72);
+      const hlR = new THREE.Mesh(hlGeo, hlMat);
+      hlR.position.set(2.28, 0.75, -0.72);
+      group.add(hlL);
+      group.add(hlR);
 
-      // Taillights (-X rear)
-      const tlMat = new THREE.MeshBasicMaterial({{ color: 0xef4444 }});
-      const tl1 = new THREE.Mesh(hlGeo, tlMat);
-      tl1.position.set(-3.15, 1.1, 0.95);
-      const tl2 = new THREE.Mesh(hlGeo, tlMat);
-      tl2.position.set(-3.15, 1.1, -0.95);
-      group.add(tl1);
-      group.add(tl2);
+      // Realistic Rear Taillights (Red LED)
+      const tlMat = new THREE.MeshBasicMaterial({{ color: 0xdc2626 }});
+      const tlGeo = new THREE.BoxGeometry(0.12, 0.18, 0.38);
+      const tlL = new THREE.Mesh(tlGeo, tlMat);
+      tlL.position.set(-2.28, 0.75, 0.72);
+      const tlR = new THREE.Mesh(tlGeo, tlMat);
+      tlR.position.set(-2.28, 0.75, -0.72);
+      group.add(tlL);
+      group.add(tlR);
 
-      // Pulsing Requester Halo Ring
-      const haloGeo = new THREE.RingGeometry(2.4, 2.9, 32);
-      haloGeo.rotateX(-Math.PI / 2);
-      const haloMat = new THREE.MeshBasicMaterial({{
-        color: 0xf59e0b,
+      // License Plates (Front & Rear)
+      const plateMat = new THREE.MeshBasicMaterial({{ color: 0xfef08a }});
+      const plateGeo = new THREE.BoxGeometry(0.06, 0.14, 0.42);
+      const plateF = new THREE.Mesh(plateGeo, plateMat);
+      plateF.position.set(2.32, 0.45, 0);
+      const plateR = new THREE.Mesh(plateGeo, plateMat);
+      plateR.position.set(-2.32, 0.52, 0);
+      group.add(plateF);
+      group.add(plateR);
+
+      // Subtle Connected Vehicle Requester Beacon
+      const beaconGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.12, 12);
+      const beaconMat = new THREE.MeshBasicMaterial({{ color: 0xf59e0b }});
+      const beacon = new THREE.Mesh(beaconGeo, beaconMat);
+      beacon.position.y = (vehType === 2) ? 2.22 : (vehType === 1 ? 1.95 : 1.65);
+      beacon.visible = false;
+      group.add(beacon);
+
+      // Local CPU Execution Subtle Ring
+      const localAuraGeo = new THREE.RingGeometry(1.6, 1.85, 24);
+      localAuraGeo.rotateX(-Math.PI / 2);
+      const localAuraMat = new THREE.MeshBasicMaterial({{
+        color: 0x8b5cf6,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 0.0
       }});
-      const halo = new THREE.Mesh(haloGeo, haloMat);
-      halo.position.y = 3.2;
-      group.add(halo);
-
-      // Local CPU Energy Aura Rings
-      const auraGeo = new THREE.TorusGeometry(3.2, 0.15, 8, 24);
-      const auraMat = new THREE.MeshBasicMaterial({{
-        color: 0x8b5cf6,
-        transparent: true,
-        opacity: 0.0
-      }});
-      const aura = new THREE.Mesh(auraGeo, auraMat);
-      aura.position.y = 1.6;
-      aura.rotation.x = Math.PI / 2;
-      group.add(aura);
+      const localAura = new THREE.Mesh(localAuraGeo, localAuraMat);
+      localAura.position.y = (vehType === 2) ? 2.3 : 1.8;
+      group.add(localAura);
 
       group.userData = {{
         type: 'vehicle',
         vid: vid,
-        bodyMat: bodyMat,
-        halo: halo,
-        haloMat: haloMat,
-        aura: aura,
-        auraMat: auraMat
+        paintMat: paintMat,
+        beacon: beacon,
+        localAura: localAura,
+        localAuraMat: localAuraMat,
+        baseColor: bodyColor
       }};
       scene.add(group);
       return group;
     }}
 
     // -------------------------------------------------------------
-    // 3D Roadside Unit (RSU) Tower Construction
+    // Realistic Roadside Unit (RSU) Infrastructure
     // -------------------------------------------------------------
     const rsuMeshes = new Map();
-    const commRadius3D = (simTrace.comm_range_m || 300.0) * roadScale;
+    const commRadiusM = simTrace.comm_range_m || 300.0;
 
-    function build3DRsuTower(eid, edgeData) {{
+    function buildRealistic3DRsu(eid, edgeData) {{
       const group = new THREE.Group();
       const wx = toWorldX(edgeData.x_m);
-      const rsuZ = -18.0; // Positioned along north roadside
+      const rsuZ = -10.5; // Roadside grass verge clearance
 
-      // Concrete Foundation
-      const baseGeo = new THREE.CylinderGeometry(3.6, 4.4, 1.6, 8);
-      const baseMat = new THREE.MeshStandardMaterial({{ color: 0x334155, roughness: 0.9 }});
-      const base = new THREE.Mesh(baseGeo, baseMat);
-      base.position.y = 0.8;
-      base.receiveShadow = true;
-      group.add(base);
+      // 1. Concrete Foundation Pad
+      const padGeo = new THREE.BoxGeometry(1.8, 0.25, 1.8);
+      const padMat = new THREE.MeshStandardMaterial({{ color: 0x94a3b8, roughness: 0.95 }});
+      const pad = new THREE.Mesh(padGeo, padMat);
+      pad.position.y = 0.125;
+      pad.receiveShadow = true;
+      group.add(pad);
 
-      // Lattice Steel Truss Mast
-      const mastGeo = new THREE.CylinderGeometry(0.9, 2.0, 26.0, 6, 4, true);
-      const mastMat = new THREE.MeshStandardMaterial({{ color: 0x64748b, wireframe: true }});
-      const mast = new THREE.Mesh(mastGeo, mastMat);
-      mast.position.y = 14.0;
-      group.add(mast);
+      // 2. Weatherproof Equipment Cabinet (NEMA Enclosure)
+      const cabGeo = new THREE.BoxGeometry(0.85, 1.35, 0.65);
+      const cabMat = new THREE.MeshStandardMaterial({{ color: 0x64748b, roughness: 0.5, metalness: 0.3 }});
+      const cabinet = new THREE.Mesh(cabGeo, cabMat);
+      cabinet.position.set(0.35, 0.92, 0);
+      cabinet.castShadow = true;
+      group.add(cabinet);
 
-      // Central Antenna Mast
-      const poleGeo = new THREE.CylinderGeometry(0.4, 0.4, 28.0, 8);
-      const poleMat = new THREE.MeshStandardMaterial({{ color: 0x0284c7, metalness: 0.8 }});
+      // 3. Galvanized Steel Support Mast (Plausible 7.5m Height)
+      const poleGeo = new THREE.CylinderGeometry(0.11, 0.14, 7.5, 16);
+      const poleMat = new THREE.MeshStandardMaterial({{ color: 0x718096, metalness: 0.85, roughness: 0.3 }});
       const pole = new THREE.Mesh(poleGeo, poleMat);
-      pole.position.y = 15.0;
+      pole.position.set(-0.45, 3.85, 0);
+      pole.castShadow = true;
       group.add(pole);
 
-      // Directional Microwave Dishes
-      const dishGeo = new THREE.CylinderGeometry(1.7, 1.7, 0.8, 16);
+      // 4. Crossarm Mounting Bracket at 6.8m
+      const armGeo = new THREE.BoxGeometry(0.08, 0.08, 1.4);
+      const arm = new THREE.Mesh(armGeo, poleMat);
+      arm.position.set(-0.45, 6.8, 0);
+      group.add(arm);
+
+      // 5. C-V2X Sector Panel Antenna (Tilted toward highway)
+      const panelGeo = new THREE.BoxGeometry(0.25, 0.95, 0.18);
+      const panelMat = new THREE.MeshStandardMaterial({{ color: 0xf8fafc, roughness: 0.3 }});
+      const panelAnt = new THREE.Mesh(panelGeo, panelMat);
+      panelAnt.position.set(-0.45, 6.8, 0.5);
+      panelAnt.rotation.y = 0.25;
+      panelAnt.castShadow = true;
+      group.add(panelAnt);
+
+      // 6. Circular Microwave Backhaul Dish
+      const dishGeo = new THREE.CylinderGeometry(0.35, 0.35, 0.18, 16);
       dishGeo.rotateZ(Math.PI / 2);
-      const dishMat = new THREE.MeshStandardMaterial({{ color: 0x38bdf8, metalness: 0.5 }});
-      const d1 = new THREE.Mesh(dishGeo, dishMat);
-      d1.position.set(1.5, 22.0, 0);
-      const d2 = new THREE.Mesh(dishGeo, dishMat);
-      d2.position.set(-1.5, 24.5, 0);
-      group.add(d1);
-      group.add(d2);
+      const dish = new THREE.Mesh(dishGeo, panelMat);
+      dish.position.set(-0.45, 7.2, -0.45);
+      dish.castShadow = true;
+      group.add(dish);
 
-      // Top Beacon Light
-      const beaconGeo = new THREE.SphereGeometry(0.8, 16, 16);
-      const beaconMat = new THREE.MeshBasicMaterial({{ color: 0x06b6d4 }});
-      const beacon = new THREE.Mesh(beaconGeo, beaconMat);
-      beacon.position.y = 29.5;
-      group.add(beacon);
+      // 7. Identifiable Placard
+      const signGeo = new THREE.BoxGeometry(0.05, 0.35, 0.65);
+      const signMat = new THREE.MeshStandardMaterial({{ color: 0x0369a1 }});
+      const sign = new THREE.Mesh(signGeo, signMat);
+      sign.position.set(-0.45, 4.8, 0);
+      group.add(sign);
 
-      // Translucent Wireless Coverage Dome (Hemisphere: R = 300m)
-      const domeGeo = new THREE.SphereGeometry(commRadius3D, 24, 12, 0, Math.PI * 2, 0, Math.PI / 2);
-      const domeMat = new THREE.MeshStandardMaterial({{
-        color: 0x06b6d4,
+      // 8. 3D Radio Coverage Footprint (R_comm = 300m scaled)
+      const covGroup = new THREE.Group();
+
+      const discGeo = new THREE.RingGeometry(commRadiusM - 1.2, commRadiusM, 64);
+      discGeo.rotateX(-Math.PI / 2);
+      const discMat = new THREE.MeshBasicMaterial({{
+        color: 0x0284c7,
         transparent: true,
-        opacity: 0.07,
+        opacity: 0.30,
+        side: THREE.DoubleSide
+      }});
+      const covRing = new THREE.Mesh(discGeo, discMat);
+      covRing.position.y = 0.15;
+      covGroup.add(covRing);
+
+      const domeGeo = new THREE.SphereGeometry(commRadiusM, 24, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+      const domeMat = new THREE.MeshStandardMaterial({{
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.04,
         wireframe: true,
         side: THREE.DoubleSide
       }});
-      const dome = new THREE.Mesh(domeGeo, domeMat);
-      dome.position.y = 0;
-      group.add(dome);
+      const covDome = new THREE.Mesh(domeGeo, domeMat);
+      covDome.position.y = 0;
+      covGroup.add(covDome);
 
-      // Ground Coverage Boundary Ring
-      const ringGeo = new THREE.RingGeometry(commRadius3D - 1.5, commRadius3D, 64);
-      ringGeo.rotateX(-Math.PI / 2);
-      const ringMat = new THREE.MeshBasicMaterial({{
-        color: 0x06b6d4,
-        transparent: true,
-        opacity: 0.35,
-        side: THREE.DoubleSide
-      }});
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.position.y = 0.22;
-      group.add(ring);
+      group.add(covGroup);
 
       group.position.set(wx, 0, rsuZ);
       group.userData = {{
@@ -749,22 +1000,21 @@ def build_3d_simulation_html(
         eid: eid,
         worldX: wx,
         worldZ: rsuZ,
-        antennaY: 28.0,
-        beacon: beacon
+        antennaY: 6.8,
+        covGroup: covGroup
       }};
       scene.add(group);
       return group;
     }}
 
     // -------------------------------------------------------------
-    // Dynamic 3D Offload Laser Beam & Packet Pulses
+    // Professional Task Offloading Visualization Overlay
     // -------------------------------------------------------------
-    let offloadCurve = null;
-    let offloadTubeMesh = null;
-    const packetPulses = [];
-    const numPackets = 4;
+    let offloadLineMesh = null;
+    let packetPulses = [];
+    const numPackets = 3;
 
-    const packetGeo = new THREE.SphereGeometry(0.8, 12, 12);
+    const packetGeo = new THREE.SphereGeometry(0.45, 12, 12);
     const packetMat = new THREE.MeshBasicMaterial({{ color: 0x10b981 }});
     for (let i = 0; i < numPackets; i++) {{
       const p = new THREE.Mesh(packetGeo, packetMat);
@@ -773,53 +1023,55 @@ def build_3d_simulation_html(
       packetPulses.push(p);
     }}
 
+    let offloadCurve = null;
+
     function clearOffloadVisuals() {{
-      if (offloadTubeMesh) {{
-        scene.remove(offloadTubeMesh);
-        offloadTubeMesh.geometry.dispose();
-        offloadTubeMesh.material.dispose();
-        offloadTubeMesh = null;
+      if (offloadLineMesh) {{
+        scene.remove(offloadLineMesh);
+        offloadLineMesh.geometry.dispose();
+        offloadLineMesh.material.dispose();
+        offloadLineMesh = null;
       }}
       offloadCurve = null;
       packetPulses.forEach(p => p.visible = false);
     }}
 
-    function createOffloadBeam(startPos, endPos, isSuccess) {{
+    function createProfessionalOffloadVector(startPos, endPos, isSuccess) {{
       clearOffloadVisuals();
+      if (!showNetworkOverlay) return;
 
-      // Elevated midpoint curve
       const midX = (startPos.x + endPos.x) / 2;
-      const midY = Math.max(startPos.y, endPos.y) + 14.0;
+      const midY = Math.max(startPos.y, endPos.y) + 4.5;
       const midZ = (startPos.z + endPos.z) / 2;
       const midPos = new THREE.Vector3(midX, midY, midZ);
 
       offloadCurve = new THREE.QuadraticBezierCurve3(startPos, midPos, endPos);
 
       const colorHex = isSuccess ? 0x10b981 : 0xef4444;
-      const tubeGeo = new THREE.TubeGeometry(offloadCurve, 32, 0.45, 8, false);
+      const tubeGeo = new THREE.TubeGeometry(offloadCurve, 24, 0.12, 8, false);
       const tubeMat = new THREE.MeshBasicMaterial({{
         color: colorHex,
         transparent: true,
         opacity: 0.85
       }});
-      offloadTubeMesh = new THREE.Mesh(tubeGeo, tubeMat);
-      scene.add(offloadTubeMesh);
+      offloadLineMesh = new THREE.Mesh(tubeGeo, tubeMat);
+      scene.add(offloadLineMesh);
 
       packetMat.color.setHex(colorHex);
       packetPulses.forEach(p => p.visible = true);
     }}
 
     // -------------------------------------------------------------
-    // Initialize Simulation Entities from Step 0
+    // Instantiate Entities from Step 0
     // -------------------------------------------------------------
     const step0 = simTrace.steps[0];
     step0.vehicles.forEach(v => {{
-      const mesh = build3DVehicle(v.vid);
+      const mesh = buildRealistic3DVehicle(v.vid);
       vehicleMeshes.set(v.vid, mesh);
     }});
 
     step0.edges.forEach(e => {{
-      const mesh = build3DRsuTower(e.eid, e);
+      const mesh = buildRealistic3DRsu(e.eid, e);
       rsuMeshes.set(e.eid, mesh);
     }});
 
@@ -866,7 +1118,7 @@ def build_3d_simulation_html(
       document.getElementById('insp-energy').innerText = `${{snap.energy_j.toFixed(2)}} J`;
       document.getElementById('insp-trust').innerText = snap.dest_trust.toFixed(3);
 
-      // Update Vehicle Positions & Styles
+      // Update Vehicle Positions and Realistic State Highlights
       snap.vehicles.forEach(vData => {{
         const vMesh = vehicleMeshes.get(vData.vid);
         if (!vMesh) return;
@@ -878,43 +1130,43 @@ def build_3d_simulation_html(
         const isReq = (vData.vid === snap.requester_vid);
         const isPeerDest = (snap.dest_kind === 'vehicle' && snap.dest_id === vData.vid);
 
-        // Body color
+        // Highlight requester and target realistically
         if (isReq) {{
-          vMesh.userData.bodyMat.color.setHex(0xf59e0b); // Gold
-          vMesh.userData.haloMat.opacity = 0.85;
+          vMesh.userData.beacon.visible = true;
+          vMesh.userData.paintMat.color.setHex(0xb45309); // Highlighted amber automotive
         }} else if (isPeerDest) {{
-          vMesh.userData.bodyMat.color.setHex(0x10b981); // Emerald target
-          vMesh.userData.haloMat.opacity = 0.0;
+          vMesh.userData.beacon.visible = false;
+          vMesh.userData.paintMat.color.setHex(0x15803d); // Subdued emerald target
         }} else {{
-          vMesh.userData.bodyMat.color.setHex(0x2563eb); // Blue standard
-          vMesh.userData.haloMat.opacity = 0.0;
+          vMesh.userData.beacon.visible = false;
+          vMesh.userData.paintMat.color.setHex(vMesh.userData.baseColor);
         }}
 
-        // Local execution aura
-        if (isReq && snap.dest_kind === 'local') {{
-          vMesh.userData.auraMat.opacity = 0.85;
+        // Local onboard CPU execution aura
+        if (isReq && snap.dest_kind === 'local' && showNetworkOverlay) {{
+          vMesh.userData.localAuraMat.opacity = 0.85;
         }} else {{
-          vMesh.userData.auraMat.opacity = 0.0;
+          vMesh.userData.localAuraMat.opacity = 0.0;
         }}
       }});
 
-      // Update Offload Beams
+      // Update Network Offloading Vectors
       clearOffloadVisuals();
       const reqMesh = vehicleMeshes.get(snap.requester_vid);
 
       if (snap.dest_kind === 'edge' && reqMesh) {{
         const rsuMesh = rsuMeshes.get(snap.dest_id);
         if (rsuMesh) {{
-          const startPt = new THREE.Vector3(reqMesh.position.x, 2.4, reqMesh.position.z);
+          const startPt = new THREE.Vector3(reqMesh.position.x, 1.6, reqMesh.position.z);
           const endPt = new THREE.Vector3(rsuMesh.userData.worldX, rsuMesh.userData.antennaY, rsuMesh.userData.worldZ);
-          createOffloadBeam(startPt, endPt, snap.success);
+          createProfessionalOffloadVector(startPt, endPt, snap.success);
         }}
       }} else if (snap.dest_kind === 'vehicle' && reqMesh) {{
         const targetMesh = vehicleMeshes.get(snap.dest_id);
         if (targetMesh) {{
-          const startPt = new THREE.Vector3(reqMesh.position.x, 2.0, reqMesh.position.z);
-          const endPt = new THREE.Vector3(targetMesh.position.x, 2.0, targetMesh.position.z);
-          createOffloadBeam(startPt, endPt, snap.success);
+          const startPt = new THREE.Vector3(reqMesh.position.x, 1.5, reqMesh.position.z);
+          const endPt = new THREE.Vector3(targetMesh.position.x, 1.5, targetMesh.position.z);
+          createProfessionalOffloadVector(startPt, endPt, snap.success);
         }}
       }}
     }}
@@ -923,38 +1175,78 @@ def build_3d_simulation_html(
     // Camera Presets & Navigation
     // -------------------------------------------------------------
     function resetCamera() {{
-      camera.position.set(0, 140, 220);
-      controls.target.set(0, 6, 0);
+      const snap = (simTrace && simTrace.steps) ? simTrace.steps[currentStepIdx] : null;
+      let rx = 0;
+      let rz = 0;
+      if (snap) {{
+        const reqMesh = vehicleMeshes.get(snap.requester_vid);
+        if (reqMesh) {{
+          rx = reqMesh.position.x;
+          rz = reqMesh.position.z;
+        }} else if (snap.vehicles && snap.vehicles.length > 0) {{
+          rx = toWorldX(snap.vehicles[0].x_m);
+          rz = laneZ[snap.vehicles[0].lane || 0] || 0;
+        }}
+      }}
+      // Highway 3/4 elevated view framed directly on the active requester vehicle
+      camera.position.set(rx - 32, 16, rz + 28);
+      controls.target.set(rx, 1.2, rz);
       controls.update();
     }}
 
     function setCameraPreset(mode) {{
-      const snap = simTrace.steps[currentStepIdx];
-      const reqMesh = vehicleMeshes.get(snap.requester_vid);
-      const rx = reqMesh ? reqMesh.position.x : 0;
-      const rz = reqMesh ? reqMesh.position.z : 0;
+      const snap = (simTrace && simTrace.steps) ? simTrace.steps[currentStepIdx] : null;
+      let rx = 0;
+      let rz = 0;
+      if (snap) {{
+        const reqMesh = vehicleMeshes.get(snap.requester_vid);
+        if (reqMesh) {{
+          rx = reqMesh.position.x;
+          rz = reqMesh.position.z;
+        }} else if (snap.vehicles && snap.vehicles.length > 0) {{
+          rx = toWorldX(snap.vehicles[0].x_m);
+          rz = laneZ[snap.vehicles[0].lane || 0] || 0;
+        }}
+      }}
 
       if (mode === 'iso') {{
-        camera.position.set(rx - 70, 90, rz + 110);
-        controls.target.set(rx, 4, rz);
+        camera.position.set(rx - 32, 16, rz + 28);
+        controls.target.set(rx, 1.2, rz);
       }} else if (mode === 'chase') {{
-        camera.position.set(rx - 38, 12, rz);
-        controls.target.set(rx + 40, 2, rz);
+        camera.position.set(rx - 20, 5.5, rz);
+        controls.target.set(rx + 25, 1.5, rz);
       }} else if (mode === 'side') {{
-        camera.position.set(rx, 18, rz + 85);
-        controls.target.set(rx, 6, rz);
+        camera.position.set(rx, 8.5, rz + 28);
+        controls.target.set(rx, 1.8, rz);
       }} else if (mode === 'top') {{
-        camera.position.set(rx, 260, 0);
+        camera.position.set(rx, 75, 0);
         controls.target.set(rx, 0, 0);
       }}
       controls.update();
     }}
 
-    // Initial camera position
-    resetCamera();
+    function toggleCoverage() {{
+      showCoverageFootprint = !showCoverageFootprint;
+      rsuMeshes.forEach(r => {{
+        if (r.userData.covGroup) r.userData.covGroup.visible = showCoverageFootprint;
+      }});
+      const btn = document.getElementById('btn-cov');
+      btn.className = showCoverageFootprint ? 'hud-btn active' : 'hud-btn';
+    }}
+
+    function toggleNetworkOverlay() {{
+      showNetworkOverlay = !showNetworkOverlay;
+      const btn = document.getElementById('btn-net');
+      btn.className = showNetworkOverlay ? 'hud-btn active' : 'hud-btn';
+      updateStepVisuals(currentStepIdx);
+    }}
+
+    // Set initial button active states
+    document.getElementById('btn-cov').className = 'hud-btn active';
+    document.getElementById('btn-net').className = 'hud-btn active';
 
     // -------------------------------------------------------------
-    // Playback Controls
+    // Timeline Playback Controls
     // -------------------------------------------------------------
     function stepFirst() {{ updateStepVisuals(0); }}
     function stepLast() {{ updateStepVisuals(totalSteps - 1); }}
@@ -994,13 +1286,12 @@ def build_3d_simulation_html(
     }}
 
     // -------------------------------------------------------------
-    // Raycasting for Click-Selection
+    // Raycaster for Interactive Entity Selection
     // -------------------------------------------------------------
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
     window.addEventListener('click', (event) => {{
-      // Ignore clicks on HUD controls
       if (event.target.closest('.hud-top') || event.target.closest('.hud-bottom') || event.target.closest('.inspector-panel')) {{
         return;
       }}
@@ -1054,31 +1345,19 @@ def build_3d_simulation_html(
       requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Pulse beacon lights on RSUs
-      rsuMeshes.forEach(r => {{
-        if (r.userData.beacon) {{
-          const s = 0.8 + 0.3 * Math.sin(elapsed * 4.0);
-          r.userData.beacon.scale.set(s, s, s);
-        }}
-      }});
-
-      // Animate packet pulses along offload beam
+      // Animate packet pulses along offload vector
       if (offloadCurve && packetPulses[0].visible) {{
         packetPulses.forEach((p, idx) => {{
-          const t = (elapsed * 0.9 + idx * (1.0 / numPackets)) % 1.0;
+          const t = (elapsed * 1.1 + idx * (1.0 / numPackets)) % 1.0;
           const pt = offloadCurve.getPointAt(t);
           p.position.copy(pt);
         }});
       }}
 
-      // Rotate local CPU energy aura
+      // Rotate local CPU execution aura
       vehicleMeshes.forEach(v => {{
-        if (v.userData.aura && v.userData.auraMat.opacity > 0) {{
-          v.userData.aura.rotation.z = elapsed * 3.0;
-        }}
-        if (v.userData.halo && v.userData.haloMat.opacity > 0) {{
-          const hs = 1.0 + 0.12 * Math.sin(elapsed * 5.0);
-          v.userData.halo.scale.set(hs, hs, hs);
+        if (v.userData.localAura && v.userData.localAuraMat.opacity > 0) {{
+          v.userData.localAura.rotation.z = elapsed * 2.5;
         }}
       }});
 
@@ -1086,15 +1365,15 @@ def build_3d_simulation_html(
       renderer.render(scene, camera);
     }}
 
-    // Window Resize Handling
     window.addEventListener('resize', () => {{
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     }});
 
-    // Initial trigger to render step 0
+    // Initial render
     updateStepVisuals(0);
+    resetCamera();
     animate();
   </script>
 </body>

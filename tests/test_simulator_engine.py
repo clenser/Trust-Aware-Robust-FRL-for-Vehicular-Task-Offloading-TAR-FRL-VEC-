@@ -123,9 +123,10 @@ def test_build_3d_simulation_html():
     assert "<!DOCTYPE html>" in html_doc
     assert "new THREE.Scene()" in html_doc
     assert "THREE.OrbitControls" in html_doc
-    assert "build3DVehicle" in html_doc
-    assert "build3DRsuTower" in html_doc
-    assert "createOffloadBeam" in html_doc
+    assert "sRGBEncoding" in html_doc
+    assert "ACESFilmicToneMapping" in html_doc
+    assert "buildRealistic3DVehicle" in html_doc
+    assert "buildRealistic3DRsu" in html_doc
     assert "timeline-slider" in html_doc
     assert "inspector-panel" in html_doc
     assert "simTrace" in html_doc
