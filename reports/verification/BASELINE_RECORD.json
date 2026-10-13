@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-10-13T17:33:30+05:30",
+  "commit_sha": "5ad46a53e2ea49a756c940b73755fe55bf95d6f4",
+  "branch": "main",
+  "git_status": "clean",
+  "remote_synced": true,
+  "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+  "platform": "Windows-10-10.0.26300-SP0",
+  "sumo": {
+    "available": true,
+    "version": "1.28.0",
+    "binary": "C:\\Users\\srbar\\AppData\\Local\\sumo-1.28.0\\sumo-win64-1.28.0\\bin\\sumo.exe",
+    "traci_version": "1.28.0"
+  },
+  "dependencies": {
+    "streamlit": "1.65.0",
+    "torch": "2.14.1+cpu",
+    "pytest": "9.1.1"
+  },
+  "phase10_manifest": {
+    "status": "PASS",
+    "total_artifacts": 894,
+    "verified": true
+  },
+  "baseline_tests": {
+    "total_collected": 179,
+    "passed": 179,
+    "failed": 0,
+    "skipped": 0
+  }
+}

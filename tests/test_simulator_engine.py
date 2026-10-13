@@ -132,3 +132,51 @@ def test_build_3d_simulation_html():
     assert "simTrace" in html_doc
     assert len(html_doc) > 50000  # Confirms asset bundling
 
+
+def test_strict_policy_rejects_invalid_action(monkeypatch):
+    """Verify that strict_policy=True raises ValueError on out-of-bounds or masked action."""
+    cfg = EnvConfig(seed=42, num_tasks=5)
+    
+    # Faulty policy returning invalid action 99
+    monkeypatch.setattr(
+        "dashboard.simulator_engine.load_simulation_policy",
+        lambda *args, **kwargs: (lambda obs, mask, ctx=None: 99, "Faulty Policy")
+    )
+    
+    with pytest.raises(ValueError) as excinfo:
+        run_traced_episode(cfg, policy_name="faulty", max_tasks=5, strict_policy=True)
+    assert "returned invalid action 99" in str(excinfo.value)
+
+
+def test_strict_policy_rejects_unexpected_exception(monkeypatch):
+    """Verify that strict_policy=True raises RuntimeError on policy crash."""
+    cfg = EnvConfig(seed=42, num_tasks=5)
+
+    def crashing_policy(obs, mask, ctx=None):
+        raise ZeroDivisionError("Simulated neural crash")
+
+    monkeypatch.setattr(
+        "dashboard.simulator_engine.load_simulation_policy",
+        lambda *args, **kwargs: (crashing_policy, "Crashing Policy")
+    )
+
+    with pytest.raises(RuntimeError) as excinfo:
+        run_traced_episode(cfg, policy_name="crashing", max_tasks=5, strict_policy=True)
+    assert "Simulated neural crash" in str(excinfo.value)
+
+
+def test_policy_context_and_fallback_diagnostics():
+    """Verify that graceful dashboard mode logs policy errors and invalid action telemetry."""
+    cfg = EnvConfig(seed=42, num_tasks=5)
+
+    # 1. Normal run should have 0 exceptions and 0 invalid actions
+    _, summary = run_traced_episode(cfg, policy_name="resource_aware", max_tasks=5, strict_policy=False)
+    assert summary["policy_exceptions"] == 0
+    assert summary["invalid_actions"] == 0
+
+    # 2. Verify local_only strictly has 0 offload fraction
+    _, sum_loc = run_traced_episode(cfg, policy_name="local_only", max_tasks=5, strict_policy=True)
+    assert sum_loc["offload_fraction"] == 0.0
+    assert sum_loc["invalid_actions"] == 0
+
+

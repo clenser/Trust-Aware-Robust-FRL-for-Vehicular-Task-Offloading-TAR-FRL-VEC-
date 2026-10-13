@@ -121,7 +121,7 @@ def test_rsu_coverage_and_handover_tracking():
     assert len(env.handovers) > 0
     for h in env.handovers:
         assert isinstance(h, HandoverEvent)
-        assert h.event_type in ("associate", "handover", "disconnect")
+        assert h.event_type in ("associate", "handover", "disconnect", "vehicle_departure")
 
     env.close()
 
@@ -162,4 +162,44 @@ def test_policy_differentiation_in_simulator_engine():
     _, summary_nearest = run_traced_episode(env_cfg, policy_name="nearest_edge", max_tasks=15, mobility_mode="sumo")
     assert summary_nearest["offload_fraction"] > 0.0
     assert summary_nearest["offload_fraction"] != summary_local["offload_fraction"]
+
+
+def test_deterministic_spatial_handover_mechanics():
+    """Verify association, overlap handover, and disconnect semantics on controlled trajectories."""
+    # RSU 0 at 400m, RSU 1 at 800m, comm_range = 250m
+    env_cfg = EnvConfig(seed=42, num_vehicles=2, num_edge_nodes=2, road_length_m=1200.0, comm_range_m=250.0)
+    env = SumoVehicularEdgeEnv(env_cfg, use_sumo=False)  # Test synthetic kinematics harness
+    env.reset()
+
+    vid = 0
+    # Step 1: Vehicle at 0m (outside RSU 0 coverage [150m, 650m])
+    env._update_vehicle_association(vid, 50.0)
+    assert env.vehicle_associations[vid] is None
+
+    # Step 2: Vehicle enters RSU 0 coverage at 300m -> 'associate' to RSU 0
+    env._update_vehicle_association(vid, 300.0)
+    assert env.vehicle_associations[vid] == 0
+    ev1 = env.handovers[-1]
+    assert ev1.event_type == "associate"
+    assert ev1.to_rsu == 0
+    assert ev1.reason == "initial_rsu_coverage"
+
+    # Step 3: Vehicle enters overlap zone [550m, 650m] at 620m (dist to RSU 0 is 220m, dist to RSU 1 is 180m)
+    # RSU 1 is closer -> 'handover' from 0 to 1
+    env._update_vehicle_association(vid, 620.0)
+    assert env.vehicle_associations[vid] == 1
+    ev2 = env.handovers[-1]
+    assert ev2.event_type == "handover"
+    assert ev2.from_rsu == 0
+    assert ev2.to_rsu == 1
+    assert ev2.reason == "closer_rsu_in_overlap"
+
+    # Step 4: Vehicle leaves RSU 1 coverage at 1100m -> 'disconnect'
+    env._update_vehicle_association(vid, 1100.0)
+    assert env.vehicle_associations[vid] is None
+    ev3 = env.handovers[-1]
+    assert ev3.event_type == "disconnect"
+    assert ev3.from_rsu == 1
+    assert ev3.reason == "out_of_coverage"
+
 

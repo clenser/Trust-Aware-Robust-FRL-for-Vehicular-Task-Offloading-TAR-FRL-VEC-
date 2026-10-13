@@ -40,7 +40,10 @@ class HandoverEvent:
     time_s: float
     from_rsu: Optional[int]
     to_rsu: Optional[int]
-    event_type: str  # "associate", "handover", "disconnect"
+    event_type: str  # "associate", "handover", "disconnect", "vehicle_departure"
+    dist_to_prev_rsu_m: Optional[float] = None
+    dist_to_new_rsu_m: Optional[float] = None
+    reason: str = "unspecified"
 
 
 class SumoVehicularEdgeEnv:
@@ -161,11 +164,12 @@ class SumoVehicularEdgeEnv:
         else:
             # Synthetic fallback initialization
             for i in range(self.cfg.num_vehicles):
+                cpu_ghz = self.cfg.vehicle_cpu_ghz if getattr(self.cfg, "vehicle_cpu_ghz", None) else float(self._rng.uniform(1.2, 2.8))
                 v = Vehicle(
                     vid=i,
                     x_m=float(self._rng.uniform(0, self.cfg.road_length_m)),
                     speed_mps=float(self._rng.uniform(20.0, 33.3)),
-                    cpu_freq_hz=float(self.cfg.vehicle_cpu_ghz * 1e9),
+                    cpu_freq_hz=float(cpu_ghz * 1e9),
                     utilisation=float(self._rng.uniform(0.1, 0.6)),
                     bandwidth_hz=self.cfg.bandwidth_hz,
                     tx_power_w=self.cfg.tx_power_w,
@@ -175,11 +179,12 @@ class SumoVehicularEdgeEnv:
 
         # Ensure at least one vehicle exists
         if not self.vehicles:
+            cpu_ghz = self.cfg.vehicle_cpu_ghz if getattr(self.cfg, "vehicle_cpu_ghz", None) else float(self._rng.uniform(1.2, 2.8))
             v_fallback = Vehicle(
                 vid=0,
                 x_m=100.0,
                 speed_mps=28.0,
-                cpu_freq_hz=float(self.cfg.vehicle_cpu_ghz * 1e9),
+                cpu_freq_hz=float(cpu_ghz * 1e9),
                 utilisation=0.2,
                 bandwidth_hz=self.cfg.bandwidth_hz,
                 tx_power_w=self.cfg.tx_power_w,
@@ -234,6 +239,29 @@ class SumoVehicularEdgeEnv:
             # Update association and check for handover events
             self._update_vehicle_association(int_id, s.x_m)
 
+        # Detect departed vehicles that exited the simulation network
+        departed_vids = [v.vid for v in self.vehicles if self._int_to_sumo_id.get(v.vid) not in current_sumo_ids]
+        for d_vid in departed_vids:
+            prev_rsu = self.vehicle_associations.get(d_vid)
+            if prev_rsu is not None:
+                sumo_name = self._int_to_sumo_id.get(d_vid, f"v_{d_vid}")
+                prev_x = veh_map[d_vid].x_m if d_vid in veh_map else self.cfg.road_length_m
+                dist_prev = abs(prev_x - self.edges[prev_rsu].x_m) if prev_rsu < len(self.edges) else None
+                self.handovers.append(HandoverEvent(
+                    step_idx=self._task_counter,
+                    vid=d_vid,
+                    sumo_vid=sumo_name,
+                    x_m=prev_x,
+                    time_s=self.now_s,
+                    from_rsu=prev_rsu,
+                    to_rsu=None,
+                    event_type="vehicle_departure",
+                    dist_to_prev_rsu_m=dist_prev,
+                    dist_to_new_rsu_m=None,
+                    reason="vehicle_departed_network",
+                ))
+                self.vehicle_associations[d_vid] = None
+
         self.vehicles = updated_vehicles
 
     def _update_vehicle_association(self, vid: int, x_m: float) -> None:
@@ -251,6 +279,9 @@ class SumoVehicularEdgeEnv:
         self.vehicle_associations[vid] = current_rsu
         sumo_name = self._int_to_sumo_id.get(vid, f"v_{vid}")
 
+        dist_prev = abs(x_m - self.edges[prev_rsu].x_m) if (prev_rsu is not None and prev_rsu < len(self.edges)) else None
+        dist_curr = abs(x_m - self.edges[current_rsu].x_m) if (current_rsu is not None and current_rsu < len(self.edges)) else None
+
         if prev_rsu is None and current_rsu is not None:
             self.handovers.append(HandoverEvent(
                 step_idx=self._task_counter,
@@ -261,6 +292,9 @@ class SumoVehicularEdgeEnv:
                 from_rsu=None,
                 to_rsu=current_rsu,
                 event_type="associate",
+                dist_to_prev_rsu_m=None,
+                dist_to_new_rsu_m=dist_curr,
+                reason="initial_rsu_coverage",
             ))
         elif prev_rsu is not None and current_rsu is not None and prev_rsu != current_rsu:
             self.handovers.append(HandoverEvent(
@@ -272,6 +306,9 @@ class SumoVehicularEdgeEnv:
                 from_rsu=prev_rsu,
                 to_rsu=current_rsu,
                 event_type="handover",
+                dist_to_prev_rsu_m=dist_prev,
+                dist_to_new_rsu_m=dist_curr,
+                reason="closer_rsu_in_overlap",
             ))
         elif prev_rsu is not None and current_rsu is None:
             self.handovers.append(HandoverEvent(
@@ -283,6 +320,9 @@ class SumoVehicularEdgeEnv:
                 from_rsu=prev_rsu,
                 to_rsu=None,
                 event_type="disconnect",
+                dist_to_prev_rsu_m=dist_prev,
+                dist_to_new_rsu_m=None,
+                reason="out_of_coverage",
             ))
 
     def _next_task(self) -> Task:

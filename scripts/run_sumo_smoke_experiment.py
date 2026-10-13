@@ -76,6 +76,7 @@ def run_sumo_smoke_experiment(
             policy_name=pol,
             max_tasks=n_tasks,
             mobility_mode="sumo",
+            strict_policy=True,
         )
 
         row = {
@@ -92,6 +93,9 @@ def run_sumo_smoke_experiment(
             "total_handovers": summary.get("total_handovers", 0),
             "total_associations": summary.get("total_associations", 0),
             "total_disconnections": summary.get("total_disconnections", 0),
+            "total_departures": summary.get("total_departures", 0),
+            "policy_exceptions": summary.get("policy_exceptions", 0),
+            "invalid_actions": summary.get("invalid_actions", 0),
             "mobility_engine": summary.get("mobility_engine", "SUMO"),
         }
         summary_rows.append(row)

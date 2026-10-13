@@ -83,6 +83,7 @@ def run_experiments_matrix(
                     policy_name=pol,
                     max_tasks=n_tasks,
                     mobility_mode="sumo",
+                    strict_policy=True,
                 )
                 print(f" Done! (Success: {summary['success_rate']*100:.1f}%, Latency: {summary['mean_latency_s']:.2f}s)")
 
@@ -102,6 +103,9 @@ def run_experiments_matrix(
                     "total_handovers": summary.get("total_handovers", 0),
                     "total_associations": summary.get("total_associations", 0),
                     "total_disconnections": summary.get("total_disconnections", 0),
+                    "total_departures": summary.get("total_departures", 0),
+                    "policy_exceptions": summary.get("policy_exceptions", 0),
+                    "invalid_actions": summary.get("invalid_actions", 0),
                     "mobility_engine": summary.get("mobility_engine", "SUMO"),
                 }
                 detailed_rows.append(row)
@@ -162,9 +166,11 @@ if __name__ == "__main__":
     parser.add_argument("--seeds", type=str, default="42,101,2024", help="Comma-separated random seeds.")
     parser.add_argument("--densities", type=str, default="medium", help="Comma-separated densities (low,medium,high).")
     parser.add_argument("--tasks", type=int, default=60, help="Number of tasks per run.")
+    parser.add_argument("--out", type=str, default=str(OUTPUT_DIR), help="Output directory path.")
     args = parser.parse_args()
 
     parsed_seeds = [int(s.strip()) for s in args.seeds.split(",") if s.strip()]
     parsed_densities = [d.strip() for d in args.densities.split(",") if d.strip()]
+    out_path = Path(args.out)
 
-    run_experiments_matrix(seeds=parsed_seeds, densities=parsed_densities, n_tasks=args.tasks)
+    run_experiments_matrix(seeds=parsed_seeds, densities=parsed_densities, n_tasks=args.tasks, output_dir=out_path)

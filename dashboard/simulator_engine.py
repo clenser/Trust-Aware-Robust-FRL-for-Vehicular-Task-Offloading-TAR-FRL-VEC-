@@ -133,12 +133,17 @@ class StepSnapshot:
     # Updated trust
     updated_trust: float
 
+    # Policy diagnostics
+    policy_error: Optional[str] = None
+    action_was_invalid: bool = False
+
 
 def run_traced_episode(
     cfg: EnvConfig,
     policy_name: str,
     max_tasks: int = 30,
     mobility_mode: str = "synthetic",
+    strict_policy: bool = False,
 ) -> Tuple[list[StepSnapshot], dict]:
     """
     Run an episode on SumoVehicularEdgeEnv (or fallback VehicularEdgeEnv) and capture granular per-step snapshots.
@@ -155,6 +160,8 @@ def run_traced_episode(
     policy, pol_desc = load_simulation_policy(policy_name, seed=cfg.seed, top_k=cfg.top_k)
 
     snapshots: list[StepSnapshot] = []
+    policy_exceptions = 0
+    invalid_actions = 0
 
     for step_i in range(max_tasks):
         if env.pending is None:
@@ -237,19 +244,35 @@ def run_traced_episode(
         # Select action
         obs, mask = env.current_observation()
         ctx = {"candidates": cands, "env": env}
+        action_error = None
+        action_invalid = False
         try:
             action = int(policy(obs, mask, ctx))
         except TypeError:
             try:
                 action = int(policy(obs, mask))
-            except Exception:
+            except Exception as e:
                 action = 0
-        except Exception:
-            # Fallback to local
+                action_error = str(e)
+                policy_exceptions += 1
+                if strict_policy:
+                    raise RuntimeError(f"Policy '{policy_name}' failed at step {step_i}: {e}") from e
+        except Exception as e:
             action = 0
+            action_error = str(e)
+            policy_exceptions += 1
+            if strict_policy:
+                raise RuntimeError(f"Policy '{policy_name}' failed at step {step_i}: {e}") from e
 
         # Validate action
         if action < 0 or action >= len(mask) or not mask[action]:
+            action_invalid = True
+            invalid_actions += 1
+            if strict_policy:
+                raise ValueError(
+                    f"Policy '{policy_name}' returned invalid action {action} "
+                    f"at step {step_i} (mask length {len(mask)}, allowed: {[i for i, ok in enumerate(mask) if ok]})"
+                )
             action = 0
 
         # Execute step
@@ -303,6 +326,8 @@ def run_traced_episode(
             deadline_missed=res.deadline_missed,
             failed=res.failed,
             updated_trust=updated_trust,
+            policy_error=action_error,
+            action_was_invalid=action_invalid,
         )
         snapshots.append(snapshot)
 
@@ -319,6 +344,7 @@ def run_traced_episode(
     total_handovers = sum(1 for h in handovers_list if h.event_type == "handover")
     total_associations = sum(1 for h in handovers_list if h.event_type == "associate")
     total_disconnections = sum(1 for h in handovers_list if h.event_type == "disconnect")
+    total_departures = sum(1 for h in handovers_list if h.event_type == "vehicle_departure")
 
     summary = {
         "total_tasks": n,
@@ -335,6 +361,9 @@ def run_traced_episode(
         "total_handovers": total_handovers,
         "total_associations": total_associations,
         "total_disconnections": total_disconnections,
+        "total_departures": total_departures,
+        "policy_exceptions": policy_exceptions,
+        "invalid_actions": invalid_actions,
         "handover_events": [
             {
                 "step": h.step_idx,
@@ -343,7 +372,10 @@ def run_traced_episode(
                 "x_m": h.x_m,
                 "from_rsu": h.from_rsu,
                 "to_rsu": h.to_rsu,
-                "type": h.event_type
+                "type": h.event_type,
+                "dist_to_prev_m": getattr(h, "dist_to_prev_rsu_m", None),
+                "dist_to_new_m": getattr(h, "dist_to_new_rsu_m", None),
+                "reason": getattr(h, "reason", "unspecified"),
             }
             for h in handovers_list
         ],
