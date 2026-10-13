@@ -38,6 +38,56 @@ def render_kpi_header(df: pd.DataFrame, rounds: int) -> None:
     honest_df = df[df["scenario_group"] == "honest_non_iid"] if "scenario_group" in df.columns else pd.DataFrame()
     honest_fpr = honest_df["fpr"].mean() * 100 if not honest_df.empty else 0.0
 
+    st.markdown("""
+    <style>
+    div[data-testid="stMetric"],
+    [data-testid="stMetric"] {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.08) !important;
+    }
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] *,
+    [data-testid="stMetricLabel"] p,
+    [data-testid="stMetricLabel"] span,
+    [data-testid="stMetricLabel"] div,
+    [data-testid="stMetricLabel"] label,
+    div[data-testid="stMetricLabelText"] p {
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] *,
+    [data-testid="stMetricValue"] div {
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    [data-testid="stMetricDelta"],
+    [data-testid="stMetricDelta"] *,
+    [data-testid="stMetricDelta"] div,
+    [data-testid="stMetricDelta"] span {
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
     col1, col2, col3, col4, col5 = st.columns(5)
     with col1:
         st.metric(

@@ -232,8 +232,8 @@ def build_3d_simulation_html(
       display: flex;
       justify-content: space-between;
       font-size: 0.75rem;
-      color: #64748b;
-      font-weight: 600;
+      color: #000000;
+      font-weight: 700;
     }}
     .slider {{
       -webkit-appearance: none;
@@ -273,22 +273,23 @@ def build_3d_simulation_html(
       top: 64px;
       right: 16px;
       width: 290px;
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(203, 213, 225, 0.9);
       border-radius: 8px;
       padding: 14px;
       z-index: 10;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
       font-size: 0.8rem;
+      color: #000000;
     }}
     .inspector-title {{
       font-size: 0.82rem;
-      font-weight: 700;
-      color: #0369a1;
+      font-weight: 800;
+      color: #000000;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 2px solid #e2e8f0;
       padding-bottom: 6px;
       margin-bottom: 8px;
       display: flex;
@@ -298,12 +299,16 @@ def build_3d_simulation_html(
       display: flex;
       justify-content: space-between;
       margin-bottom: 4px;
-      color: #475569;
+      color: #000000;
+      font-weight: 600;
+    }}
+    .prop-row span {{
+      color: #000000;
     }}
     .prop-val {{
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-weight: 600;
-      color: #0f172a;
+      font-weight: 700;
+      color: #000000;
     }}
 
     /* Legend Box */
@@ -311,18 +316,21 @@ def build_3d_simulation_html(
       position: absolute;
       bottom: 74px;
       left: 16px;
-      background: rgba(255, 255, 255, 0.90);
-      border: 1px solid rgba(203, 213, 225, 0.85);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(203, 213, 225, 0.9);
       border-radius: 6px;
       padding: 6px 14px;
       display: flex;
       gap: 14px;
-      font-size: 0.72rem;
-      color: #475569;
-      font-weight: 600;
+      font-size: 0.75rem;
+      color: #000000;
+      font-weight: 700;
       z-index: 10;
       backdrop-filter: blur(8px);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }}
+    .legend-box * {{
+      color: #000000;
     }}
     .leg-item {{ display: flex; align-items: center; gap: 5px; }}
     .leg-dot {{ width: 8px; height: 8px; border-radius: 50%; }}
@@ -364,6 +372,7 @@ def build_3d_simulation_html(
     <div class="cam-presets">
       <button class="hud-btn" id="btn-cov" onclick="toggleCoverage()">📡 Coverage Footprint</button>
       <button class="hud-btn" id="btn-net" onclick="toggleNetworkOverlay()">📶 Network Overlay</button>
+      <button class="hud-btn active" id="btn-follow" onclick="toggleCameraFollow()">🎯 Follow Vehicle</button>
       <button class="hud-btn" onclick="setCameraPreset('iso')">🎥 Highway 3/4</button>
       <button class="hud-btn" onclick="setCameraPreset('chase')">🚗 Chase Cam</button>
       <button class="hud-btn" onclick="setCameraPreset('side')">🔭 Roadside</button>
@@ -411,17 +420,17 @@ def build_3d_simulation_html(
 
     <div class="scrubber-wrap">
       <div class="scrubber-label">
-        <span>Timeline Scrubber</span>
-        <span id="scrub-step-txt">Step 1 / 30</span>
+        <span>Smooth 60 FPS Timeline</span>
+        <span id="scrub-step-txt">Step 1.0 / 30</span>
       </div>
-      <input type="range" class="slider" id="timeline-slider" min="0" max="29" value="0" oninput="onScrub(this.value)">
+      <input type="range" class="slider" id="timeline-slider" min="0" max="29" step="0.01" value="0" oninput="onScrubInput(this.value)" onmousedown="onScrubStart()" onmouseup="onScrubEnd()" ontouchstart="onScrubStart()" ontouchend="onScrubEnd()">
     </div>
 
     <select class="speed-select" id="speed-select" onchange="onSpeedChange(this.value)">
-      <option value="1500">0.5x Speed</option>
-      <option value="800" selected>1.0x Speed</option>
-      <option value="400">2.0x Speed</option>
-      <option value="200">4.0x Speed</option>
+      <option value="0.5">0.5x Speed (Slow)</option>
+      <option value="1.0" selected>1.0x Speed (Smooth)</option>
+      <option value="2.0">2.0x Speed (Fast)</option>
+      <option value="3.5">3.5x Speed (Ultra)</option>
     </select>
   </div>
 
@@ -433,9 +442,18 @@ def build_3d_simulation_html(
     const simTrace = {trace_json};
     const totalSteps = simTrace.steps.length;
     let currentStepIdx = 0;
+    let currentProgress = 0.0;
+    let targetProgress = 0.0;
     let isPlaying = false;
-    let playTimer = null;
-    let playIntervalMs = 800;
+    let isTweening = false;
+    let tweenStartTime = 0;
+    let tweenStartProgress = 0;
+    const tweenDuration = 0.35;
+    let playbackSpeed = 1.0;
+    let lastDiscreteStep = -1;
+    let isScrubbing = false;
+    let cameraFollow = true;
+    let activeCameraMode = 'iso';
 
     let showCoverageFootprint = true;
     let showNetworkOverlay = true;
@@ -827,6 +845,7 @@ def build_3d_simulation_html(
         [wheelRearX, wheelRadius, -wheelZ]
       ];
 
+      const wheelMeshes = [];
       wheelCoords.forEach(pos => {{
         const wMesh = new THREE.Mesh(tireGeo, rubberMat);
         const rMesh = new THREE.Mesh(rimGeo, rimMat);
@@ -834,6 +853,7 @@ def build_3d_simulation_html(
         wMesh.position.set(...pos);
         wMesh.castShadow = true;
         group.add(wMesh);
+        wheelMeshes.push(wMesh);
       }});
 
       // Realistic Front Headlights (Projector LED White)
@@ -855,6 +875,30 @@ def build_3d_simulation_html(
       tlR.position.set(-2.28, 0.75, -0.72);
       group.add(tlL);
       group.add(tlR);
+
+      // Turn Indicators (Amber LED)
+      const indMat = new THREE.MeshBasicMaterial({{ color: 0xf59e0b }});
+      const indGeo = new THREE.BoxGeometry(0.12, 0.10, 0.12);
+      const indLeftGroup = new THREE.Group();
+      const indRightGroup = new THREE.Group();
+
+      const indFL = new THREE.Mesh(indGeo, indMat);
+      indFL.position.set(2.28, 0.72, 0.90);
+      const indRL = new THREE.Mesh(indGeo, indMat);
+      indRL.position.set(-2.28, 0.72, 0.90);
+      indLeftGroup.add(indFL);
+      indLeftGroup.add(indRL);
+      indLeftGroup.visible = false;
+      group.add(indLeftGroup);
+
+      const indFR = new THREE.Mesh(indGeo, indMat);
+      indFR.position.set(2.28, 0.72, -0.90);
+      const indRR = new THREE.Mesh(indGeo, indMat);
+      indRR.position.set(-2.28, 0.72, -0.90);
+      indRightGroup.add(indFR);
+      indRightGroup.add(indRR);
+      indRightGroup.visible = false;
+      group.add(indRightGroup);
 
       // License Plates (Front & Rear)
       const plateMat = new THREE.MeshBasicMaterial({{ color: 0xfef08a }});
@@ -894,7 +938,12 @@ def build_3d_simulation_html(
         beacon: beacon,
         localAura: localAura,
         localAuraMat: localAuraMat,
-        baseColor: bodyColor
+        baseColor: bodyColor,
+        wheels: wheelMeshes,
+        wheelRadius: wheelRadius,
+        indLeft: indLeftGroup,
+        indRight: indRightGroup,
+        lastWx: null
       }};
       scene.add(group);
       return group;
@@ -1076,9 +1125,9 @@ def build_3d_simulation_html(
     }});
 
     // -------------------------------------------------------------
-    // Step State Synchronization
+    // Step State & HUD Synchronization
     // -------------------------------------------------------------
-    function updateStepVisuals(stepIdx) {{
+    function updateDiscreteHUD(stepIdx) {{
       if (stepIdx < 0 || stepIdx >= totalSteps) return;
       currentStepIdx = stepIdx;
       const snap = simTrace.steps[stepIdx];
@@ -1101,10 +1150,6 @@ def build_3d_simulation_html(
         pill.innerText = `FAILED (${{snap.total_latency_s.toFixed(2)}}s)`;
       }}
 
-      // Update Slider & Label
-      document.getElementById('timeline-slider').value = stepIdx;
-      document.getElementById('scrub-step-txt').innerText = `Step ${{stepIdx + 1}} / ${{totalSteps}}`;
-
       // Update Inspector Card
       document.getElementById('insp-header').innerText = `Step ${{stepIdx + 1}} Telemetry`;
       document.getElementById('insp-req').innerText = `Vehicle ${{snap.requester_vid}}`;
@@ -1118,65 +1163,217 @@ def build_3d_simulation_html(
       document.getElementById('insp-energy').innerText = `${{snap.energy_j.toFixed(2)}} J`;
       document.getElementById('insp-trust').innerText = snap.dest_trust.toFixed(3);
 
-      // Update Vehicle Positions and Realistic State Highlights
-      const activeVids = new Set(snap.vehicles.map(v => v.vid));
-      vehicleMeshes.forEach((mesh, vid) => {{
-        mesh.visible = activeVids.has(vid);
-      }});
+      updateOffloadVisuals(stepIdx);
+    }}
 
-      snap.vehicles.forEach(vData => {{
-        let vMesh = vehicleMeshes.get(vData.vid);
-        if (!vMesh) {{
-          vMesh = buildRealistic3DVehicle(vData.vid);
-          vehicleMeshes.set(vData.vid, vMesh);
-        }}
-        vMesh.visible = true;
-
-        const wx = toWorldX(vData.x_m);
-        const lIdx = (typeof vData.lane === 'number' && vData.lane >= 0 && vData.lane < laneZ.length) ? vData.lane : 1;
-        const wz = laneZ[lIdx];
-        vMesh.position.set(wx, 0, wz);
-
-        const isReq = (vData.vid === snap.requester_vid);
-        const isPeerDest = (snap.dest_kind === 'vehicle' && snap.dest_id === vData.vid);
-
-        // Highlight requester and target realistically
-        if (isReq) {{
-          vMesh.userData.beacon.visible = true;
-          vMesh.userData.paintMat.color.setHex(0xb45309); // Highlighted amber automotive
-        }} else if (isPeerDest) {{
-          vMesh.userData.beacon.visible = false;
-          vMesh.userData.paintMat.color.setHex(0x15803d); // Subdued emerald target
-        }} else {{
-          vMesh.userData.beacon.visible = false;
-          vMesh.userData.paintMat.color.setHex(vMesh.userData.baseColor);
-        }}
-
-        // Local onboard CPU execution aura
-        if (isReq && snap.dest_kind === 'local' && showNetworkOverlay) {{
-          vMesh.userData.localAuraMat.opacity = 0.85;
-        }} else {{
-          vMesh.userData.localAuraMat.opacity = 0.0;
-        }}
-      }});
-
-      // Update Network Offloading Vectors
+    function updateOffloadVisuals(stepIdx) {{
       clearOffloadVisuals();
+      if (!showNetworkOverlay) return;
+      const snap = simTrace.steps[stepIdx];
       const reqMesh = vehicleMeshes.get(snap.requester_vid);
+      if (!reqMesh) return;
 
-      if (snap.dest_kind === 'edge' && reqMesh) {{
+      if (snap.dest_kind === 'edge') {{
         const rsuMesh = rsuMeshes.get(snap.dest_id);
         if (rsuMesh) {{
           const startPt = new THREE.Vector3(reqMesh.position.x, 1.6, reqMesh.position.z);
           const endPt = new THREE.Vector3(rsuMesh.userData.worldX, rsuMesh.userData.antennaY, rsuMesh.userData.worldZ);
           createProfessionalOffloadVector(startPt, endPt, snap.success);
         }}
-      }} else if (snap.dest_kind === 'vehicle' && reqMesh) {{
+      }} else if (snap.dest_kind === 'vehicle') {{
         const targetMesh = vehicleMeshes.get(snap.dest_id);
         if (targetMesh) {{
           const startPt = new THREE.Vector3(reqMesh.position.x, 1.5, reqMesh.position.z);
           const endPt = new THREE.Vector3(targetMesh.position.x, 1.5, targetMesh.position.z);
           createProfessionalOffloadVector(startPt, endPt, snap.success);
+        }}
+      }}
+    }}
+
+    // -------------------------------------------------------------
+    // 60 FPS Continuous Spatial & State Interpolation Engine
+    // -------------------------------------------------------------
+    function updateInterpolatedScene(progress, delta, elapsed) {{
+      const s0 = Math.max(0, Math.min(totalSteps - 1, Math.floor(progress)));
+      const s1 = Math.min(totalSteps - 1, s0 + 1);
+      const alpha = progress - s0;
+
+      if (s0 !== lastDiscreteStep) {{
+        lastDiscreteStep = s0;
+        updateDiscreteHUD(s0);
+      }}
+
+      const snap0 = simTrace.steps[s0];
+      const snap1 = simTrace.steps[s1];
+
+      const map0 = new Map();
+      snap0.vehicles.forEach(v => map0.set(v.vid, v));
+      const map1 = new Map();
+      snap1.vehicles.forEach(v => map1.set(v.vid, v));
+
+      const activeVids = new Set([...map0.keys(), ...map1.keys()]);
+
+      // Hide inactive vehicles
+      vehicleMeshes.forEach((mesh, vid) => {{
+        if (!activeVids.has(vid)) mesh.visible = false;
+      }});
+
+      activeVids.forEach(vid => {{
+        let vMesh = vehicleMeshes.get(vid);
+        if (!vMesh) {{
+          vMesh = buildRealistic3DVehicle(vid);
+          vehicleMeshes.set(vid, vMesh);
+        }}
+
+        const v0 = map0.get(vid);
+        const v1 = map1.get(vid);
+
+        if (v0 && v1) {{
+          vMesh.visible = true;
+
+          // 1. Forward highway X motion with torus wrap-around handling
+          let x0 = v0.x_m;
+          let x1 = v1.x_m;
+          if (x1 < x0 - roadLengthM * 0.5) x1 += roadLengthM;
+          else if (x1 > x0 + roadLengthM * 0.5) x1 -= roadLengthM;
+
+          let curX = x0 + (x1 - x0) * alpha;
+          if (curX > roadLengthM) curX -= roadLengthM;
+          if (curX < 0) curX += roadLengthM;
+          const wx = toWorldX(curX);
+
+          // 2. Lateral lane Z position with smooth cubic Hermite S-curve
+          const l0 = (typeof v0.lane === 'number' && v0.lane >= 0 && v0.lane < laneZ.length) ? v0.lane : 1;
+          const l1 = (typeof v1.lane === 'number' && v1.lane >= 0 && v1.lane < laneZ.length) ? v1.lane : 1;
+          const z0 = laneZ[l0];
+          const z1 = laneZ[l1];
+          const laneT = alpha * alpha * (3.0 - 2.0 * alpha);
+          const wz = z0 + (z1 - z0) * laneT;
+
+          // 3. Realistic dynamic steering yaw during lane changing
+          const laneDelta = z1 - z0;
+          const steerYaw = laneDelta * Math.sin(Math.PI * alpha) * 0.055;
+          vMesh.rotation.y = steerYaw;
+
+          // 4. Subtle chassis body roll into turn
+          const roll = laneDelta * Math.sin(Math.PI * alpha) * -0.012;
+          vMesh.rotation.x = roll;
+
+          // 5. Authentic asphalt micro-suspension vibration
+          const rumble = Math.sin(elapsed * 24.0 + vid * 2.1) * 0.007;
+          vMesh.position.set(wx, rumble, wz);
+
+          // 6. Smooth wheel spin based on distance traveled
+          if (vMesh.userData.lastWx !== null) {{
+            const dx = wx - vMesh.userData.lastWx;
+            if (Math.abs(dx) < 20.0) {{
+              const spin = dx / (vMesh.userData.wheelRadius || 0.35);
+              if (vMesh.userData.wheels) {{
+                vMesh.userData.wheels.forEach(w => {{ w.rotation.z -= spin; }});
+              }}
+            }}
+          }}
+          vMesh.userData.lastWx = wx;
+
+          // 7. State highlights
+          const isReq = (vid === snap0.requester_vid);
+          const isPeerDest = (snap0.dest_kind === 'vehicle' && snap0.dest_id === vid);
+
+          if (isReq) {{
+            vMesh.userData.beacon.visible = true;
+            vMesh.userData.paintMat.color.setHex(0xb45309);
+          }} else if (isPeerDest) {{
+            vMesh.userData.beacon.visible = false;
+            vMesh.userData.paintMat.color.setHex(0x15803d);
+          }} else {{
+            vMesh.userData.beacon.visible = false;
+            vMesh.userData.paintMat.color.setHex(vMesh.userData.baseColor);
+          }}
+
+          if (isReq && snap0.dest_kind === 'local' && showNetworkOverlay) {{
+            vMesh.userData.localAuraMat.opacity = 0.85;
+          }} else {{
+            vMesh.userData.localAuraMat.opacity = 0.0;
+          }}
+
+          // 8. Turn indicator blinking during lane transition
+          if (Math.abs(laneDelta) > 0.5) {{
+            const blink = Math.sin(elapsed * 12.0) > 0;
+            if (laneDelta > 0 && vMesh.userData.indLeft) {{
+              vMesh.userData.indLeft.visible = blink;
+              if (vMesh.userData.indRight) vMesh.userData.indRight.visible = false;
+            }} else if (laneDelta < 0 && vMesh.userData.indRight) {{
+              vMesh.userData.indRight.visible = blink;
+              if (vMesh.userData.indLeft) vMesh.userData.indLeft.visible = false;
+            }}
+          }} else {{
+            if (vMesh.userData.indLeft) vMesh.userData.indLeft.visible = false;
+            if (vMesh.userData.indRight) vMesh.userData.indRight.visible = false;
+          }}
+
+        }} else if (v0 && !v1) {{
+          // Vehicle departing highway in SUMO: glide forward and fade
+          vMesh.visible = (alpha < 0.85);
+          const speed = v0.speed_mps || 25.0;
+          const curX = v0.x_m + speed * alpha * 0.5;
+          const wx = toWorldX(curX);
+          const wz = laneZ[v0.lane || 1];
+          vMesh.position.set(wx, 0, wz);
+        }} else if (!v0 && v1) {{
+          // Vehicle entering highway in SUMO: glide in from entry
+          vMesh.visible = (alpha > 0.15);
+          const speed = v1.speed_mps || 25.0;
+          const curX = v1.x_m - speed * (1.0 - alpha) * 0.5;
+          const wx = toWorldX(curX);
+          const wz = laneZ[v1.lane || 1];
+          vMesh.position.set(wx, 0, wz);
+        }}
+      }});
+
+      // Dynamic offload arc tracking
+      if (offloadCurve && offloadLineMesh && showNetworkOverlay) {{
+        const reqMesh = vehicleMeshes.get(snap0.requester_vid);
+        let endPt = null;
+        if (snap0.dest_kind === 'edge') {{
+          const rsuMesh = rsuMeshes.get(snap0.dest_id);
+          if (rsuMesh) endPt = new THREE.Vector3(rsuMesh.userData.worldX, rsuMesh.userData.antennaY, rsuMesh.userData.worldZ);
+        }} else if (snap0.dest_kind === 'vehicle') {{
+          const targetMesh = vehicleMeshes.get(snap0.dest_id);
+          if (targetMesh) endPt = new THREE.Vector3(targetMesh.position.x, 1.5, targetMesh.position.z);
+        }}
+
+        if (reqMesh && endPt) {{
+          const startPt = new THREE.Vector3(reqMesh.position.x, 1.6, reqMesh.position.z);
+          offloadCurve.v0.copy(startPt);
+          offloadCurve.v1.set((startPt.x + endPt.x)/2, Math.max(startPt.y, endPt.y) + 4.5, (startPt.z + endPt.z)/2);
+          offloadCurve.v2.copy(endPt);
+
+          offloadLineMesh.geometry.dispose();
+          offloadLineMesh.geometry = new THREE.TubeGeometry(offloadCurve, 20, 0.12, 6, false);
+        }}
+      }}
+
+      // Smooth camera follow tracking
+      if (cameraFollow) {{
+        const reqMesh = vehicleMeshes.get(snap0.requester_vid);
+        if (reqMesh) {{
+          const targetPt = new THREE.Vector3(reqMesh.position.x, 1.2, reqMesh.position.z);
+          let camOffset;
+          if (activeCameraMode === 'chase') camOffset = new THREE.Vector3(-22, 5.5, 0);
+          else if (activeCameraMode === 'side') camOffset = new THREE.Vector3(0, 8.5, 28);
+          else if (activeCameraMode === 'top') camOffset = new THREE.Vector3(0, 75, -reqMesh.position.z);
+          else camOffset = new THREE.Vector3(-32, 16, 28);
+
+          const desiredCam = targetPt.clone().add(camOffset);
+
+          // Wrap check for smooth camera tracking across 1200m track
+          if (Math.abs(controls.target.x - targetPt.x) > 200) {{
+            controls.target.copy(targetPt);
+            camera.position.copy(desiredCam);
+          }} else {{
+            controls.target.lerp(targetPt, 0.05);
+            camera.position.lerp(desiredCam, 0.05);
+          }}
         }}
       }}
     }}
@@ -1198,13 +1395,13 @@ def build_3d_simulation_html(
           rz = laneZ[snap.vehicles[0].lane || 0] || 0;
         }}
       }}
-      // Highway 3/4 elevated view framed directly on the active requester vehicle
       camera.position.set(rx - 32, 16, rz + 28);
       controls.target.set(rx, 1.2, rz);
       controls.update();
     }}
 
     function setCameraPreset(mode) {{
+      activeCameraMode = mode;
       const snap = (simTrace && simTrace.steps) ? simTrace.steps[currentStepIdx] : null;
       let rx = 0;
       let rz = 0;
@@ -1223,7 +1420,7 @@ def build_3d_simulation_html(
         camera.position.set(rx - 32, 16, rz + 28);
         controls.target.set(rx, 1.2, rz);
       }} else if (mode === 'chase') {{
-        camera.position.set(rx - 20, 5.5, rz);
+        camera.position.set(rx - 22, 5.5, rz);
         controls.target.set(rx + 25, 1.5, rz);
       }} else if (mode === 'side') {{
         camera.position.set(rx, 8.5, rz + 28);
@@ -1248,51 +1445,72 @@ def build_3d_simulation_html(
       showNetworkOverlay = !showNetworkOverlay;
       const btn = document.getElementById('btn-net');
       btn.className = showNetworkOverlay ? 'hud-btn active' : 'hud-btn';
-      updateStepVisuals(currentStepIdx);
+      updateOffloadVisuals(currentStepIdx);
+    }}
+
+    function toggleCameraFollow() {{
+      cameraFollow = !cameraFollow;
+      const btn = document.getElementById('btn-follow');
+      if (btn) btn.className = cameraFollow ? 'hud-btn active' : 'hud-btn';
     }}
 
     // Set initial button active states
     document.getElementById('btn-cov').className = 'hud-btn active';
     document.getElementById('btn-net').className = 'hud-btn active';
+    document.getElementById('btn-follow').className = 'hud-btn active';
 
     // -------------------------------------------------------------
-    // Timeline Playback Controls
+    // Timeline Playback Controls (Smooth Tweening & 60 FPS)
     // -------------------------------------------------------------
-    function stepFirst() {{ updateStepVisuals(0); }}
-    function stepLast() {{ updateStepVisuals(totalSteps - 1); }}
-    function stepPrev() {{ updateStepVisuals(Math.max(0, currentStepIdx - 1)); }}
-    function stepNext() {{ updateStepVisuals(Math.min(totalSteps - 1, currentStepIdx + 1)); }}
-    function onScrub(val) {{ updateStepVisuals(parseInt(val, 10)); }}
+    function smoothTweenTo(targetStep) {{
+      if (isPlaying) togglePlay();
+      tweenStartProgress = currentProgress;
+      targetProgress = Math.max(0, Math.min(totalSteps - 1, targetStep));
+      tweenStartTime = clock.getElapsedTime();
+      isTweening = true;
+    }}
+
+    function stepFirst() {{ smoothTweenTo(0.0); }}
+    function stepLast() {{ smoothTweenTo(totalSteps - 1.0); }}
+    function stepPrev() {{ smoothTweenTo(Math.max(0.0, Math.floor(currentProgress - 0.05))); }}
+    function stepNext() {{ smoothTweenTo(Math.min(totalSteps - 1.0, Math.floor(currentProgress + 1.0))); }}
+
+    function onScrubStart() {{
+      isScrubbing = true;
+      if (isPlaying) togglePlay();
+    }}
+
+    function onScrubEnd() {{
+      isScrubbing = false;
+    }}
+
+    function onScrubInput(val) {{
+      currentProgress = parseFloat(val);
+      isTweening = false;
+    }}
+
+    function onScrub(val) {{
+      onScrubInput(val);
+    }}
 
     function togglePlay() {{
       isPlaying = !isPlaying;
+      isTweening = false;
       const btn = document.getElementById('btn-play');
       if (isPlaying) {{
         btn.innerText = '⏸️';
         btn.title = 'Pause';
-        playTimer = setInterval(() => {{
-          if (currentStepIdx < totalSteps - 1) {{
-            stepNext();
-          }} else {{
-            togglePlay();
-          }}
-        }}, playIntervalMs);
+        if (currentProgress >= totalSteps - 1.0) {{
+          currentProgress = 0.0;
+        }}
       }} else {{
         btn.innerText = '▶️';
         btn.title = 'Play';
-        if (playTimer) clearInterval(playTimer);
       }}
     }}
 
     function onSpeedChange(val) {{
-      playIntervalMs = parseInt(val, 10);
-      if (isPlaying) {{
-        clearInterval(playTimer);
-        playTimer = setInterval(() => {{
-          if (currentStepIdx < totalSteps - 1) stepNext();
-          else togglePlay();
-        }}, playIntervalMs);
-      }}
+      playbackSpeed = parseFloat(val);
     }}
 
     // -------------------------------------------------------------
@@ -1355,12 +1573,39 @@ def build_3d_simulation_html(
 
     function animate() {{
       requestAnimationFrame(animate);
+      const delta = Math.min(clock.getDelta(), 0.1);
       const elapsed = clock.getElapsedTime();
+
+      // Continuous Playback Progression
+      if (isPlaying) {{
+        currentProgress += delta * playbackSpeed;
+        if (currentProgress >= totalSteps - 1.0) {{
+          currentProgress = totalSteps - 1.0;
+          togglePlay();
+        }}
+      }} else if (isTweening) {{
+        const t = Math.min(1.0, (elapsed - tweenStartTime) / tweenDuration);
+        const ease = 1.0 - Math.pow(1.0 - t, 3.0);
+        currentProgress = tweenStartProgress + (targetProgress - tweenStartProgress) * ease;
+        if (t >= 1.0) {{
+          currentProgress = targetProgress;
+          isTweening = false;
+        }}
+      }}
+
+      // Smooth Scrubber Sync
+      if (!isScrubbing) {{
+        document.getElementById('timeline-slider').value = currentProgress;
+      }}
+      document.getElementById('scrub-step-txt').innerText = `Step ${{(Math.min(totalSteps, currentProgress + 1)).toFixed(1)}} / ${{totalSteps}}`;
+
+      // 60 FPS continuous interpolation
+      updateInterpolatedScene(currentProgress, delta, elapsed);
 
       // Animate packet pulses along offload vector
       if (offloadCurve && packetPulses[0].visible) {{
         packetPulses.forEach((p, idx) => {{
-          const t = (elapsed * 1.1 + idx * (1.0 / numPackets)) % 1.0;
+          const t = (elapsed * 1.5 + idx * (1.0 / numPackets)) % 1.0;
           const pt = offloadCurve.getPointAt(t);
           p.position.copy(pt);
         }});
@@ -1384,7 +1629,8 @@ def build_3d_simulation_html(
     }});
 
     // Initial render
-    updateStepVisuals(0);
+    updateDiscreteHUD(0);
+    updateInterpolatedScene(0, 0.016, 0);
     resetCamera();
     animate();
   </script>

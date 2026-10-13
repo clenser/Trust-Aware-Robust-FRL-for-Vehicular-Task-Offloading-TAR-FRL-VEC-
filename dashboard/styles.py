@@ -27,30 +27,74 @@ def get_custom_css() -> str:
         color: #0f172a;
     }
 
-    /* Metric Cards */
-    div[data-testid="stMetric"] {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        padding: 12px 16px;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+    /* Metric Cards - Guaranteed High-Contrast Black Typography */
+    div[data-testid="stMetric"],
+    [data-testid="stMetric"] {
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 8px !important;
+        padding: 14px 18px !important;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.06) !important;
+        transition: transform 0.15s ease, box-shadow 0.15s ease !important;
     }
-    div[data-testid="stMetric"]:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    div[data-testid="stMetric"]:hover,
+    [data-testid="stMetric"]:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.12) !important;
+        border-color: #94a3b8 !important;
     }
-    div[data-testid="stMetricLabel"] {
+
+    /* ALL Labels inside Metric Cards: Deep Black, Bold, High-Contrast */
+    [data-testid="stMetricLabel"],
+    [data-testid="stMetricLabel"] *,
+    [data-testid="stMetricLabel"] p,
+    [data-testid="stMetricLabel"] span,
+    [data-testid="stMetricLabel"] div,
+    [data-testid="stMetricLabel"] label,
+    div[data-testid="stMetricLabel"],
+    label[data-testid="stMetricLabel"],
+    div[data-testid="stMetricLabelText"],
+    div[data-testid="stMetricLabelText"] p,
+    div[data-testid="stMetricLabelText"] span {
+        font-size: 0.82rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        line-height: 1.3 !important;
+    }
+
+    /* ALL Values inside Metric Cards: Bold Black */
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricValue"] *,
+    [data-testid="stMetricValue"] div,
+    [data-testid="stMetricValue"] p,
+    [data-testid="stMetricValue"] span,
+    div[data-testid="stMetricValue"] {
+        font-size: 1.65rem !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Delta Sub-Text inside Metric Cards: Dark Charcoal/Black */
+    [data-testid="stMetricDelta"],
+    [data-testid="stMetricDelta"] *,
+    [data-testid="stMetricDelta"] div,
+    [data-testid="stMetricDelta"] p,
+    [data-testid="stMetricDelta"] span,
+    div[data-testid="stMetricDelta"] {
         font-size: 0.82rem !important;
         font-weight: 600 !important;
-        color: #64748b !important;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-    }
-    div[data-testid="stMetricValue"] {
-        font-size: 1.55rem !important;
-        font-weight: 700 !important;
         color: #0f172a !important;
+        -webkit-text-fill-color: #0f172a !important;
+        opacity: 1 !important;
+        visibility: visible !important;
     }
 
     /* Badge & Tag Helpers */
@@ -93,52 +137,72 @@ def get_custom_css() -> str:
 
     /* Callout Card */
     .research-card {
-        background-color: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #2563eb;
-        border-radius: 6px;
-        padding: 14px 18px;
-        margin-bottom: 1.0rem;
-        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-left: 4px solid #2563eb !important;
+        border-radius: 6px !important;
+        padding: 14px 18px !important;
+        margin-bottom: 1.0rem !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05) !important;
+    }
+    .research-card,
+    .research-card * {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
     }
     .research-card-title {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #1e293b;
-        margin-bottom: 4px;
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        margin-bottom: 4px !important;
     }
     .research-card-body {
-        font-size: 0.88rem;
-        color: #475569;
-        line-height: 1.5;
+        font-size: 0.88rem !important;
+        color: #1e293b !important;
+        -webkit-text-fill-color: #1e293b !important;
+        line-height: 1.5 !important;
     }
 
     /* Telemetry Panels */
     .telemetry-card {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        padding: 12px 14px;
-        margin-bottom: 8px;
+        background-color: #ffffff !important;
+        border: 1px solid #cbd5e1 !important;
+        border-radius: 6px !important;
+        padding: 12px 14px !important;
+        margin-bottom: 8px !important;
+    }
+    .telemetry-card,
+    .telemetry-card * {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
     }
     .telemetry-title {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #475569;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 6px;
+        font-size: 0.8rem !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.04em !important;
+        margin-bottom: 6px !important;
     }
     .telemetry-row {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.85rem;
-        margin-bottom: 3px;
-        color: #1e293b;
+        display: flex !important;
+        justify-content: space-between !important;
+        font-size: 0.85rem !important;
+        margin-bottom: 3px !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+    }
+    .telemetry-row span {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
     }
     .telemetry-val {
-        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        font-weight: 600;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
     }
 
     /* Road Simulation Container */
