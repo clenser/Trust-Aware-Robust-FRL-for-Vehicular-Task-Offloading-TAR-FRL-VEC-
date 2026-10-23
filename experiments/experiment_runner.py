@@ -264,7 +264,20 @@ def _make_root_trainer(config, num_vehicles, mobility_mode, seed, state_dim, age
     root_env = VANETOffloadingEnv(num_vehicles=num_vehicles, attack_ratio=0.0, mobility_mode=mobility_mode,
                                   config=config, random_seed=int(seed) + 777)
     agent = DQNAgent(state_dim=state_dim, action_dim=5, **agent_kwargs)
+    probe = DQNAgent(state_dim=state_dim, action_dim=5, **agent_kwargs)     # only used to evaluate models
     states = root_env._get_global_state_dict()
+
+    def loss(weights, n=512):
+        """Mean squared error between Q(s, a) and the observed reward on the trusted root data
+        (a bandit-style value error; lower = the model explains the trusted outcomes better)."""
+        if len(agent.memory) < 8:
+            return None
+        import torch
+        st, ac, rw, _, _ = agent.memory.sample(min(n, len(agent.memory)))
+        probe.set_weights(weights)
+        with torch.no_grad():
+            q = probe.policy_net(st.to(probe.device)).gather(1, ac.unsqueeze(1).to(probe.device)).squeeze(1)
+            return float(((q - rw.to(probe.device)) ** 2).mean().item())
 
     def trainer(global_weights):
         for _ in range(steps_per_round):
@@ -283,6 +296,7 @@ def _make_root_trainer(config, num_vehicles, mobility_mode, seed, state_dim, age
             agent.update()
         return agent.get_weights()
 
+    trainer.loss = loss
     return trainer
 
 
@@ -366,7 +380,7 @@ def run_simulation_trial(num_vehicles=None,
         config=config,
     )
     server.shadow_detectors = bool(shadow)
-    if aggregation_strategy == "fltrust":
+    if aggregation_strategy in ("fltrust", "impact_validated") or os.environ.get("VANNET_ROOT") == "1":
         server.root_trainer = _make_root_trainer(
             config, num_vehicles, mobility_mode, seed, env_train.state_dim, agent_kwargs,
             int(cfg_fl.get("local_epochs", 16)), int(steps_per_round))

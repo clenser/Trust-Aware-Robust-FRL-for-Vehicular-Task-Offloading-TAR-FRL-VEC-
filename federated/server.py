@@ -17,7 +17,7 @@ from federated.trust_aggregation import FederatedAggregator
 from trust.trust_engine import TrustEngine
 from baselines.heuristics import RobustFLBaselines
 from trust import alt_detectors
-from trust.dnh_detector import DoNoHarmDetector
+from trust.dnh_detector import DoNoHarmDetector, CalibratedDetector, CALIBRATION
 from trust.trust_model import _canonical_id
 
 class FederatedServer:
@@ -54,6 +54,7 @@ class FederatedServer:
         self.staleness_mode = "none"
         # Do-no-harm exclusion rule (strategy "do_no_harm"); carries per-client evidence across rounds.
         self.dnh = DoNoHarmDetector()
+        self.dnh2 = CalibratedDetector(**CALIBRATION)       # strategy "do_no_harm_v2"
         # FLTrust-style baseline (strategy "fltrust"): a callable ``f(global_weights) -> weights``
         # that returns the global model after local training on a TRUSTED root
         # dataset the server owns.  Set by the experiment runner.
@@ -161,10 +162,11 @@ class FederatedServer:
                 "excluded_count": len(excluded_set), "excluded_clients": [int(c) for c in excluded_set],
                 "accepted_clients": [int(c) for c in client_models_dict if c not in excluded_set],
                 "total_clients": len(client_models_dict)})
-        elif self.aggregation_strategy == "do_no_harm":
+        elif self.aggregation_strategy in ("do_no_harm", "do_no_harm_v2"):
             # Persistent-evidence exclusion on absolute harm statistics (see
             # trust/dnh_detector.py), followed by plain FedAvg of the survivors.
-            excluded_set, evidence = self.dnh.decide(flat_deltas)
+            det = self.dnh2 if self.aggregation_strategy == "do_no_harm_v2" else self.dnh
+            excluded_set, evidence = det.decide(flat_deltas)
             keep = {c: w for c, w in client_models_dict.items() if c not in excluded_set}
             keep_samples = {c: client_samples_dict[c] for c in keep}
             new_global = FederatedAggregator.standard_fedavg(keep, keep_samples) if keep else None
@@ -182,7 +184,8 @@ class FederatedServer:
             tpr = tp / (tp + fn) if (tp + fn) else None
             fpr = fp / (fp + tn) if (fp + tn) else None
             metrics.update({
-                "defense_type": "do_no_harm_exclusion", "performs_client_detection": True,
+                "defense_type": "do_no_harm_exclusion" if self.aggregation_strategy == "do_no_harm" else "do_no_harm_v2_exclusion",
+                "performs_client_detection": True,
                 "true_positives": tp, "false_positives": fp, "true_negatives": tn, "false_negatives": fn,
                 "attack_detection_rate": round(float(tpr), 4) if tpr is not None else None,
                 "false_positive_rate": round(float(fpr), 4) if fpr is not None else None,

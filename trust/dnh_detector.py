@@ -33,6 +33,9 @@ DEFAULT_WEIGHTS = {"b0": -7.078555, "b_ratio": 7.278349, "b_cos": 7.672823}
 #: 99.5th percentile of the smoothed evidence honest clients reach on the training
 #: traces (a 0.5 % false-positive budget); see experiments/fit_dnh.py.
 DEFAULT_THRESHOLD = -0.357836
+#: Label-free calibration of CalibratedDetector: 99.5th percentile of the honest norm ratio and
+#: 0.5th percentile of the honest leave-one-out cosine on attacker-free runs (seeds 1000-1001).
+CALIBRATION = {"ratio_hi": 2.047, "cos_lo": -0.245}
 
 
 def _loo_trimmed_means(live_mat, trim):
@@ -79,6 +82,55 @@ def loo_features(matrix, trim=0.25):
         num = (sub * ref).sum(axis=1)
         cos[idx] = num / (norms[idx] * np.linalg.norm(ref, axis=1) + 1e-12)
     return ratio, cos, norms, live
+
+
+class CalibratedDetector:
+    """Label-free variant ("do-no-harm v2"): both statistics are judged against the range
+    honest clients reach, measured on ATTACKER-FREE runs only, so no attack is needed to
+    fit it and a direction-only (norm-matched) attacker is covered.
+
+    A client's margin is ``max(log2(ratio) - log2(R), (C - cos_loo) / w_cos)`` where ``R`` is a
+    high quantile of the honest norm ratio and ``C`` a low quantile of the honest cosine; a
+    positive margin means "outside what honest clients do".  The margin is smoothed over
+    rounds (EWMA); a client is excluded while the smoothed margin is positive.  Free-rider
+    and cap guards are as in ``DoNoHarmDetector``.
+    """
+
+    def __init__(self, ratio_hi, cos_lo, w_cos=0.25, ewma=0.5, max_exclude_fraction=0.45,
+                 free_rider_ratio=0.15, min_participants=4):
+        self.ratio_hi, self.cos_lo, self.w_cos = float(ratio_hi), float(cos_lo), float(w_cos)
+        self.ewma = float(ewma)
+        self.max_frac = float(max_exclude_fraction)
+        self.free_rider_ratio = float(free_rider_ratio)
+        self.min_participants = int(min_participants)
+        self.evidence = {}
+        self.last = {}
+
+    def margin(self, ratio, cos):
+        return np.maximum(np.log2(np.maximum(ratio, 1e-6)) - np.log2(self.ratio_hi), (self.cos_lo - cos) / self.w_cos)
+
+    def decide(self, updates):
+        ids = list(updates)
+        if len(ids) < self.min_participants:
+            return set(), {}
+        mat = np.array([np.asarray(updates[c], dtype=float) for c in ids])
+        ratio, cos, norms, live = loo_features(mat)
+        ev, blatant = {}, set()
+        for i, c in enumerate(ids):
+            if (not live[i]) or ratio[i] < self.free_rider_ratio:
+                blatant.add(c)
+                ev[c] = float("inf")
+                continue
+            m = float(self.margin(ratio[i], cos[i]))
+            prev = self.evidence.get(c)
+            e = m if prev is None else self.ewma * prev + (1.0 - self.ewma) * m
+            self.evidence[c] = e
+            ev[c] = e
+        flagged = sorted([c for c in ids if ev[c] > 0.0], key=lambda c: -ev[c])
+        cap = int(self.max_frac * len(ids))
+        excluded = set(flagged[:cap]) | (blatant if len(blatant) <= cap else set(sorted(blatant)[:cap]))
+        self.last = {"ratio": dict(zip(ids, ratio)), "cos": dict(zip(ids, cos)), "evidence": ev}
+        return excluded, ev
 
 
 class DoNoHarmDetector:
