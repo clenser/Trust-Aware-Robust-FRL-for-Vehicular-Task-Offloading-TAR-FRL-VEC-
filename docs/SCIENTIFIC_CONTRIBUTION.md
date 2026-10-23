@@ -134,6 +134,10 @@ congestion.
 
 ---
 
+## Update (24 Oct 2026, overnight): see `docs/NOVELTY.md`
+
+Baselines, a label-free stealth-capable variant, trace-calibrated deployments and a scale check were added; the do-no-harm rule ties Multi-Krum and beats median, trimmed mean and an adapted FLTrust.  `docs/NOVELTY.md` states what is and is not novel.
+
 ## Update (24 Oct 2026): hypotheses confirmed with scope
 
 A pre-specified, Holm-corrected study (`docs/HYPOTHESES.md`) supports H2, H3, H4 and H5 for the sign-flip attack in simulation, and H1 only as a reliability benefit (latency effect at most 3 ms).  This revises the earlier statement that the project is not a "trust-aware FRL beats FedAvg" paper: with the do-no-harm rule it is, for this attack and these conditions; the stealth-attack limitation and the unsupported RQ3 remain.
