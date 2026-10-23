@@ -94,6 +94,7 @@ const STRATEGY_LABELS = {
   multi_krum: 'Multi-Krum',
   exclusion_no_weighting: 'exclusion only',
   trust_no_exclusion: 'weighting only',
+  do_no_harm: 'do-no-harm',
 };
 
 /** Build the 3D (WebGL) or the 2D viewport; 3D falls back to 2D when WebGL is unavailable. */

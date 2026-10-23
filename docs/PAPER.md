@@ -391,3 +391,17 @@ Target-venue note: with one supported headline claim and null or negative supple
 **R - empirical edge calibration** (Alibaba edge-platform trace: co-tenant load following the measured diurnal profile, measured hand-over delay and loss).  At the 20:00 peak the co-tenant share reaches about 60 % of RSU CPU and Nearest-RSU collapses to 16.8 % completion; Resource-Aware holds 59.9 %.  The learned policy (58.3 %) is identical to Local-Only: it has collapsed to local execution.  At the 05:00 trough it is 12.9 pp below Resource-Aware (CI [-24.6, -1.2]).  **The learned policy still does not beat a simple load-aware heuristic.**
 
 **Reading.**  These results strengthen the honest-evaluation framing: the threat model determines whether behavioural trust matters, load-awareness matters more than trust or learning, and the DQN has not learned to use the information the heuristics use.  Effects in P are small and come from 6 seeds.  Limits: the attack is scripted, the trace calibrates only the edge side (it contains no vehicular data), and its capacity heterogeneity is damped and clipped.
+
+---
+
+## Method attempt: a do-no-harm exclusion rule and a stronger learner
+
+*Studies `results/dnh_study`, `results/learner_study`; full tables in `docs/DNH_DETECTOR.md`; success criteria were fixed before running.  12 paired seeds (6 for the other attack families); Fig. 14-15.*
+
+**Exclusion rule.**  The deployed detector's false exclusions (10.3 % of honest clients with no attackers, 4.6 % at 24 %) come from relative z-scores that tighten as training converges.  We replace them with two absolute harm statistics (norm ratio; cosine with a leave-one-out trimmed mean), a logistic score fitted on separate recorded runs, an exponentially-weighted evidence over rounds, a 0.5 % false-positive budget for the threshold, and a cap on the excluded fraction.  Reputation over rounds and the false-positive problem of binary exclusion are not new (RepuNet, FLARE); the contribution is the absolute-statistic, budgeted rule and its downstream evaluation.
+
+**Results.**  With no attackers the rule costs -0.8 pp against FedAvg (CI [-1.9, +0.3]) versus -6.4 pp for the deployed rule (false exclusions 1.7 % vs 10.3 %).  At 40 % attackers it gains +17.6 pp over FedAvg (CI [+10.6, +24.6]; +1.6 pp over the deployed rule, CI [-0.3, +3.5]).  At 24 % the gain over FedAvg (+3.0 pp, CI [-3.8, +9.8]) is not resolved.  Norm-matched and partial sign-flip attackers are **not** detected (TPR about 0.5, the free riders); the rule merely avoids the deployed rule's harm there.  Cost: 136 ms per aggregation versus 12 ms (FedAvg) and 52 ms (deployed), idle machine, 25 clients.
+
+**Learner.**  Giving the DQN the heuristics' own delay estimates and bandit targets (gamma = 0) beats Resource-Aware on the benchmark environment (+6.6 pp, CI [+3.6, +9.6]) but only ties it under a rotating faulty RSU (-0.4 pp) and under the data-plane attack (+0.0 pp), and loses at the edge-trace peak hour (-7.6 pp).  Hiding the trust features changes nothing in any environment.
+
+**Reading.**  Two of the roadmap's open items move: the cost of the defence at zero attackers is largely removed, and a learned policy beats the best simple heuristic in the benchmark environment.  Three do not: no significant benefit at the default 24 % attack ratio, no benefit from trust features in the learner, and no advantage under hidden-state conditions.

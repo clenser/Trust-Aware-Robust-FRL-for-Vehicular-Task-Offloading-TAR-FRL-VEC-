@@ -170,6 +170,13 @@ results/run_*/*
 !results/run_*/metadata.json
 !results/run_*/effective_config.json
 !results/run_*/plots/
+!results/dnh_study/
+results/dnh_study/*
+!results/dnh_study/*summary*.json
+!results/learner_study/
+results/learner_study/*
+!results/learner_study/learner_summary.json
+results/learner_pilot/
 !evidence/
 !plots/*.png
 *.csv

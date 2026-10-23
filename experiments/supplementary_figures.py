@@ -23,7 +23,8 @@ from experiments.plotter import sha256_file  # noqa: E402
 
 #: Filenames of the figures this module produces.
 SUPPLEMENTARY_FIGURES = ["fig11_faulty_edge_node.png", "fig12_intermittent_connectivity.png",
-                         "fig13_data_plane_and_edge_calibration.png"]
+                         "fig13_data_plane_and_edge_calibration.png",
+                         "fig14_do_no_harm_closed_loop.png", "fig15_learner_study.png"]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BLUE, GREEN, RED, GREY, AMBER = "#1f5fbf", "#17803d", "#c0392b", "#6b7380", "#b26a00"
@@ -90,6 +91,69 @@ def fig_extended(data, out):
     return path, groups
 
 
+def fig_dnh(path_dir, out):
+    ratios = ["0.0", "0.24", "0.4"]
+    data = json.load(open(os.path.join(path_dir, "dnh_study_sign_flip.json")))
+    fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.6), gridspec_kw={"width_ratios": [1.5, 1]})
+    ax = axes[0]
+    w = 0.26
+    for j, (m, col, lab) in enumerate((("fedavg", GREY, "FedAvg (no defence)"), ("trust_aware", AMBER, "deployed trust-aware"),
+                                       ("do_no_harm", GREEN, "do-no-harm"))):
+        vals = [data[r][m]["completion_rate"]["mean"] for r in ratios]
+        errs = [data[r][m]["completion_rate"].get("ci95") or 0 for r in ratios]
+        ax.bar(np.arange(3) + (j - 1) * w, vals, w, yerr=errs, color=col, capsize=3, label=lab)
+    ax.set_xticks(range(3))
+    ax.set_xticklabels(["%d %% attackers" % round(float(r) * 100) for r in ratios])
+    ax.set_ylim(40, 90)
+    ax.set_ylabel("Task completion, % (mean, 95% CI, 12 seeds)")
+    ax.set_title("Downstream completion, sign-flip attack")
+    ax.legend(loc="lower left", fontsize=8)
+    ax = axes[1]
+    for j, (m, col) in enumerate((("trust_aware", AMBER), ("do_no_harm", GREEN))):
+        fpr = []
+        for r in ratios:
+            c = data[r][m]["pooled_confusion_counts"]
+            fpr.append(100.0 * c["fp"] / max(1, c["fp"] + c["tn"]))
+        ax.bar(np.arange(3) + (j - 0.5) * 0.36, fpr, 0.36, color=col)
+    ax.set_xticks(range(3))
+    ax.set_xticklabels(["0 %", "24 %", "40 %"])
+    ax.set_ylabel("Honest clients excluded, %")
+    ax.set_title("False exclusions in the closed loop")
+    fig.tight_layout()
+    path = os.path.join(out, "fig14_do_no_harm_closed_loop.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path, ["dnh_study_sign_flip.json"]
+
+
+def fig_learner(path_dir, out):
+    data = json.load(open(os.path.join(path_dir, "learner_study.json")))
+    settings = [s for s in ("default", "rotating", "peak", "dataplane") if s in data]
+    fig, ax = plt.subplots(figsize=(11, 4.6))
+    series = (("Resource_Aware", GREY), ("learned_est_bandit", BLUE), ("learned_est_bandit_masked", "#6f8fbf"))
+    w = 0.26
+    for j, (name, col) in enumerate(series):
+        vals, errs, xs = [], [], []
+        for i, st in enumerate(settings):
+            c = data[st].get(name)
+            if c:
+                vals.append(c["completion_rate"]["mean"])
+                errs.append(c["completion_rate"].get("ci95") or 0)
+                xs.append(i + (j - 1) * w)
+        ax.bar(xs, vals, w, yerr=errs, color=col, capsize=2, label=name.replace("_", " "))
+    ax.set_xticks(range(len(settings)))
+    ax.set_xticklabels(["benchmark env", "rotating faulty RSU", "edge-trace peak hour", "data-plane attack + V2V"][:len(settings)])
+    ax.set_ylabel("Task completion, % (mean, 95% CI)")
+    ax.set_ylim(40, 90)
+    ax.set_title("Learned policy (delay-estimate inputs, bandit targets) vs Resource-Aware, 12 seeds", fontsize=10)
+    ax.legend(fontsize=8, loc="lower left")
+    fig.tight_layout()
+    path = os.path.join(out, "fig15_learner_study.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path, ["learner_study.json"]
+
+
 def _latest(kind):
     manifest = json.load(open(os.path.join(ROOT, "results", "manifest.json")))
     runs = [e for e in manifest if e.get("kind") == kind]
@@ -111,7 +175,30 @@ def generate(supp=None, ext=None, out=os.path.join(ROOT, "plots")):
     if ext:
         jobs += [(fig_extended, ext, "Fig 13: Data-plane attack, V2V trust and edge-trace calibration",
                   "Extended experiments P, Q and R.")]
+    study_jobs = []
+    dnh_dir = os.path.join(ROOT, "results", "dnh_study")
+    lrn_dir = os.path.join(ROOT, "results", "learner_study")
+    if os.path.exists(os.path.join(dnh_dir, "dnh_study_sign_flip.json")):
+        study_jobs.append((fig_dnh, dnh_dir, os.path.join(dnh_dir, "dnh_study_sign_flip.json"),
+                           "Fig 14: Do-no-harm exclusion vs the deployed rule, closed loop",
+                           "Completion and false exclusions of FedAvg, the deployed trust-aware rule and the do-no-harm rule."))
+    if os.path.exists(os.path.join(lrn_dir, "learner_study.json")):
+        study_jobs.append((fig_learner, lrn_dir, os.path.join(lrn_dir, "learner_study.json"),
+                           "Fig 15: Learner study - delay-estimate inputs and bandit targets",
+                           "Learned policy variants vs Resource-Aware across four environments."))
     made = []
+    for fn, d, res, title, desc in study_jobs:
+        path, series = fn(d, out)
+        name = os.path.basename(path)
+        manifest["figures"] = [e for e in manifest["figures"] if e.get("filename") != name]
+        manifest["figures"].append({
+            "filename": name, "title": title, "sha256": sha256_file(path), "experiment_id": "dnh_and_learner_studies",
+            "source_experiment": ", ".join(series), "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
+            "source_results_file": os.path.abspath(res), "source_results_sha256": sha256_file(res),
+            "source_metadata_file": None, "source_metadata_sha256": None,
+            "description": desc, "series": series})
+        made.append(name)
+        print("Generated", title)
     for fn, (res, meta), title, desc in jobs:
         data = json.load(open(res))
         path, series = fn(data, out)

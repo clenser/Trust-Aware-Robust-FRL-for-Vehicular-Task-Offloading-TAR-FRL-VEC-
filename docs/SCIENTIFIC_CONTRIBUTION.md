@@ -131,3 +131,23 @@ claimed is the evaluation methodology, the corrected labels for unreliable-but-h
 vehicles, and the negative results with their limits.  Possible reasons (untested):
 short training budget, a state that is too coarse to separate a transient fault from
 congestion.
+
+---
+
+## Update (23 Oct 2026): what the method attempt changed
+
+Two roadmap items were attempted with pre-registered criteria (`docs/DNH_DETECTOR.md`):
+
+* **Do-no-harm exclusion** - criterion met: the cost of the defence with no
+  attackers falls from -6.4 pp to -0.8 pp and false exclusions from 10.3 % to
+  1.7 %; at 40 % attackers it keeps the gain (+17.6 pp).  The gain at the default
+  24 % ratio is still unresolved and norm-matched attackers are still missed.
+  Persistence-based reputation is prior art; the claim is limited to the
+  absolute-statistic, false-positive-budgeted rule and its downstream evaluation.
+* **Learner** - met on the benchmark environment only (+6.6 pp over the best
+  heuristic); not met under hidden-state conditions; trust features add nothing.
+
+The paper's contribution therefore becomes: an evaluation protocol, a measured
+threat-model dependence of behavioural trust, and one modest method result (the
+detector) with its limits stated.  It is still not a "trust-aware FRL beats
+FedAvg" paper.

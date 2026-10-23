@@ -41,6 +41,19 @@ def main():
             shutil.copyfileobj(fi, fo)
         sums.append("%s  %s" % (_sha(src), os.path.basename(dst)[:-3]))
         print("%s -> %.1f MB" % (e["run_id"], os.path.getsize(dst) / 1e6))
+    # Standalone studies (do-no-harm closed loop, learner study).
+    for sub in ("dnh_study", "learner_study"):
+        d = os.path.join(ROOT, "results", sub)
+        if not os.path.isdir(d):
+            continue
+        for name in sorted(os.listdir(d)):
+            if name.endswith(".json") and "summary" not in name:
+                src = os.path.join(d, name)
+                dst = os.path.join(out, "%s.%s.gz" % (sub, name))
+                with open(src, "rb") as fi, gzip.open(dst, "wb", compresslevel=9) as fo:
+                    shutil.copyfileobj(fi, fo)
+                sums.append("%s  %s" % (_sha(src), os.path.basename(dst)[:-3]))
+                print("%s/%s -> %.1f MB" % (sub, name, os.path.getsize(dst) / 1e6))
     with open(os.path.join(out, "SHA256SUMS"), "w") as fh:
         fh.write("\n".join(sums) + "\n")
 

@@ -236,6 +236,38 @@
       ]
     },
     {
+      "filename": "fig14_do_no_harm_closed_loop.png",
+      "title": "Fig 14: Do-no-harm exclusion vs the deployed rule, closed loop",
+      "sha256": "1521f16917ab387b6ad15222c388930ddd9263a959267c471db0f8fc8658984d",
+      "experiment_id": "dnh_and_learner_studies",
+      "source_experiment": "dnh_study_sign_flip.json",
+      "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\dnh_study\\dnh_study_sign_flip.json",
+      "source_results_sha256": "c12658183ddbe099027bf50a2d3dd05b078df9ab0026d5a1419d1030603387cd",
+      "source_metadata_file": null,
+      "source_metadata_sha256": null,
+      "description": "Completion and false exclusions of FedAvg, the deployed trust-aware rule and the do-no-harm rule.",
+      "series": [
+        "dnh_study_sign_flip.json"
+      ]
+    },
+    {
+      "filename": "fig15_learner_study.png",
+      "title": "Fig 15: Learner study - delay-estimate inputs and bandit targets",
+      "sha256": "f4149163fc7925046265e4ebd6a7497cd9646985de364944f8a651c4c2b5c729",
+      "experiment_id": "dnh_and_learner_studies",
+      "source_experiment": "learner_study.json",
+      "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\learner_study\\learner_study.json",
+      "source_results_sha256": "bdba388f6d1c718261d9194f859c40337369dac58c8e246db00bad327b72d9fa",
+      "source_metadata_file": null,
+      "source_metadata_sha256": null,
+      "description": "Learned policy variants vs Resource-Aware across four environments.",
+      "series": [
+        "learner_study.json"
+      ]
+    },
+    {
       "filename": "fig11_faulty_edge_node.png",
       "title": "Fig 11: Learned policy vs heuristics under an unreliable edge node",
       "sha256": "7fe8531026c342ea6f5b1f49c1329d9caacdd638c531e9426b7de9fa3dacc7fb",

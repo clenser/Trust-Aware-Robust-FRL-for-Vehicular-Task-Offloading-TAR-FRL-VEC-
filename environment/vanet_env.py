@@ -26,6 +26,17 @@ STATE_DIM = 17
 #: distances relative to each RSU's coverage radius and adds three in-coverage
 #: flags, so the coverage boundary is an explicit feature.
 STATE_DIM_V21 = 20
+#: Version 2.2 appends, for each of the five actions, an estimate of the
+#: delay-to-deadline ratio that a vehicle could compute from information it can
+#: observe (own CPU and queue, advertised RSU capacity and queue length, a
+#: nominal uplink, the chosen peer's advertised CPU and queue).  These are the
+#: same inputs the greedy heuristics use, so the learner starts with parity and
+#: can improve on them using what the heuristics cannot see (trust history).
+STATE_DIM_V22 = 25
+#: Version 2.3 = v2.2 plus each RSU's advertised co-tenant CPU share (three
+#: features), and the delay estimates use the capacity left for the vehicle's
+#: task.  Only meaningful with ``edge_calibration`` (the share is 0 otherwise).
+STATE_DIM_V23 = 28
 
 
 class VANETOffloadingEnv:
@@ -152,9 +163,9 @@ class VANETOffloadingEnv:
                      "lambda_trust", "e_norm")})
 
         self.state_features = str(cfg_model.get("state_features", "v2.0"))
-        if self.state_features not in ("v2.0", "v2.1"):
-            raise ValueError("environment_model.state_features must be 'v2.0' or 'v2.1'")
-        self.state_dim = STATE_DIM_V21 if self.state_features == "v2.1" else STATE_DIM
+        if self.state_features not in ("v2.0", "v2.1", "v2.2", "v2.3"):
+            raise ValueError("environment_model.state_features must be 'v2.0', 'v2.1', 'v2.2' or 'v2.3'")
+        self.state_dim = {"v2.0": STATE_DIM, "v2.1": STATE_DIM_V21, "v2.2": STATE_DIM_V22, "v2.3": STATE_DIM_V23}[self.state_features]
         self.action_dim = 5  # 0: Local, 1: RSU1, 2: RSU2, 3: RSU3, 4: Best V2V Peer
         # Ordering of vehicle decisions inside one time slot is shuffled with a
         # dedicated seeded generator, so that no vehicle identifier is
@@ -463,7 +474,7 @@ class VANETOffloadingEnv:
             best_peer_trust = self.trust_engine.behavior_tracker.get_trust(f"V{peer.vehicle_id}")
                 
         half_len = max(100.0, self.road_length / 2.0)
-        if self.state_features == "v2.1":
+        if self.state_features in ("v2.1", "v2.2", "v2.3"):
             rel = [d / max(1.0, r.coverage_radius_m) for d, r in zip(d_rsu, self.rsus)]
             dist_feats = [min(x, 2.0) / 2.0 for x in rel]          # 0.5 = coverage boundary
             cover_feats = [1.0 if x <= 1.0 else 0.0 for x in rel]  # in coverage of RSU i
@@ -486,10 +497,36 @@ class VANETOffloadingEnv:
             best_peer_dist / 200.0,
             best_peer_trust
         ] + [self._rsu_load(r) for r in self.rsus[:3]] + cover_feats
+        if self.state_features in ("v2.2", "v2.3"):
+            state += self._delay_estimates(v, current_task, peer, use_background=(self.state_features == "v2.3"))
+        if self.state_features == "v2.3":
+            state += [min(1.0, r.background_share) for r in self.rsus[:3]]
         if self.mask_trust_features:
             for i in (9, 10, 11, 13):      # RSU trust x3, best-peer trust
                 state[i] = 0.0
         return np.array(state, dtype=np.float32)
+
+    def _delay_estimates(self, v, task, peer, use_background=False):
+        """Estimated delay / deadline (clipped to 2, scaled to [0, 1]) of the five actions."""
+        deadline = max(1e-3, task.deadline_sec)
+        cyc = task.cpu_cycles_giga
+        est = [(1 + v.queue_length) * cyc / max(1e-6, v.cpu_capacity_ghz)]
+        for r in self.rsus[:3]:
+            if r.get_distance_to(v.x, v.y) > r.coverage_radius_m:
+                est.append(2.0 * deadline)
+                continue
+            per_core = r.cpu_capacity_ghz / max(1, r.num_cores)
+            if use_background:
+                per_core *= max(0.1, 1.0 - r.background_share)
+            service = cyc / max(1e-6, per_core)
+            wait = (r.queue_length / max(1, r.num_cores)) * service
+            est.append(task.data_size_mb * 8.0 / 20.0 + wait + service)
+        if peer is None:
+            est.append(2.0 * deadline)
+        else:
+            est.append(task.data_size_mb * 8.0 / 50.0 + (peer.queue_length + 1) * cyc
+                       / max(1e-6, peer.cpu_capacity_ghz))
+        return [min(e / deadline, 2.0) / 2.0 for e in est]
 
     def _get_global_state_dict(self):
         states = {}

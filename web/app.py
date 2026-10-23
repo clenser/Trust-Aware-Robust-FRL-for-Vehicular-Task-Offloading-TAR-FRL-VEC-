@@ -1497,7 +1497,7 @@ class SimulationState:
             if "aggregation_strategy" in config:
                 strategy = str(config["aggregation_strategy"])
                 valid = ["trust_aware", "fedavg", "coordinate_median", "trimmed_mean",
-                         "multi_krum", "exclusion_no_weighting", "trust_no_exclusion"]
+                         "multi_krum", "exclusion_no_weighting", "trust_no_exclusion", "do_no_harm"]
                 if strategy not in valid:
                     raise HTTPException(400, f"Invalid strategy. Must be one of: {valid}")
                 self.aggregation_strategy = strategy

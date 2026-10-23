@@ -146,3 +146,15 @@ congestion.
 * Roles, vehicle CPUs and drop draws use the global NumPy RNG, seeded per run by the
   experiment runner; the live console is not seed-reproducible.
 
+## Added with the method attempt (October 2026)
+
+* The do-no-harm weights were fitted on four recorded runs of the plain sign-flip
+  attack, recorded in a loop run by the *deployed* detector; the evaluation seeds
+  differ, but a different training loop would shift the statistics.  Norm-matched,
+  partial and adaptive attacks are not detected.
+* The learner gain over Resource-Aware is specific to the benchmark environment's
+  semantics and uses the heuristics' own delay estimates as inputs.
+* The 12-seed studies cannot resolve effects below roughly 5 pp; every unresolved
+  effect is reported as unresolved, not as zero.
+* Overhead was measured on an idle machine for 25 clients and 36,614 parameters
+  only; it is not a scaling study.

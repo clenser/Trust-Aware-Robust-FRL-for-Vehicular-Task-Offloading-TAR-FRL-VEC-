@@ -17,6 +17,8 @@ from federated.trust_aggregation import FederatedAggregator
 from trust.trust_engine import TrustEngine
 from baselines.heuristics import RobustFLBaselines
 from trust import alt_detectors
+from trust.dnh_detector import DoNoHarmDetector
+from trust.trust_model import _canonical_id
 
 class FederatedServer:
     def __init__(self, state_dim=20, action_dim=5, aggregation_strategy="trust_aware", alpha=None, exclusion_threshold=None, trust_engine=None, config=None, krum_byzantine_count=None, krum_byzantine_fraction=0.2):
@@ -50,6 +52,8 @@ class FederatedServer:
         self.shadow_detectors = False
         # "none" or "discount" (weight / (1 + staleness)); see run_aggregation_round.
         self.staleness_mode = "none"
+        # Do-no-harm exclusion rule (strategy "do_no_harm"); carries per-client evidence across rounds.
+        self.dnh = DoNoHarmDetector()
 
     def get_global_weights(self):
         return copy.deepcopy(self.global_weights)
@@ -101,6 +105,36 @@ class FederatedServer:
                 "false_negative_rate": None,
                 "excluded_count": len(client_models_dict) - len(keep),
                 "excluded_clients": [int(c) for c in client_models_dict if c not in keep],
+                "accepted_clients": [int(c) for c in keep],
+                "total_clients": len(client_models_dict)})
+        elif self.aggregation_strategy == "do_no_harm":
+            # Persistent-evidence exclusion on absolute harm statistics (see
+            # trust/dnh_detector.py), followed by plain FedAvg of the survivors.
+            excluded_set, evidence = self.dnh.decide(flat_deltas)
+            keep = {c: w for c, w in client_models_dict.items() if c not in excluded_set}
+            keep_samples = {c: client_samples_dict[c] for c in keep}
+            new_global = FederatedAggregator.standard_fedavg(keep, keep_samples) if keep else None
+            for c, e in evidence.items():
+                # Display score only (1 = trusted): logistic of the negative evidence.
+                self.trust_engine.final_trust_scores[_canonical_id(c)] = float(
+                    0.05 if not np.isfinite(e) else np.clip(1.0 / (1.0 + np.exp(np.clip(e, -30, 30))), 0.05, 1.0))
+            tp = fp = tn = fn = 0
+            if ground_truth_roles:
+                for cid in client_models_dict:
+                    mal = ground_truth_roles.get(cid, "honest") not in ("honest", "unreliable")
+                    ex = cid in excluded_set
+                    tp += int(ex and mal); fp += int(ex and not mal)
+                    tn += int((not ex) and (not mal)); fn += int((not ex) and mal)
+            tpr = tp / (tp + fn) if (tp + fn) else None
+            fpr = fp / (fp + tn) if (fp + tn) else None
+            metrics.update({
+                "defense_type": "do_no_harm_exclusion", "performs_client_detection": True,
+                "true_positives": tp, "false_positives": fp, "true_negatives": tn, "false_negatives": fn,
+                "attack_detection_rate": round(float(tpr), 4) if tpr is not None else None,
+                "false_positive_rate": round(float(fpr), 4) if fpr is not None else None,
+                "false_negative_rate": round(float(1 - tpr), 4) if tpr is not None else None,
+                "excluded_count": len(excluded_set),
+                "excluded_clients": [int(c) for c in excluded_set],
                 "accepted_clients": [int(c) for c in keep],
                 "total_clients": len(client_models_dict)})
         elif self.aggregation_strategy == "trust_aware":
