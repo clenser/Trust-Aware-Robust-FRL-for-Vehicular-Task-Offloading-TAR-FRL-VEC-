@@ -1,0 +1,973 @@
+=== PAGE 1 ===
+1
+
+=== PAGE 2 ===
+Publication-Oriented Research and Implementation
+Roadmap
+Dynamic Trust-Aware Robust Federated Reinforcement Learning
+for Secure and Efficient Task Offloading in Vehicular Edge Networks
+B.Tech Final Year Project
+Computer Science and Engineering / Data Science
+Academic Session 2026–2027
+September 2026
+1 Publication-First Project Philosophy
+The primary objective of this project is not merely to develop a working software prototype.
+The primary objective is to develop a technically defensible research contribution that can be
+converted into a research manuscript for submission to a suitable international conference or
+journal.
+The software implementation will act as the experimental platform for validating the pro-
+posed research methodology.
+The project should therefore follow the sequence:
+Literature→Research Gap→Research Question→Novel Method→
+Mathematical Model→Implementation→Experiments→Evidence→Paper
+Students should not begin the major implementation before identifying the precise research
+gap and defining the proposed contribution.
+1.1 Important Principle
+The project should not claim novelty merely because it combines:
+V ANET + Trust + Federated Learning + Reinforcement Learning.
+These are already active research areas.
+The novelty must arise from a clearly defined mechanism, algorithm, mathematical formu-
+lation, or experimental contribution.
+2 Research Problem
+In vehicular ad hoc networks (V ANETs), vehicles frequently need to offload computation-
+intensive tasks such as cooperative perception, sensor fusion, object detection, and intelligent
+route planning to nearby vehicles or edge servers.
+However, the highly dynamic nature of vehicular environments creates several challenges:
+2
+
+=== PAGE 3 ===
+•High vehicle mobility.
+•Intermittent connectivity.
+•Heterogeneous computational resources.
+•Dynamic task arrival.
+•Limited communication bandwidth.
+•Unreliable participating vehicles.
+•Malicious participants.
+•Model poisoning attacks.
+•Free-riding behaviour.
+•Non-IID local training data.
+Traditional reinforcement learning based task-offloading methods may assume reliable par-
+ticipants and relatively stable environments. Similarly, conventional federated learning ap-
+proaches may not adequately distinguish between honest, unreliable, temporarily disconnected,
+and malicious participants.
+Therefore, this project investigates a trust-aware federated reinforcement learning framework
+for secure and efficient task offloading in dynamic vehicular edge environments.
+3 Proposed Research Direction
+The project will investigate a framework consisting of:
+Dynamic Behavioural Trust + Model-Update Trust + Federated Reinforcement Learning
++Robust Aggregation
+The proposed framework should evaluate the reliability of a participant using both its his-
+torical behaviour and the quality of its federated model update.
+A possible high-level trust formulation is:
+T f inali (t) =αT behaviouri (t) + (1−α)T modeli (t)
+where:
+•T behaviouri represents behavioural trust.
+•T modeli represents model-update trust.
+•αcontrols the relative contribution.
+The final mechanism must be refined after the literature and novelty analysis.
+4 Research Questions
+The students should formally investigate the following research questions.
+RQ1: Dynamic Trust
+How can participant trust be dynamically estimated when vehicle behaviour, connectivity, and
+computational resources continuously change?
+RQ2: Behavioural and Model Trust
+Can behavioural trust and federated model-update quality jointly identify unreliable and mali-
+cious participants more effectively than behavioural trust alone?
+3
+
+=== PAGE 4 ===
+RQ3: Task Offloading
+Does incorporating trust into the reinforcement learning based offloading decision improve task
+latency, reliability, and task completion?
+RQ4: Federated Robustness
+How does the proposed trust-aware federated reinforcement learning framework behave as the
+proportion of malicious participants increases?
+RQ5: Dynamic Environment
+Can the proposed method remain effective under high mobility, intermittent connectivity, het-
+erogeneous resources, and non-IID local task distributions?
+5 Research Hypotheses
+The following hypotheses will guide the experimental evaluation.
+•H1:Trust-aware federated reinforcement learning reduces average task latency compared
+with non-trust-aware federated reinforcement learning under comparable network condi-
+tions.
+•H2:Trust-aware aggregation provides higher task reliability and model robustness than
+conventional FedAvg under increasing malicious participation.
+•H3:Combining behavioural trust with model-update trust provides greater robustness
+against model poisoning than behavioural trust alone.
+•H4:The proposed framework maintains its performance advantage under different mo-
+bility and connectivity conditions.
+•H5:The security improvement can be achieved without introducing impractical compu-
+tational and communication overhead.
+The hypotheses must be evaluated experimentally rather than assumed to be true.
+6 Literature Review and Novelty Identification
+The first major activity of the project is a systematic literature review.
+Students should collect approximately 30–40 relevant research papers, with particular em-
+phasis on recent work in:
+•Vehicular edge computing.
+•V ANET task offloading.
+•Deep reinforcement learning.
+•Federated learning.
+•Federated reinforcement learning.
+•Trust management.
+•Byzantine-robust federated learning.
+•Poisoning attacks.
+•Secure vehicular networks.
+At least 10 papers should be highly relevant to the exact research problem.
+4
+
+=== PAGE 5 ===
+6.1 Research Gap Matrix
+Students must construct a research-gap matrix containing fields such as:
+Paper V ANET Offloading RL FL Trust Attack Limitation
+Paper 1 Yes Yes Yes Yes No No —
+Paper 2 Yes Yes Yes No Yes Yes —
+Paper 3 Yes No Yes Yes Yes No —
+Paper 4 Yes Yes No Yes Yes Yes —
+Proposed Yes Yes Yes Yes Yes Yes To be validated
+Table 1: Illustrative research-gap matrix
+The final matrix must be populated using actual papers.
+6.2 Novelty Audit
+Before major implementation begins, students must answer:
+1. What has already been proposed?
+2. What has already been experimentally evaluated?
+3. Which trust mechanisms already exist?
+4. Which robust aggregation methods already exist?
+5. Which federated RL offloading methods already exist?
+6. What limitation remains unresolved?
+7. Why does the proposed method address this limitation?
+7 Expected Research Contributions
+The following contribution structure is proposed initially and must be refined after the literature
+review.
+7.1 Contribution 1: Dynamic Behavioural Trust
+A mobility-aware and temporally adaptive trust mechanism that considers participant be-
+haviour, task execution reliability, communication reliability, and computational resource avail-
+ability.
+7.2 Contribution 2: Model-Update Trust
+A mechanism for evaluating the quality and consistency of a participant’s federated reinforce-
+ment learning update.
+7.3 Contribution 3: Trust-Aware Robust Aggregation
+A federated aggregation mechanism in which participant contribution is dynamically weighted
+according to its trust.
+A possible formulation is:
+θglobal =
+∑︁N
+i=1 Tiniθi∑︁N
+i=1 Tini
+where:
+5
+
+=== PAGE 6 ===
+•θ i is the local model.
+•n i is the local sample size.
+•T i is participant trust.
+7.4 Contribution 4: Adversarial Evaluation
+Evaluation under:
+•Model poisoning.
+•Free riding.
+•Unreliable task execution.
+•Intermittent participation.
+7.5 Contribution 5: Comprehensive Experimental Validation
+The proposed framework will be evaluated using:
+•Multiple baselines.
+•Multiple mobility conditions.
+•Multiple malicious-client ratios.
+•Ablation studies.
+•Sensitivity analysis.
+•Multiple random seeds.
+•Statistical analysis.
+8 Overall System Architecture
+The proposed experimental architecture is:
+Synthetic / Trace-Driven Mobility
+|
+v
+Vehicle Environment
+|
++-------------+-------------+
+| |
+v v
+Neighbour Discovery Resource Model
+| |
++-------------+-------------+
+|
+v
+Task Generation
+|
+v
+Trust Evaluation
+|
+v
+RL-based Offloading
+|
+v
+Local Training
+|
+6
+
+=== PAGE 7 ===
+v
+Adversarial Nodes
+|
+v
+Trust-aware Aggregation
+|
+v
+Global Model
+|
+v
+Next FL Round
+9 Python-Based Experimental Environment
+The entire project will be developed in Python.
+The project will not require:
+•NS-3.
+•OMNeT++.
+•SUMO.
+The environment will instead be implemented as a mathematical and computational ab-
+straction of a vehicular edge network.
+9.1 Recommended Technology Stack
+Component Technology
+Programming Python 3.11+
+Numerical Computation NumPy
+Data Processing Pandas
+Machine Learning Scikit-learn
+Deep Learning PyTorch
+Federated Learning Custom Python / Flower
+Visualization Matplotlib / Seaborn
+Experimentation Jupyter / Google Colab
+Configuration YAML / JSON
+Version Control Git / GitHub
+Table 2: Recommended technology stack
+10 Vehicle and Edge Node Model
+Each vehicle may be represented using:
+Vehicle(
+vehicle_id,
+x,
+y,
+speed,
+direction,
+cpu_capacity,
+7
+
+=== PAGE 8 ===
+memory,
+battery,
+trust_score
+)
+The environment should maintain:
+•Vehicle position.
+•Vehicle speed.
+•Vehicle direction.
+•CPU capacity.
+•Current CPU utilization.
+•Queue length.
+•Communication range.
+•Available bandwidth.
+•Trust score.
+11 Mobility Model
+A simplified mathematical mobility model will be used.
+For example:
+xt+1 =x t +v t∆t
+and:
+yt+1 =y t +v t∆t
+depending on the selected mobility scenario.
+Possible models include:
+•Highway mobility.
+•Random Waypoint.
+•Manhattan mobility.
+•Gauss-Markov mobility.
+A highway-based mobility model is recommended for the main experimental setting.
+Where feasible, trace-driven mobility may be incorporated as an additional validation ex-
+periment.
+12 Communication and Connectivity Model
+Neighbour availability can be determined using:
+Lij(t) =
+{︄
+1, d ij(t)≤R
+0,otherwise
+where:
+•d ij is the distance between vehicles.
+•Ris the communication range.
+Communication quality may be represented as:
+Qij(t) =f(d ij, vi, vj, BWij)
+The final communication model must be explicitly documented in the paper.
+8
+
+=== PAGE 9 ===
+13 Task Generation Model
+Each task is represented as:
+Ti ={D i, Ci, Li, Pi}
+where:
+•D i = data size.
+•C i = required CPU cycles.
+•L i = deadline.
+•P i = priority.
+Representative workloads include:
+•Cooperative perception.
+•Sensor fusion.
+•Image processing.
+•Object detection workload.
+•Path-planning computation.
+The project does not require execution of complete computer vision models. Computational
+requirements can be represented mathematically.
+14 Baseline Algorithms
+Strong baselines are essential for publication.
+The project should include:
+1. Local execution.
+2. Random offloading.
+3. Nearest-node offloading.
+4. Resource-aware offloading.
+5. Conventional DQN.
+6. Federated DQN / Federated RL.
+7. Standard FedAvg-based aggregation.
+8. A relevant published RL/FL baseline.
+9. A relevant robust aggregation baseline.
+At least one recent published baseline should be reproduced before the proposed method is
+evaluated.
+The baseline implementation must be documented sufficiently to allow comparison.
+15 Reinforcement Learning Formulation
+The initial RL algorithm will be Deep Q-Network (DQN).
+15.1 State
+A possible state representation is:
+St = [Di, Ci, Li, vi, dij, CP Uj, Queuej, Bandwidthij, T rustj]
+The final state representation must be determined after the experimental design.
+9
+
+=== PAGE 10 ===
+15.2 Action
+Possible actions include:
+•Local execution.
+•Offload to Vehicle 1.
+•Offload to Vehicle 2.
+•Offload to VehicleN.
+•Offload to an edge server.
+15.3 Reward
+A basic reward function may be defined as:
+R=−αDelay−βEnergy−γF ailure+δReliability
+A trust-aware formulation may be:
+R=−αD−βE−γF+δR l +λT
+whereTis the trust associated with the selected node.
+The final reward must be justified through the research formulation.
+16 Dynamic Trust Management
+Trust is a central research component.
+A general formulation is:
+Ti(t) =w bBi(t) +w rRi(t) +w aAi(t) +w cCi(t)
+where:
+•B i = historical behaviour.
+•R i = task-response reliability.
+•A i = resource availability.
+•C i = communication reliability.
+The trust value satisfies:
+0≤T i(t)≤1
+A temporal update may be defined as:
+Ti(t+ 1) =ηT i(t) + (1−η)O i(t)
+whereO i(t) is the latest behavioural observation.
+16.1 Behavioural Evidence
+Positive evidence:
+•Successful task execution.
+•Timely response.
+•Stable communication.
+•Consistent resource availability.
+Negative evidence:
+10
+
+=== PAGE 11 ===
+•Task failure.
+•Delayed response.
+•Resource unavailability.
+•Communication failure.
+17 Federated Model-Update Trust
+A second trust component will evaluate the quality of local model updates.
+Let:
+T behaviouri
+represent behavioural trust and:
+T modeli
+represent model-update trust.
+The combined trust may be defined as:
+T f inali =αT behaviouri + (1−α)T modeli
+Possible model-update indicators include:
+•Parameter deviation.
+•Update similarity.
+•Local loss improvement.
+•Historical contribution.
+•Update consistency across rounds.
+The final formulation must be compared with existing approaches during the literature
+review.
+18 Federated Reinforcement Learning
+Each participating vehicle maintains a local RL model.
+The overall process is:
+Vehicle 1 -> Local RL Training --\
+Vehicle 2 -> Local RL Training ---\
+Vehicle 3 -> Local RL Training ----> Aggregator
+Vehicle 4 -> Local RL Training ---/
+|
+v
+Global Model
+|
+v
+Distributed to Vehicles
+Standard FedAvg is:
+θg =
+N∑︂
+i=1
+ni∑︁
+j nj
+θi
+The proposed trust-aware formulation is:
+11
+
+=== PAGE 12 ===
+θg =
+∑︁N
+i=1 Tiniθi∑︁N
+i=1 Tini
+whereT i represents the final trust score.
+19 Threat Model
+The project will initially consider three adversarial behaviours.
+19.1 Model Poisoning
+A malicious participant may manipulate its model update:
+θ′i =θ i +ϵ
+or:
+θ′i =−θ i
+depending on the selected poisoning strategy.
+19.2 Free Riding
+A participant may submit:
+•Stale updates.
+•Copied updates.
+•Zero updates.
+•Updates without meaningful local training.
+19.3 Unreliable Node
+A node may:
+•Fail task execution.
+•Respond after excessive delay.
+•Become intermittently unavailable.
+•Provide inconsistent computational resources.
+20 Trust-Aware Robust Aggregation
+Three aggregation strategies should be compared:
+1. Standard FedAvg.
+2. Trust-weighted FedAvg.
+3. Trust-weighted aggregation with participant exclusion.
+Participant exclusion may be represented as:
+Ti < τ⇒Participant excluded
+However, the thresholdτmust be selected through systematic experimentation rather than
+arbitrary tuning.
+12
+
+=== PAGE 13 ===
+21 Experimental Design
+Experiments should be conducted under controlled conditions.
+21.1 Vehicle Mobility
+•Low mobility.
+•Medium mobility.
+•High mobility.
+21.2 Malicious Participants
+•0%.
+•10%.
+•20%.
+•30%.
+•40%.
+21.3 Vehicle Population
+Possible configurations:
+•20 vehicles.
+•50 vehicles.
+•100 vehicles.
+•200 vehicles.
+The final configuration will depend on computational resources.
+21.4 Resource Heterogeneity
+Different configurations of:
+•CPU capacity.
+•Bandwidth.
+•Queue length.
+•Task arrival rate.
+•Communication reliability.
+will be evaluated.
+21.5 Non-IID Conditions
+Different vehicles should receive different local task distributions to reproduce the non-IID
+nature of federated learning.
+22 Mandatory Experiments
+22.1 Experiment A: Normal Environment
+No malicious participants.
+Compare all major baselines with the proposed method.
+13
+
+=== PAGE 14 ===
+22.2 Experiment B: Increasing Malicious Participation
+Evaluate:
+0%,10%,20%,30%,40%
+malicious participants.
+22.3 Experiment C: Poisoning Strength
+Evaluate multiple poisoning strengths:
+ϵ∈ {0.1,0.2,0.5,1.0}
+or another justified range.
+22.4 Experiment D: Mobility
+Evaluate:
+•Low mobility.
+•Medium mobility.
+•High mobility.
+22.5 Experiment E: Resource Heterogeneity
+Vary:
+•CPU capacity.
+•Bandwidth.
+•Task load.
+•Queue size.
+22.6 Experiment F: Non-IID Data
+Evaluate heterogeneous local experience distributions.
+22.7 Experiment G: Free Riding
+Evaluate the impact of free-riding participants.
+22.8 Experiment H: Intermittent Participation
+Participants should join and leave federated rounds.
+23 Evaluation Metrics
+23.1 Task Metrics
+Average T ask Latency
+T ask Completion Rate
+T ask F ailure Rate
+14
+
+=== PAGE 15 ===
+Of f loading Reliability
+Energy Consumption
+Average Reward
+23.2 Federated Learning Metrics
+Global M odel Convergence
+Global Reward
+T raining Rounds
+Local T raining T ime
+23.3 Security Metrics
+Attack Detection Rate
+F alse P ositive Rate
+F alse N egative Rate
+M odel Degradation
+23.4 System Overhead
+The following should also be reported:
+•Communication overhead.
+•Computation overhead.
+•Memory overhead.
+•Aggregation time.
+24 Ablation Study
+The ablation study is mandatory.
+At minimum, compare:
+1. Proposed complete model.
+2. Proposed model without behavioural trust.
+3. Proposed model without model-update trust.
+4. Proposed model without temporal trust.
+5. Proposed model without trust-aware aggregation.
+6. Federated RL without trust.
+7. RL without federated learning.
+This will establish the contribution of each component.
+15
+
+=== PAGE 16 ===
+25 Sensitivity Analysis
+The effect of important parameters must be studied.
+Examples include:
+•Trust update coefficientη.
+•Trust weightα.
+•Exclusion thresholdτ.
+•Number of FL rounds.
+•Number of vehicles.
+•Percentage of malicious clients.
+•Mobility level.
+The goal is to identify whether the proposed method is robust to reasonable parameter
+variations.
+26 Statistical Validation
+A single experimental run must not be used as the final evidence.
+Experiments should use multiple random seeds.
+For each major experiment, students should report:
+•Mean.
+•Standard deviation.
+•Confidence interval where appropriate.
+Where statistically appropriate, suitable significance tests may be used to determine whether
+observed differences are meaningful.
+27 Reproducibility Protocol
+All experiments must record:
+•Random seed.
+•Number of vehicles.
+•Number of FL rounds.
+•Local training epochs.
+•Learning rate.
+•Batch size.
+•Discount factor.
+•Trust parameters.
+•Attack percentage.
+•Attack strength.
+•Mobility parameters.
+•Hardware/software environment.
+All experiment configurations should be stored using YAML or JSON configuration files.
+28 Recommended Project Repository
+trust-aware-vanet-frl/
+|
++-- data/
+| +-- configurations/
+16
+
+=== PAGE 17 ===
+| +-- generated/
+| +-- traces/
+|
++-- environment/
+| +-- vanet_env.py
+| +-- vehicle.py
+| +-- mobility.py
+| +-- network.py
+| +-- task.py
+|
++-- trust/
+| +-- trust_model.py
+| +-- trust_update.py
+| +-- model_trust.py
+|
++-- rl/
+| +-- dqn.py
+| +-- replay_buffer.py
+| +-- agent.py
+| +-- reward.py
+|
++-- federated/
+| +-- client.py
+| +-- server.py
+| +-- fedavg.py
+| +-- trust_aggregation.py
+|
++-- attacks/
+| +-- poisoning.py
+| +-- free_riding.py
+| +-- unreliable_node.py
+|
++-- baselines/
+| +-- local.py
+| +-- random.py
+| +-- nearest.py
+| +-- resource_aware.py
+| +-- dqn_baseline.py
+| +-- published_baseline.py
+|
++-- experiments/
+| +-- baseline_experiment.py
+| +-- rl_experiment.py
+| +-- fl_experiment.py
+| +-- attack_experiment.py
+| +-- ablation.py
+| +-- sensitivity.py
+|
++-- results/
++-- plots/
++-- configs/
+17
+
+=== PAGE 18 ===
++-- notebooks/
++-- requirements.txt
++-- README.md
+29 Research Work Packages
+WP1: Literature and Novelty
+30 September – 22 October 2026
+Deliverables:
+•30–40 papers.
+•Literature matrix.
+•Taxonomy.
+•Research gap.
+•Research questions.
+•Research hypotheses.
+•Preliminary novelty statement.
+WP2: Mathematical Model
+16 – 31 October 2026
+Define:
+•System model.
+•State space.
+•Action space.
+•Reward function.
+•Trust model.
+•Communication model.
+•Computation model.
+•Attack model.
+WP3: Baseline Reproduction
+1 – 20 November 2026
+Implement:
+•Traditional baselines.
+•DQN baseline.
+•Federated RL baseline.
+•At least one relevant published baseline.
+WP4: Proposed Method
+21 November – 20 December 2026
+Implement:
+•DQN.
+•Dynamic trust.
+•Model-update trust.
+•Federated learning.
+•Trust-aware aggregation.
+18
+
+=== PAGE 19 ===
+WP5: Security and Robustness
+21 December 2026 – 31 January 2027
+Implement and evaluate:
+•Model poisoning.
+•Free riding.
+•Unreliable participants.
+•Intermittent participation.
+•Non-IID conditions.
+WP6: Publication Validation
+1 – 28 F ebruary 2027
+Complete:
+•Ablation.
+•Sensitivity analysis.
+•Statistical analysis.
+•Computational overhead.
+•Communication overhead.
+•Reproducibility.
+•Final manuscript.
+30 Detailed Publication-Oriented Timeline
+Period Research Activity Implementation Ac-
+tivity
+Publication Deliver-
+able
+30 Sep–7 Oct Literature collection No major coding Initial paper database
+8–15 Oct Gap analysis No major coding Research-gap matrix
+16–22 Oct Research questions
+and hypotheses
+Environment planning RQs, hypotheses, novelty
+candidates
+23–31 Oct Mathematical formu-
+lation
+Environment prototype System model and
+methodology draft
+1–10 Nov Baseline definition Environment + basic
+baselines
+Experimental design
+11–20 Nov RL formulation DQN implementation RL methodology
+21–30 Nov Trust formulation Trust implementation Trust methodology
+1–10 Dec FRL formulation Federated implementa-
+tion
+Proposed method draft
+11–20 Dec Security model Attack implementation Threat model
+21–31 Dec Proposed method
+validation
+Integrated system Complete manuscript
+skeleton
+1–10 Jan Baseline validation Primary experiments Initial results
+11–20 Jan Robustness testing Attack experiments Main results
+21–31 Jan Ablation and sensi-
+tivity
+Complete experiments Results and discussion
+1–10 Feb Statistical validation Repeated runs Final figures and tables
+11–20 Feb Research validation Code freeze Complete manuscript
+21–28 Feb Internal review Reproducibility check Submission-ready
+manuscript
+19
+
+=== PAGE 20 ===
+31 Mandatory Research Milestones
+Milestone Deadline Expected Output
+M1 15 Oct Literature database and initial research gap
+M2 22 Oct Research questions, hypotheses and novelty candidates
+M3 31 Oct Mathematical system model
+M4 20 Nov Working baseline implementations
+M5 10 Dec Working DQN + trust mechanism
+M6 20 Dec Working federated RL framework
+M7 31 Dec Working attack framework
+M8 10 Jan Complete proposed method
+M9 31 Jan Primary experiments completed
+M10 10 Feb Ablation and sensitivity completed
+M11 20 Feb Complete manuscript
+M12 28 Feb Internal technical review and submission preparation
+Table 4: Mandatory research milestones
+32 Suggested Student-Wise Distribution
+For a four-member project team:
+Student Primary Responsibil-
+ity
+Secondary Responsibility
+S1 V ANET environment, mo-
+bility and task model
+Experimental infrastructure and data generation
+S2 DQN and task-offloading
+policy
+Reward design and RL experiments
+S3 Trust management and
+adversarial behaviour
+Security experiments and trust analysis
+S4 Federated learning and
+trust-aware aggregation
+Ablation, scalability and experimental automation
+Table 5: Suggested four-member team distribution
+All students must understand the complete system.
+The project must not become four independent mini-projects.
+33 Publication Writing Plan
+Students should begin paper writing before implementation is completely finished.
+33.1 December 2026
+Prepare:
+•Introduction.
+•Background.
+•Literature review.
+•Research gap.
+•Problem formulation.
+20
+
+=== PAGE 21 ===
+33.2 January 2027
+Prepare:
+•System architecture.
+•Trust model.
+•RL formulation.
+•Federated learning formulation.
+•Threat model.
+•Proposed algorithm.
+33.3 February 2027
+Prepare:
+•Experimental setup.
+•Results.
+•Ablation.
+•Sensitivity analysis.
+•Statistical analysis.
+•Discussion.
+33.4 Late February / March 2027
+Prepare:
+•Abstract.
+•Conclusion.
+•Limitations.
+•Future work.
+•References.
+•Final manuscript formatting.
+•Target venue selection.
+34 Expected Publication Figures
+The final manuscript should aim to contain meaningful experimental figures such as:
+1. Overall system architecture.
+2. Python-based V ANET environment.
+3. Vehicle mobility illustration.
+4. Trust evolution over time.
+5. DQN convergence.
+6. Federated model convergence.
+7. Task latency comparison.
+8. Task completion rate.
+9. Energy consumption.
+10. Average reward.
+11. Performance versus malicious participants.
+12. Attack detection rate.
+13. False positive and false negative rates.
+14. Performance versus mobility.
+15. Performance versus resource heterogeneity.
+16. Ablation study.
+21
+
+=== PAGE 22 ===
+17. Sensitivity analysis.
+Every figure must answer a research question.
+Figures should not be generated merely to increase the number of plots.
+35 Minimum Complete Research Prototype
+The minimum acceptable research prototype is:
+DQN Offloading + Dynamic Trust + Model-Update Trust
++Federated Learning + Adversarial Participants + Trust-Aware Aggregation
+Additional techniques should only be added after this minimum framework works reliably.
+Students should not unnecessarily introduce:
+•Blockchain.
+•Complex multi-agent architectures.
+•Multiple RL algorithms.
+•Digital twins.
+•6G architectures.
+•SDN.
+•Complex consensus mechanisms.
+unless the literature review demonstrates that the additional component is necessary for a
+clearly identified research gap.
+36 Publication Readiness Checklist
+Before considering the project ready for submission, verify:
+□Research gap is supported by recent literature.
+□Research questions are finalized.
+□Testable hypotheses are defined.
+□Mathematical formulation is complete.
+□Threat model is formally defined.
+□At least one relevant published baseline is reproduced.
+□Proposed algorithm is fully implemented.
+□Dynamic trust is implemented.
+□Model-update trust is implemented.
+□Federated aggregation is implemented.
+□Model poisoning is implemented.
+□Free-riding behaviour is implemented.
+□Intermittent participation is evaluated.
+□Dynamic mobility is evaluated.
+□Resource heterogeneity is evaluated.
+□Non-IID local conditions are evaluated.
+□Multiple malicious-client ratios are evaluated.
+□Baseline comparisons are complete.
+□Ablation study is complete.
+□Sensitivity analysis is complete.
+□Multiple random seeds are used.
+□Mean and standard deviation are reported.
+□Computational overhead is measured.
+22
+
+=== PAGE 23 ===
+□Communication overhead is measured.
+□Code is reproducible.
+□Experimental configurations are documented.
+□All major figures and tables are finalized.
+□Manuscript is complete.
+□Internal technical review is completed.
+37 Scope and Experimental Limitation
+The project does not use NS-3, OMNeT++, or SUMO.
+Therefore, the implementation should be described in the research paper as a:
+Python-based synthetic or trace-driven vehicular-edge experimental environment
+and not as a packet-level vehicular network simulator.
+The students must explicitly document assumptions related to:
+•Mobility.
+•Communication.
+•Bandwidth.
+•Computation.
+•Task generation.
+•Energy.
+•Connectivity.
+•Federated participation.
+The paper should not claim a level of network realism that is not provided by the experi-
+mental environment.
+38 Publication Strategy
+The target of the project is publication-quality research.
+Potential target venues may include relevant IEEE Transactions, international conferences,
+or other peer-reviewed venues in:
+•Vehicular networking.
+•Mobile computing.
+•Edge computing.
+•Federated learning.
+•Intelligent transportation systems.
+•Wireless communications.
+However, a specific venue should not be treated as guaranteed.
+The final venue should be selected only after evaluating:
+•Novelty.
+•Technical depth.
+•Experimental rigor.
+•Mathematical contribution.
+•Reproducibility.
+•Scope of the final manuscript.
+The project should first aim to produce a technically defensible research contribution.
+23
+
+=== PAGE 24 ===
+39 Final Guidance to Students
+The project should be developed incrementally.
+Students should first establish the research gap and mathematical formulation.
+They should then reproduce suitable baselines.
+After the baseline implementation is stable, the proposed method should be implemented.
+The sequence should be:
+Literature
+↓
+Gap
+↓
+Hypothesis
+↓
+Mathematical Model
+↓
+Baseline
+↓
+Proposed Method
+↓
+Attack Evaluation
+↓
+Ablation
+↓
+Statistical Validation
+↓
+Paper
+The project should not be judged only by whether the code executes.
+The final success criterion is whether the students can demonstrate, through reproducible
+experiments, that the proposed research mechanism addresses a clearly identified limitation in
+existing work.
+Project Success Criterion
+Code is not the research contribution.
+The contribution is the problem–gap–method–evidence chain.
+24
+

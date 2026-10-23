@@ -1,0 +1,21 @@
+# Trust-Aware FRL for VANET Task Offloading Requirements
+torch>=2.0.0
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+scikit-learn>=1.2.0
+matplotlib>=3.7.0
+fastapi>=0.100.0
+uvicorn>=0.23.0
+websockets>=11.0.0
+pypdf>=3.9.0
+pyyaml>=6.0
+requests>=2.31.0
+
+# Optional: real-browser verification of the console.
+#   pip install playwright && python -m playwright install chromium
+#   python run_simulation.py          # in one shell
+#   python tests/browser_verification.py   # in another shell
+# The headless front-end harnesses (node tests/frontend_behaviour.js and
+# node tests/frontend_resilience.js) need no extra dependency.
+# playwright>=1.40.0

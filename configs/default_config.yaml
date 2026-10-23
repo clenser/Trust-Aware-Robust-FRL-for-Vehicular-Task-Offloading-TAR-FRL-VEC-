@@ -1,0 +1,176 @@
+# Authoritative System Configuration for Trust-Aware FRL in VANETs
+system:
+  random_seed: 42
+  simulation_duration_sec: 300
+  time_step_dt: 0.5
+  max_steps: 300
+
+mobility:
+  # "highway"          -> procedural IDM highway (synthetic simulation)
+  # "trace"            -> calibrated synthetic NGSIM-style trace replay
+  # "authentic_trace"  -> processed authentic FHWA NGSIM US-101 replay
+  #                       (requires data/traces/ngsim_us101_authentic.csv, see
+  #                        data/source/prepare_ngsim.py)
+  scenario: "highway"
+  trace_dataset: "data/synthetic_traces/synthetic_ngsim_highway.csv"
+  authentic_trace_dataset: "data/traces/ngsim_us101_authentic.csv"
+  road_length_m: 3200.0
+  num_lanes: 5
+  lane_width_m: 3.75
+  num_vehicles: 25
+  speed_range_mps: [14.0, 32.0]
+
+edge_nodes:
+  num_rsus: 3
+  positions_m: [420.0, 1480.0, 2460.0]
+  rsu_cpu_capacity_ghz: 32.0
+  coverage_radius_m: 480.0
+  rsu_nodes:
+    - id: "RSU_1"
+      x_m: 420.0
+      y_m: 15.0
+      z_height_m: 14.0
+      cpu_capacity_ghz: 32.0
+      coverage_radius_m: 480.0
+      num_cores: 8
+      is_rooftop: false
+      building_name: "Roadside Pole gNodeB"
+    - id: "RSU_2"
+      x_m: 1480.0
+      y_m: -42.0
+      z_height_m: 38.0
+      cpu_capacity_ghz: 48.0
+      coverage_radius_m: 650.0
+      num_cores: 16
+      is_rooftop: true
+      building_name: "Apex Tech Center (Rooftop 5G)"
+    - id: "RSU_3"
+      x_m: 2460.0
+      y_m: 38.0
+      z_height_m: 28.0
+      cpu_capacity_ghz: 40.0
+      coverage_radius_m: 550.0
+      num_cores: 12
+      is_rooftop: true
+      building_name: "Logistics Cloud Hub (Rooftop 5G)"
+
+network:
+  carrier_frequency_ghz: 5.9
+  channel_bandwidth_mhz: 20.0
+  tx_power_dbm: 23.0
+  noise_power_dbm: -95.0
+  v2v_comm_range_m: 180.0
+  # Uplink capacity of one RSU cell, shared OFDMA-style among simultaneous
+  # uplinks (3GPP NR FR1 maximum channel bandwidth).  Each UE is allocated at
+  # most channel_bandwidth_mhz.
+  cell_bandwidth_mhz: 100.0
+
+task_profiles:
+  non_iid: true
+  dirichlet_alpha: 0.4          # per-vehicle task-mix concentration (smaller = more heterogeneous)
+  fast_sampling: false          # true = faster task sampler (same distribution, different stream); console only
+  catalog_csv: "data/synthetic_traces/synthetic_v2x_task_profiles.csv"
+  cooperative_perception:
+    data_size_mb: 0.45
+    cpu_cycles_giga: 0.22
+    deadline_ms: 160.0
+  sensor_fusion:
+    data_size_mb: 0.18
+    cpu_cycles_giga: 0.12
+    deadline_ms: 90.0
+  video_analytics:
+    data_size_mb: 0.95
+    cpu_cycles_giga: 0.40
+    deadline_ms: 280.0
+  trajectory_planning:
+    data_size_mb: 0.08
+    cpu_cycles_giga: 0.06
+    deadline_ms: 65.0
+
+trust_management:
+  alpha: 0.50             # Trade-off between behavioral (alpha) and model (1 - alpha) trust
+  beta_weight: 0.50       # Model trust weight (1 - alpha)
+  temporal_decay_eta: 0.85
+  exclusion_threshold_tau: 0.40
+  penalty_weight: 0.35
+  initial_trust_prior: 0.70 # Neutral, role-agnostic initial trust prior (zero label leakage)
+  # Participation rule.  A client that holds fewer transitions than the
+  # minimum training batch could not perform a gradient step, so its upload is
+  # the global model itself.  Such a client is a NON-PARTICIPANT of the
+  # round: there is nothing about it to detect, and its zero update would only
+  # dilute the aggregate.  The rule uses the client's available experience, a
+  # role-independent participation statistic - never the ground-truth role.
+  # The live console applies the same rule (see web/app.py).
+  exclude_non_participants: true
+  behavioral_weights:
+    historical_b: 0.30
+    reliability_r: 0.35
+    availability_a: 0.15
+    communication_c: 0.20
+
+federated_learning:
+  aggregation_strategy: "trust_aware"  # "trust_aware", "fedavg", "coordinate_median", "trimmed_mean", "multi_krum", "exclusion_no_weighting", "trust_no_exclusion"
+  num_rounds: 30
+  steps_per_round: 20
+  # One "epoch" of local_train() performs ONE gradient step on a sampled
+  # minibatch, so this is the number of gradient steps a client performs per
+  # round.  The previous value of 2 gave only 20 gradient steps over the whole
+  # training, which is far too few for the DQN to learn anything: the policy
+  # stayed at its random initialisation and every method degenerated to the
+  # same behaviour.
+  local_epochs: 16
+  participation_fraction: 1.0    # fraction of clients that train each round
+  require_connectivity: false    # when true a vehicle uploads only if inside some RSU's coverage
+  learning_rate: 0.001
+  batch_size: 32
+  gamma_discount: 0.95
+  epsilon_start: 1.0
+  epsilon_min: 0.05
+  epsilon_decay: 0.995
+  # --- Evaluation protocol (independent of the training step count) ---
+  eval_episodes: 5              # number of independent evaluation episodes per seed
+  eval_steps: 30                # simulation steps per evaluation episode
+  eval_seed_offset: 500000      # keeps evaluation seeds disjoint from training seeds
+  min_buffer_size: 10           # replay samples a client needs before it may train
+  min_clients: 2                # clients that must contribute a valid update
+  fl_interval_steps: 20         # simulation steps between two automatic FL rounds
+
+reinforcement_learning:
+  learning_rate: 0.001
+  gamma: 0.95
+  epsilon_start: 1.0
+  epsilon_min: 0.05
+  epsilon_decay: 0.995
+  buffer_capacity: 10000
+  batch_size: 32
+  target_update_freq: 20
+
+# Environment-model switches (version 2).  Setting both to false reproduces
+# the version-1 simulator that the earlier benchmark runs used.
+environment_model:
+  version: "2.1"
+  # State features: "v2.0" = road-length-normalised RSU distances (17 features);
+  # "v2.1" = distances relative to each RSU's coverage radius plus in-coverage flags (20).
+  state_features: "v2.1"
+  honor_rsu_choice: true     # the action names an RSU; no silent re-association
+  uplink_contention: true    # per-slot equal bandwidth sharing among uplinks to one RSU
+
+# Reward weights.  lambda_trust is 0 by default: with a trust prior of 0.7 for
+# every node, a positive trust bonus adds a constant to every offloading action
+# and none to local execution, which makes offloading optimal by construction.
+# Trust still informs the policy through the state (RSU / peer trust features).
+reward:
+  alpha_lat: 2.0
+  beta_energy: 1.0
+  gamma_fail: 5.0
+  delta_success: 3.0
+  lambda_trust: 0.0
+  e_norm: 0.01
+
+adversarial:
+  attack_ratio: 0.24       # 24% malicious participants
+  poison_type: "sign_flip" # "sign_flip", "gaussian_noise", "scaling"
+  poison_strength: 1.5     # sign_flip scale = 1.5 x strength; partial_sign_flip: flipped fraction
+  attack_probability: 1.0  # per-round attack probability of a poisoning client (1.0 = always)
+  free_riding_ratio: 0.5   # Fraction of adversaries performing free-riding
+  unreliable_helper_ratio: 0.0  # honest-model but task-dropping V2V helpers (behavioural threat)

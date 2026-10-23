@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VANNET · Trust-Aware Federated RL for Vehicular Edge Offloading</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="/static/css/style.css?v=6.0">
+</head>
+<body>
+  <div id="error-banner" class="banner" style="display:none;" role="alert"></div>
+  <div id="degradation-banner" class="banner warn" style="display:none;" role="status"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name">VANNET</span>
+      <span class="brand-sub">Trust-aware federated RL for vehicular edge offloading</span>
+    </div>
+    <div class="chips">
+      <span class="chip" id="chip-mobility" title="Active mobility source">mobility: —</span>
+      <span class="chip" id="chip-strategy" title="Aggregation strategy in use">strategy: —</span>
+      <span class="chip" id="chip-session" title="Session identifier">session: none</span>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" id="tab-sim" role="tab" aria-selected="true" data-view="view-sim">Simulation</button>
+      <button class="tab" id="tab-research" role="tab" aria-selected="false" data-view="view-research">Research results</button>
+    </nav>
+    <div class="status-group">
+      <span class="status" id="kpi-simstate">STOPPED</span>
+      <span class="status muted" id="connection-status">connecting</span>
+      <button class="btn ghost" id="btn-theme" title="Toggle light / dark theme">Theme</button>
+    </div>
+  </header>
+
+  <!-- ====================================================== Simulation -->
+  <main id="view-sim" class="view workspace">
+    <aside class="panel controls" id="panel-left" aria-label="Simulation controls">
+      <section>
+        <h2>Run</h2>
+        <div class="btn-row">
+          <button class="btn primary" id="btn-start">Start</button>
+          <button class="btn" id="btn-pause">Pause</button>
+          <button class="btn" id="btn-stop">Reset</button>
+        </div>
+        <div id="fl-stage-detail" class="note">Ready. Press Start to run the simulation.</div>
+        <dl class="kv">
+          <dt>Session</dt><dd id="session-id">no session</dd>
+          <dt>Started</dt><dd id="session-started">&mdash;</dd>
+          <dt>Progress</dt><dd id="session-steps">0 steps</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Experiment <span class="tag">new session</span></h2>
+        <p class="hint">These parameters define the experiment. Applying them discards the current session and starts a new one.</p>
+        <label class="field"><span>Mobility source</span>
+          <select id="select-mobility">
+            <option value="highway">Procedural IDM highway (closed loop, simulated)</option>
+            <option value="trace">Calibrated synthetic NGSIM-style trace (not authentic)</option>
+            <option value="authentic_trace">Authentic FHWA NGSIM US-101 replay</option>
+          </select>
+        </label>
+        <div id="mobility-source" class="note">Detecting the active mobility source…</div>
+        <div class="grid2">
+          <label class="field"><span>Vehicles</span>
+            <input type="number" id="input-vehicles" min="5" max="60" step="1" value="25"></label>
+          <label class="field"><span>Attack ratio</span>
+            <input type="number" id="input-attack-ratio" min="0" max="0.5" step="0.01" value="0.24"></label>
+        </div>
+        <label class="field"><span>RSU positions, m <em>(procedural highway only)</em></span>
+          <div class="grid3">
+            <input type="number" id="input-rsu-1" min="0" max="3200" step="10" value="420" aria-label="RSU 1 position">
+            <input type="number" id="input-rsu-2" min="0" max="3200" step="10" value="1480" aria-label="RSU 2 position">
+            <input type="number" id="input-rsu-3" min="0" max="3200" step="10" value="2460" aria-label="RSU 3 position">
+          </div>
+        </label>
+        <button class="btn" id="btn-apply-config">Apply and start new session</button>
+        <div id="config-message" class="note" role="status"></div>
+      </section>
+
+      <section>
+        <h2>Live parameters <span class="tag live">immediate</span></h2>
+        <label class="field"><span>Aggregation strategy</span>
+          <select id="select-strategy">
+            <option value="trust_aware">Trust-aware (proposed)</option>
+            <option value="fedavg">FedAvg (no defence)</option>
+            <option value="coordinate_median">Coordinate-wise median</option>
+            <option value="trimmed_mean">Trimmed mean</option>
+            <option value="multi_krum">Multi-Krum</option>
+            <option value="exclusion_no_weighting">Ablation: exclusion, no weighting</option>
+            <option value="trust_no_exclusion">Ablation: weighting, no exclusion</option>
+          </select>
+        </label>
+        <label class="field"><span>Behavioural weight &alpha; <b id="val-alpha">0.50</b></span>
+          <input type="range" id="slider-alpha" min="0" max="1" step="0.05" value="0.5"></label>
+        <label class="field"><span>Exclusion threshold &tau; <b id="val-tau">0.40</b></span>
+          <input type="range" id="slider-tau" min="0.1" max="0.8" step="0.05" value="0.4"></label>
+        <label class="field"><span>Simulation speed</span>
+          <select id="select-speed">
+            <option value="1">1x (real time, 2 steps per second)</option>
+            <option value="2">2x</option>
+            <option value="4">4x</option>
+            <option value="8">8x</option>
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" id="chk-auto-fl" checked> Automatic federated rounds</label>
+      </section>
+
+      <section>
+        <h2>Display</h2>
+        <label class="check"><input type="checkbox" id="chk-coverage" checked> RSU coverage intervals</label>
+        <label class="check"><input type="checkbox" id="chk-links" checked> Offloading links (reported events)</label>
+        <label class="check"><input type="checkbox" id="chk-groundtruth"> Ground-truth attacker outline <em>(evaluation overlay)</em></label>
+      </section>
+    </aside>
+
+    <section class="stage" aria-label="Simulation viewport">
+      <div class="kpi-strip">
+        <div class="kpi"><span class="kpi-val" id="kpi-latency">N/A</span><span class="kpi-lbl">Latency, completed tasks</span></div>
+        <div class="kpi"><span class="kpi-val" id="kpi-completion">N/A</span><span class="kpi-lbl">Completion, last 200 tasks <span id="kpi-completion-cum" class="kpi-sub">cumulative N/A</span></span></div>
+        <div class="kpi"><span class="kpi-val" id="kpi-round">#0</span><span class="kpi-lbl">FL round</span></div>
+        <div class="kpi"><span class="kpi-val" id="kpi-attackers">--</span><span class="kpi-lbl">Attackers / vehicles</span></div>
+        <div class="kpi wide"><span class="kpi-val small" id="fl-status-indicator">FL idle</span><span class="kpi-lbl">Federated learning</span></div>
+      </div>
+      <div class="viewport-wrap">
+        <div class="viewport-tools">
+          <div class="seg" role="group" aria-label="View">
+            <button class="seg-btn active" id="btn-view-follow">Close-up</button>
+            <button class="seg-btn" id="btn-view-overview">Whole road</button>
+          </div>
+          <span class="legend-chip"><i class="lg ok"></i>completed offload</span>
+          <span class="legend-chip"><i class="lg grey"></i>failed offload</span>
+          <span class="legend-chip"><i class="lg bad"></i>detector alert / excluded update</span>
+          <span class="legend-chip"><i class="lg blue"></i>update upload</span>
+          <span class="legend-chip"><i class="lg amber"></i>V2V</span>
+          <span class="legend-chip"><i class="lg ring amber"></i>trust 0.4&ndash;0.6</span>
+          <span class="legend-chip"><i class="lg ring bad"></i>trust &lt; &tau;</span>
+        </div>
+        <div id="viewport" class="viewport"></div>
+        <div id="inspector" class="inspector">Click a vehicle to inspect it.</div>
+      </div>
+      <div class="charts-row">
+        <div class="chart-card"><h3>Task completion</h3><div class="chart-box"><canvas id="chart-completion"></canvas></div>
+          <div class="chart-caption">Recent window vs cumulative since the session started</div></div>
+        <div class="chart-card"><h3>Latency of completed tasks</h3><div class="chart-box"><canvas id="latency-chart"></canvas></div>
+          <div class="chart-caption" id="latency-caption">Mean over the last 200 tasks, ms</div></div>
+        <div class="chart-card"><h3>Offloading decisions</h3><div class="chart-box"><canvas id="chart-actions"></canvas></div>
+          <div class="chart-caption" id="explore-note">Share of the last 200 tasks</div></div>
+      </div>
+      <div class="timeline">
+        <h2>Event timeline <span class="hint inline">offloading decisions reported by the backend</span></h2>
+        <div class="event-feed" id="event-feed"><div class="event-item muted">No events yet.</div></div>
+      </div>
+    </section>
+
+    <aside class="panel monitor" id="panel-right" aria-label="Federated learning monitor">
+      <section>
+        <h2>Learning progress <span class="tag">per federated round</span></h2>
+        <div class="chart-box"><canvas id="chart-loss"></canvas></div>
+        <div class="chart-caption">Mean local training loss (line) and excluded clients (bars)</div>
+        <div class="note" id="fl-explore">Exploration: waiting for the first round.</div>
+      </section>
+
+      <section>
+        <h2>Federated round</h2>
+        <div class="grid-cells" id="fl-round-panel">
+          <div><span>Stage</span><b id="fl-stage">idle</b></div>
+          <div><span>Round</span><b id="fl-round-no">#0</b></div>
+          <div><span>Status</span><b id="fl-status">no round yet</b></div>
+          <div><span>Duration</span><b id="fl-elapsed">N/A</b></div>
+          <div><span>Strategy</span><b id="fl-strategy">N/A</b></div>
+          <div><span>Model</span><b id="fl-model-version">v0</b></div>
+          <div><span>Eligible</span><b id="fl-eligible">0</b></div>
+          <div><span>Trained</span><b id="fl-trained">0</b></div>
+          <div><span>Accepted</span><b id="fl-accepted">0</b></div>
+          <div><span>Excluded</span><b id="fl-excluded">0</b></div>
+        </div>
+        <div class="note" id="fl-readiness-reason">Waiting for the simulation to start.</div>
+        <h3>Exclusion decisions</h3>
+        <div class="list" id="fl-exclusion-list"><div class="empty">No exclusion decisions recorded yet.</div></div>
+      </section>
+
+      <section>
+        <h2>Trust distribution</h2>
+        <div class="chart-box short"><canvas id="trust-chart"></canvas></div>
+        <div class="chart-caption">Joint trust per vehicle (detector output, not ground truth)</div>
+        <h3>Trust over time</h3>
+        <div class="chart-box"><canvas id="chart-trust-lines"></canvas></div>
+        <div class="chart-caption">Each line is one vehicle; the dashed line is the exclusion threshold &tau;</div>
+      </section>
+
+      <section>
+        <h2>Clients</h2>
+        <div class="table-wrap">
+          <table class="table" id="client-table">
+            <thead><tr><th>ID</th><th>Role*</th><th>Samples</th><th>Trained</th><th>Loss</th><th>Time</th><th>State</th></tr></thead>
+            <tbody id="client-table-body"><tr><td colspan="7" class="empty">No participation data yet.</td></tr></tbody>
+          </table>
+        </div>
+        <div class="hint">*Role is the ground-truth label, shown for evaluation only; the detector never reads it.</div>
+      </section>
+
+      <section>
+        <h2>Round history</h2>
+        <div class="list scroll" id="fl-round-history"><div class="empty">No completed rounds yet.</div></div>
+      </section>
+
+      <section>
+        <h2>Task and detection counters</h2>
+        <div class="grid-cells">
+          <div><span>Completed</span><b id="m-completed">0</b></div>
+          <div><span>Failed</span><b id="m-failed">0</b></div>
+          <div><span>Dropped</span><b id="m-dropped">0</b></div>
+          <div><span>Latency</span><b id="m-latency">N/A</b></div>
+          <div><span>Energy / task</span><b id="m-energy">N/A</b></div>
+          <div><span>Sim time</span><b id="m-simtime">0.0 s</b></div>
+          <div><span>TPR</span><b id="m-tpr">N/A</b></div>
+          <div><span>FPR</span><b id="m-fpr">N/A</b></div>
+          <div><span>Precision</span><b id="m-precision">N/A</b></div>
+          <div><span>FNR</span><b id="m-fnr">N/A</b></div>
+        </div>
+        <div class="note" id="m-eval-note">Detection metrics need a round with valid decisions and ground-truth labels; N/A until one exists.</div>
+      </section>
+    </aside>
+  </main>
+
+  <!-- ========================================================= Research -->
+  <main id="view-research" class="view research" hidden>
+    <div id="research-root" class="research-root">
+      <div class="empty">Loading the active run…</div>
+    </div>
+  </main>
+
+  <script src="/static/js/sim_view.js?v=6.0"></script>
+  <script src="/static/js/dashboard.js?v=6.0"></script>
+  <script src="/static/js/research.js?v=6.0"></script>
+</body>
+</html>
