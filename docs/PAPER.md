@@ -413,3 +413,15 @@ Target-venue note: with one supported headline claim and null or negative supple
 *Study `results/hypothesis_study`; table and caveats in `docs/HYPOTHESES.md`; Fig. 16.  Ten comparisons and a Holm correction fixed before running; 24 paired seeds (12 for the offline-client and mobility conditions).*
 
 With the do-no-harm rule as the trust-aware method and FedAvg as the non-trust-aware baseline: completion improves by +6.1 pp at the default 24 % attack ratio (CI [+2.7, +9.4], Holm p = 0.007) and +16.2 pp at 40 % (CI [+12.0, +20.4]) (H2); the joint rule beats behavioural trust alone by +5.3 pp and +19.7 pp (H3; behavioural trust alone is no defence and falls below FedAvg at 40 %); the advantage holds under synthetic and authentic NGSIM mobility (+9.9 and +8.5 pp, Holm p <= 0.02) and, on the raw interval only, with 40 % of clients offline each round (+9.6 pp, Holm p = 0.089) (H4); aggregation costs 136 ms against 12 ms (H5).  H1 is supported for reliability, not for speed: latency of completed tasks improves by 3.3 ms at 40 % (raw interval only) and not at all at 24 %.  The rule does not detect norm-matched or partial attackers, and the hypotheses are supported for the sign-flip attack in simulation only.
+
+---
+
+## Robustness of the main result (baselines, stealth, deployments)
+
+*`docs/BASELINES.md`, `docs/DNH_DETECTOR.md` sections 7-8, `docs/HYPOTHESES.md` addendum; Fig. 17.*
+
+**Baselines.**  Against standard robust aggregators (24 paired seeds at 24 and 40 % attackers, 12 with none; Holm over nine tests) the do-no-harm rule ties Multi-Krum (differences -0.1 to +2.2 pp, all within noise) and beats coordinate median (+15.5 and +16.5 pp at 24 and 40 %) and trimmed mean (+6.5 and +12.4 pp).  An FLTrust-style rule adapted to this setting performs poorly (44.8 and 32.6 % completion) because the cosine to a heuristic-driven root update zeroes 54-76 % of honest clients; this characterises the adaptation, not the original method.
+
+**Stealth attackers.**  A label-free variant, calibrated on attacker-free runs only, detects norm-matched sign-flip attackers with TPR 0.85 at 0.8 % false exclusion (v1: 0.51; deployed rule: 0.73 at 5.4 %).  The norm-matched attack barely lowers FedAvg's completion, so no downstream gain is shown (+0.3 pp, CI [-3.9, +4.5]).  Partial sign-flip attackers remain undetected (TPR 0.50).  An impact-validated alternative (value error on trusted root data) was tested and rejected: its ROC AUC is 0.21-0.45, i.e. inverted.
+
+**Deployments.**  Across trace-calibrated edge deployments (measured-utilisation load; 12 seeds) the advantage over FedAvg is +4.4 pp [+0.5, +8.3] at 05:00 and +4.3 pp [+0.3, +8.4] at 20:00 (raw intervals; Holm p = 0.059).  Under that realistic load the learned policy ties the best heuristic (-0.5 to +0.1 pp), so its benchmark-environment advantage (+6.6 pp) does not carry over.

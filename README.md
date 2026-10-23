@@ -31,9 +31,15 @@ real data (FHWA NGSIM US-101).
 offloading, behavioural + model-update trust, a do-no-harm exclusion rule, robust-aggregation baselines,
 data-plane attacks, Alibaba edge-trace calibration, a 3D research console, ~400 tests, raw evidence with checksums.
 
+**Robustness checks (24 Oct):** the rule **ties Multi-Krum** and **beats coordinate median, trimmed mean and an
+adapted FLTrust** ([`docs/BASELINES.md`](docs/BASELINES.md)); the gain holds across trace-calibrated edge deployments
+(+4.3-4.4 pp, 12 seeds, raw interval); a label-free v2 detects norm-matched attackers (TPR 0.85, FPR < 1 %)
+but they barely hurt FedAvg, so no downstream gain is shown ([`docs/DNH_DETECTOR.md`](docs/DNH_DETECTOR.md) sec. 7).
+
 **Not achieved / limits:** no benefit from trust inside the learned policy; the learner beats the best heuristic
-only in the benchmark environment; norm-matched and partial attackers are not detected; simulation only;
-H1 latency not supported; the rule ties Multi-Krum at 24 / 40 % attackers (see `docs/BASELINES.md`).
+only in the benchmark environment and ties it under measured edge load; partial sign-flip attackers are not
+detected; simulation only; H1 latency not supported.  What this work does and does not contribute:
+[`docs/NOVELTY.md`](docs/NOVELTY.md).
 
 Roadmap: [`docs/PUBLICATION_PLAN.md`](docs/PUBLICATION_PLAN.md) | audit: [`docs/SYSTEM_AUDIT.md`](docs/SYSTEM_AUDIT.md) |
 literature: [`docs/LITERATURE_GAP.md`](docs/LITERATURE_GAP.md), [`docs/LITERATURE_REVIEW.md`](docs/LITERATURE_REVIEW.md) |
