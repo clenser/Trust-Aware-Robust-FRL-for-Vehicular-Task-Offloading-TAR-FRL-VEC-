@@ -36,3 +36,25 @@ attackers.  Multi-Krum assumes a Byzantine fraction of 20 % (the code default), 
 * The comparison is for the sign-flip attack only; the stealth / partial / scaling comparison
   is in `docs/DNH_DETECTOR.md` (DNH vs the deployed rule) and, for the stealth-capable v2 rule,
   below.
+
+## FLTrust-style baseline (separate pre-specified family F1-F3, own Holm correction)
+
+`strategy: fltrust` (`federated/server.py`): trust = ReLU(cosine of the client update with a root
+update); client updates rescaled to the root update's norm.  The root update comes from a
+server-owned, attacker-free probe environment driven by the greedy-delay heuristic
+(`_make_root_trainer`); the vehicles' data are never used.
+
+| Attackers | FedAvg | do-no-harm | FLTrust-style | DNH - FLTrust (pp, 95 % CI, Holm p) |
+|---|---|---|---|---|
+| 0 % | 78.7 | 77.8 | 73.3 | +4.5 [-0.0, +9.1] (0.052), unresolved |
+| 24 % | 70.6 | 76.6 | 44.8 | **+31.8 [+20.0, +43.5] (<0.001)** |
+| 40 % | 61.6 | 77.8 | 32.6 | **+45.2 [+37.6, +52.9] (<0.001)** |
+
+**Do not read this as "FLTrust is bad".**  In this adaptation the ReLU of the root cosine zeroes
+54 % (no attackers) to 76 % (40 % attackers) of the *honest* clients, so the global model barely
+moves and the policy stays near its random initialisation.  Heterogeneous (non-IID,
+epsilon-greedy) clients' updates are close to orthogonal to an update computed on
+heuristic-generated root data, which is exactly the regime where cosine-to-a-reference rules fail.
+A faithful FLTrust needs root data that matches the clients' behaviour policy; the published
+method was designed for supervised classification.  The result shows the baseline as adapted
+here is unusable, not that the original is.
