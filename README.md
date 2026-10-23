@@ -15,7 +15,31 @@ real data (FHWA NGSIM US-101).
 > [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md); a paper-style write-up is in
 > [`docs/PAPER.md`](docs/PAPER.md).
 
-## What the evidence supports (active run, 16 paired seeds)
+## Status at a glance (24 Oct 2026)
+
+**Roadmap hypotheses** (pre-specified, Holm-corrected, paired seeds; details in [`docs/HYPOTHESES.md`](docs/HYPOTHESES.md)):
+
+| | Hypothesis | Status | Evidence |
+|---|---|---|---|
+| H1 | Trust-aware FRL lowers latency vs non-trust-aware FRL | **Partly** | completion improves; latency of completed tasks differs by <= 3 ms (24 %: none) |
+| H2 | Higher reliability / robustness than FedAvg as malicious share grows | **Supported** | +6.1 pp at 24 %, +16.2 pp at 40 % attackers (24 seeds) |
+| H3 | Joint (behavioural + model) trust beats behavioural alone | **Supported** | +5.3 pp at 24 %, +19.7 pp at 40 %; behavioural-only is no defence |
+| H4 | Advantage holds under other mobility / connectivity | **Supported** | synthetic and authentic NGSIM mobility; offline clients on the raw interval |
+| H5 | No impractical overhead | **Met** | 136 ms vs 12 ms per round for FedAvg, no extra upload |
+
+**Built:** simulator (IDM / NGSIM mobility, V2X channel, edge queues, V2V helpers), federated dueling-DQN
+offloading, behavioural + model-update trust, a do-no-harm exclusion rule, robust-aggregation baselines,
+data-plane attacks, Alibaba edge-trace calibration, a 3D research console, ~400 tests, raw evidence with checksums.
+
+**Not achieved / limits:** no benefit from trust inside the learned policy; the learner beats the best heuristic
+only in the benchmark environment; norm-matched and partial attackers are not detected; simulation only;
+H1 latency not supported; the rule ties Multi-Krum at 24 / 40 % attackers (see `docs/BASELINES.md`).
+
+Roadmap: [`docs/PUBLICATION_PLAN.md`](docs/PUBLICATION_PLAN.md) | audit: [`docs/SYSTEM_AUDIT.md`](docs/SYSTEM_AUDIT.md) |
+literature: [`docs/LITERATURE_GAP.md`](docs/LITERATURE_GAP.md), [`docs/LITERATURE_REVIEW.md`](docs/LITERATURE_REVIEW.md) |
+edge trace: [`docs/EDGE_TRACE_USE.md`](docs/EDGE_TRACE_USE.md).
+
+## Detailed findings (earlier benchmark: active run, 16 paired seeds; later studies marked)
 
 | Finding | Result |
 |---|---|
@@ -38,10 +62,11 @@ real data (FHWA NGSIM US-101).
 | *Method attempt:* learner with delay-estimate inputs | +6.6 pp over Resource-Aware in the benchmark environment; parity or loss under hidden-state conditions; trust features add nothing |
 | *Extended run:* Alibaba edge-trace calibration, peak hour | Nearest-RSU 16.8 %, Resource-Aware 59.9 %, learned policy = Local-Only (58.3 %) |
 
-What must **not** be claimed: that trust-aware FL improves completion at the
-default attack ratio, that the detector has a near-zero false-positive rate,
-that behavioural trust protects the policy, that the learned policy beats simple
-heuristics, or that any result is a real-world measurement.
+What must **not** be claimed: that the *original* joint trust rule improves completion at
+the default attack ratio (the do-no-harm rule does, +6.1 pp vs FedAvg), that any detector has a
+near-zero false-positive rate, that behavioural trust protects the policy, that the learned policy
+beats heuristics outside the benchmark environment, that stealth (norm-matched) attackers are handled,
+or that any result is a real-world measurement.
 
 ## Quick start
 

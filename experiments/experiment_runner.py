@@ -250,6 +250,42 @@ def _resolve_task_profiles(config):
     return {"task_profile_path": path, "task_profile_sha256": get_file_sha256(absolute)}
 
 
+def _make_root_trainer(config, num_vehicles, mobility_mode, seed, state_dim, agent_kwargs,
+                       local_epochs, steps_per_round):
+    """Trusted root-data trainer for the FLTrust-style baseline.
+
+    The server owns a separate, attacker-free probe environment (same configuration,
+    different seed) driven by a simple heuristic policy.  Every round it collects
+    ``steps_per_round`` steps of transitions, trains a copy of the current global model
+    on them for ``local_epochs`` gradient steps and returns the result; the difference to
+    the global model is the *root update*.  This is the trusted root dataset FLTrust
+    requires; the vehicles' own data are never used.
+    """
+    root_env = VANETOffloadingEnv(num_vehicles=num_vehicles, attack_ratio=0.0, mobility_mode=mobility_mode,
+                                  config=config, random_seed=int(seed) + 777)
+    agent = DQNAgent(state_dim=state_dim, action_dim=5, **agent_kwargs)
+    states = root_env._get_global_state_dict()
+
+    def trainer(global_weights):
+        for _ in range(steps_per_round):
+            root_env.update_positions()
+            for vid in root_env.vehicle_order():
+                v = root_env.vehicles[vid]
+                state, task = states[vid]
+                action = _greedy_delay_action(root_env, v, task)
+                ns, r, done, info, nt = root_env.step_vehicle(vid, action, task)
+                if not info.get("present", True):
+                    continue
+                agent.memory.push(state, action, r, ns, done)
+                states[vid] = (ns, nt)
+        agent.set_weights(global_weights)
+        for _ in range(local_epochs):
+            agent.update()
+        return agent.get_weights()
+
+    return trainer
+
+
 def run_simulation_trial(num_vehicles=None,
                           attack_ratio=None,
                           num_rounds=None,
@@ -330,6 +366,10 @@ def run_simulation_trial(num_vehicles=None,
         config=config,
     )
     server.shadow_detectors = bool(shadow)
+    if aggregation_strategy == "fltrust":
+        server.root_trainer = _make_root_trainer(
+            config, num_vehicles, mobility_mode, seed, env_train.state_dim, agent_kwargs,
+            int(cfg_fl.get("local_epochs", 16)), int(steps_per_round))
     server.staleness_mode = str(cfg_fl.get("staleness_mode", "none"))
     missed_broadcast = bool(cfg_fl.get("missed_broadcast", False))
     connectivity_dropout = float(cfg_fl.get("connectivity_dropout", 0.0))

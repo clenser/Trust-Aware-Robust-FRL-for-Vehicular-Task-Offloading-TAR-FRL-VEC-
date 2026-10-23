@@ -54,6 +54,10 @@ class FederatedServer:
         self.staleness_mode = "none"
         # Do-no-harm exclusion rule (strategy "do_no_harm"); carries per-client evidence across rounds.
         self.dnh = DoNoHarmDetector()
+        # FLTrust-style baseline (strategy "fltrust"): a callable ``f(global_weights) -> weights``
+        # that returns the global model after local training on a TRUSTED root
+        # dataset the server owns.  Set by the experiment runner.
+        self.root_trainer = None
 
     def get_global_weights(self):
         return copy.deepcopy(self.global_weights)
@@ -106,6 +110,56 @@ class FederatedServer:
                 "excluded_count": len(client_models_dict) - len(keep),
                 "excluded_clients": [int(c) for c in client_models_dict if c not in keep],
                 "accepted_clients": [int(c) for c in keep],
+                "total_clients": len(client_models_dict)})
+        elif self.aggregation_strategy == "fltrust":
+            # FLTrust (Cao et al., NDSS 2021), adapted: trust score = ReLU(cosine of the client
+            # update with the server's root update); client updates are rescaled to the root
+            # update's norm; the global model moves by the trust-weighted mean.
+            root_w = self.root_trainer(self.global_weights) if self.root_trainer else None
+            if root_w is None:
+                raise RuntimeError("strategy 'fltrust' needs a root_trainer (trusted root data)")
+            r = self.trust_engine.model_evaluator.extract_flat_update(root_w, self.global_weights)
+            rn = float(np.linalg.norm(r)) + 1e-12
+            ts = {}
+            for cid, d in flat_deltas.items():
+                dn = float(np.linalg.norm(d)) + 1e-12
+                ts[cid] = max(0.0, float(d @ r / (dn * rn)))
+            total = sum(ts.values())
+            keys = list(self.global_weights.keys())
+            if total <= 1e-12:
+                new_global = copy.deepcopy(self.global_weights)       # nothing trustworthy: stand still
+            else:
+                new_global = {}
+                shapes = [(k, self.global_weights[k].shape) for k in keys]
+                agg = np.zeros_like(r)
+                for cid, d in flat_deltas.items():
+                    if ts[cid] > 0:
+                        agg += ts[cid] * d * (rn / (float(np.linalg.norm(d)) + 1e-12))
+                agg /= total
+                off = 0
+                for k, shp in shapes:
+                    n = int(np.prod(shp))
+                    upd = torch.tensor(agg[off:off + n], dtype=torch.float32).reshape(shp)
+                    new_global[k] = (self.global_weights[k].float() + upd).to(self.global_weights[k].dtype)
+                    off += n
+            excluded_set = {c for c, t in ts.items() if t <= 0.0}
+            tp = fp = tn = fn = 0
+            if ground_truth_roles:
+                for cid in client_models_dict:
+                    mal = ground_truth_roles.get(cid, "honest") not in ("honest", "unreliable")
+                    ex = cid in excluded_set
+                    tp += int(ex and mal); fp += int(ex and not mal)
+                    tn += int((not ex) and (not mal)); fn += int((not ex) and mal)
+            tpr = tp / (tp + fn) if (tp + fn) else None
+            fpr = fp / (fp + tn) if (fp + tn) else None
+            metrics.update({
+                "defense_type": "fltrust", "performs_client_detection": True,
+                "true_positives": tp, "false_positives": fp, "true_negatives": tn, "false_negatives": fn,
+                "attack_detection_rate": round(float(tpr), 4) if tpr is not None else None,
+                "false_positive_rate": round(float(fpr), 4) if fpr is not None else None,
+                "false_negative_rate": round(float(1 - tpr), 4) if tpr is not None else None,
+                "excluded_count": len(excluded_set), "excluded_clients": [int(c) for c in excluded_set],
+                "accepted_clients": [int(c) for c in client_models_dict if c not in excluded_set],
                 "total_clients": len(client_models_dict)})
         elif self.aggregation_strategy == "do_no_harm":
             # Persistent-evidence exclusion on absolute harm statistics (see
