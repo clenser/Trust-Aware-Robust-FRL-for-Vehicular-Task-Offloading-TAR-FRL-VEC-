@@ -1,0 +1,94 @@
+{
+  "generated_utc": "2026-10-23T09:59:40.323954+00:00",
+  "source": {
+    "file": "data/source/us101_raw.csv",
+    "sha256": "6b1516b78d60d9a4e7b90905cf4893ddadfdeb01a69e7cd6d3079e170957ecc6",
+    "raw_rows": 11850526,
+    "raw_columns": [
+      "Vehicle_ID",
+      "Frame_ID",
+      "Total_Frames",
+      "Global_Time",
+      "Local_X",
+      "Local_Y",
+      "Global_X",
+      "Global_Y",
+      "v_length",
+      "v_Width",
+      "v_Class",
+      "v_Vel",
+      "v_Acc",
+      "Lane_ID",
+      "O_Zone",
+      "D_Zone",
+      "Int_ID",
+      "Section_ID",
+      "Direction",
+      "Movement",
+      "Preceding",
+      "Following",
+      "Space_Headway",
+      "Time_Headway",
+      "Location"
+    ],
+    "issuing_agency": "Federal Highway Administration (FHWA), USDOT",
+    "portal": "https://data.transportation.gov/Automobiles/Next-Generation-Simulation-NGSIM-Vehicle-Trajector/8ect-6jqj",
+    "portal_dataset_id": "8ect-6jqj",
+    "official_dataset_name": "Next Generation Simulation (NGSIM) Vehicle Trajectories and Supporting Data",
+    "license": "Creative Commons Attribution | Share Alike 3.0 Unported (CC BY-SA 3.0)",
+    "attribution": "USDOT / FHWA, 'Next Generation Simulation (NGSIM) Vehicle Trajectories and Supporting Data', data.transportation.gov dataset 8ect-6jqj, licensed CC BY-SA 3.0 Unported.",
+    "independent_authentication_status": "authenticated_by_fresh_download_comparison",
+    "published_checksum_found": false,
+    "published_checksum_value": null,
+    "published_checksum_note": "The official catalogue publishes no checksum; authenticity was established by byte-for-byte comparison against a fresh download from the official endpoint (see data/source/verification_record.json).",
+    "license_verified_from": "https://data.transportation.gov/api/views/8ect-6jqj.json",
+    "verification_record": "data/source/verification_record.json",
+    "verification_attempted_utc": "2026-10-21T19:34:44Z",
+    "official_export_sha256": "6b1516b78d60d9a4e7b90905cf4893ddadfdeb01a69e7cd6d3079e170957ecc6",
+    "official_export_row_count": 11850526
+  },
+  "filter_rules": {
+    "location_filter": "Location == 'us-101'",
+    "duplicate_policy": "exact duplicate rows removed (keep first)",
+    "invalid_rows_policy": "rows with non-numeric Global_Time/Local_X/Local_Y/v_Vel/Lane_ID removed",
+    "unit_conversion": "feet -> metres (x0.3048), ft/s -> m/s (x0.3048)",
+    "time_origin": "Global_Time minus the minimum Global_Time of the filtered site",
+    "vehicle_id_policy": "original NGSIM Vehicle_ID preserved verbatim"
+  },
+  "timestamp_diagnosis": {
+    "global_median_global_time": 1116142906500.0,
+    "per_location_median": {
+      "i-80": 1113437442200.0,
+      "lankershim": 1118936858200.0,
+      "peachtree": 1163523100.0,
+      "us-101": 1118848370800.0
+    },
+    "anomalies": {
+      "peachtree": {
+        "median_global_time": 1163523100.0,
+        "ratio_to_global_median": 0.001042449934702873,
+        "issue": "timestamp scale differs from the other road sites by >1 order of magnitude"
+      }
+    }
+  },
+  "counts": {
+    "rows_after_site_filter": 4802933,
+    "duplicate_rows_removed": 704000,
+    "invalid_rows_removed": 0,
+    "rows_written": 4098933,
+    "unique_vehicles": 2847
+  },
+  "geometry": {
+    "road_length_m": 681.3,
+    "lane_count": 8,
+    "duration_sec": 2772.5,
+    "median_sample_interval_ms": 100,
+    "expected_sample_interval_ms": 100,
+    "sample_interval_consistent": true
+  },
+  "output": {
+    "file": "data/traces/ngsim_us101_authentic.csv",
+    "sha256": "723927c5f63fe7653ea7a6874f407e0c50f3ec4e04478d8e6ce4315cd93436b1",
+    "rows": 4098933
+  }
+}

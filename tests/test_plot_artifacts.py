@@ -32,7 +32,10 @@ from experiments.plotter import (
 from web.app import _load_figure_manifest, _active_run_entry
 from experiments.research_figures import RESEARCH_FIGURES
 
+from experiments.supplementary_figures import SUPPLEMENTARY_FIGURES
+
 ALL_FIGURES = list(CURRENT_FIGURES) + list(RESEARCH_FIGURES)
+TOP_LEVEL_FIGURES = ALL_FIGURES + list(SUPPLEMENTARY_FIGURES)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RESULTS = os.path.join(ROOT, "results")
@@ -144,7 +147,7 @@ class TestTopLevelPlotsDirectory(unittest.TestCase):
         if not os.path.isdir(TOP_PLOTS):
             self.skipTest("no top-level plots directory")
         on_disk = {n for n in os.listdir(TOP_PLOTS) if n.endswith(".png")}
-        self.assertEqual(on_disk, set(ALL_FIGURES),
+        self.assertEqual(on_disk, set(TOP_LEVEL_FIGURES),
                          "the active plots directory contains stale figures")
 
     def test_top_level_plots_have_a_manifest(self):
@@ -152,7 +155,7 @@ class TestTopLevelPlotsDirectory(unittest.TestCase):
         self.assertTrue(os.path.isfile(path))
         manifest = _load_json(path)
         listed = {f["filename"] for f in manifest["figures"]}
-        self.assertEqual(listed, set(ALL_FIGURES))
+        self.assertEqual(listed, set(TOP_LEVEL_FIGURES))
 
 
 class TestHistoricalArtifactsArePreserved(unittest.TestCase):

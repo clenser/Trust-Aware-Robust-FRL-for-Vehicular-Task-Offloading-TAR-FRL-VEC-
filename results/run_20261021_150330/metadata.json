@@ -1,0 +1,26 @@
+{
+  "run_id": "run_20261021_150330",
+  "timestamp_utc": "2026-10-21T09:33:30Z",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "torch_version": "2.11.0+cpu",
+  "seeds": [
+    42,
+    101,
+    777
+  ],
+  "dataset_checksums_sha256": {
+    "synthetic_ngsim_highway.csv": "0cd336f7ef61897ad4d7cde8c878d805714cae2985e71ca32c9df125ec77a0e4",
+    "synthetic_manhattan_grid.csv": "1e0284f4557bbf22a8b0a4d4070aaf8321df41761f35eb20c460157c2ba6525b",
+    "synthetic_v2x_task_profiles.csv": "f556495041ac1618d1ea7153ab8285696da5e101022102624e8465e358a8d29c",
+    "ngsim_us101.csv": "0cd336f7ef61897ad4d7cde8c878d805714cae2985e71ca32c9df125ec77a0e4",
+    "v2x_task_profiles.csv": "f556495041ac1618d1ea7153ab8285696da5e101022102624e8465e358a8d29c",
+    "us101_raw.csv": null
+  },
+  "provenance_disclosure": {
+    "mobility": "Simulated IDM / Trace replay calibrated against FHWA NGSIM distributions",
+    "task_profiles": "3GPP TR 36.885 calibrated with 0.1x frame-level scaling",
+    "rl_environment": "Simulated V2X 3GPP channels, edge queues, and reward calculations",
+    "eval_isolation": "Held-out seeds, epsilon=0.0, zero replay push, zero gradient steps"
+  }
+}

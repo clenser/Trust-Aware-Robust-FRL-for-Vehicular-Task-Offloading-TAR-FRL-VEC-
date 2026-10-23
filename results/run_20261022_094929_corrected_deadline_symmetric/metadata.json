@@ -1,0 +1,115 @@
+{
+  "run_id": "run_20261022_094929_corrected_deadline_symmetric",
+  "run_kind": "full",
+  "timestamp_utc": "2026-10-22T05:54:13Z",
+  "seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808,
+    909,
+    1010,
+    1111
+  ],
+  "num_seeds": 12,
+  "sweep_seeds": [
+    42,
+    101,
+    202,
+    303,
+    404
+  ],
+  "num_sweep_seeds": 5,
+  "evaluation_config": {
+    "episodes": 3,
+    "steps_per_episode": 20,
+    "seed_offset": 500000
+  },
+  "dataset_provenance": {
+    "highway": {
+      "mobility_mode": "highway",
+      "mobility_source": "procedural IDM highway (no trajectory file)",
+      "trace_path": null,
+      "trace_sha256": null,
+      "authentic": false
+    },
+    "trace": {
+      "mobility_mode": "trace",
+      "mobility_source": "calibrated synthetic NGSIM-style trace",
+      "trace_path": "data/synthetic_traces/synthetic_ngsim_highway.csv",
+      "trace_sha256": "0cd336f7ef61897ad4d7cde8c878d805714cae2985e71ca32c9df125ec77a0e4",
+      "trace_bytes": 1475678,
+      "authentic": false
+    },
+    "authentic_trace": {
+      "mobility_mode": "authentic_trace",
+      "mobility_source": "authentic FHWA NGSIM US-101 processed trace",
+      "trace_path": "data/traces/ngsim_us101_authentic.csv",
+      "trace_sha256": "723927c5f63fe7653ea7a6874f407e0c50f3ec4e04478d8e6ce4315cd93436b1",
+      "trace_bytes": 154158064,
+      "authentic": true
+    },
+    "task_profiles": {
+      "task_profile_path": "data/synthetic_traces/synthetic_v2x_task_profiles.csv",
+      "task_profile_sha256": "f556495041ac1618d1ea7153ab8285696da5e101022102624e8465e358a8d29c"
+    }
+  },
+  "code_revision": {
+    "vcs": "content-hash",
+    "content_sha256": "f60a36c2f2bf433b1757e2d6be0dae23486281880113d85b8b86c7366838f1e1",
+    "files": [
+      "web/app.py:45e69d57a5a6367dfcd45fa901248c4ba19be64ac7c4682b7c85e20cd0a185f5",
+      "environment/vanet_env.py:7ee62938302f95ec34fa51b0cec5e35ff90c977dd64f4b803c8faf00204c4b17",
+      "environment/network.py:3514eb82b72bc732673ef6bec28277ef571bf95db0cb7492139460256052de75",
+      "environment/task.py:e7fd163be82f9cc4f4e51f21041d51cdac6ac133f41bb03a059092e1ee310d41",
+      "environment/rsu.py:f84a83c1ad4b664c9f9c2ce99e53f170c0c8eec803139cb6e7b05fdf0f47633d",
+      "environment/mobility.py:ec26f0284a150245f1aecda700c6cc1800a2f6566a2cac5a98a516aac1f4b62a",
+      "federated/client.py:53b5ffa9c9de77a50ec5c61db53835f32209287959513653c08d942dc329f2ad",
+      "federated/server.py:93ce0a2875c198d927273935b3af2b23d6c134cc3b873cf0546b7198481768d8",
+      "trust/trust_engine.py:82ef2a0d7c09fed89005b81768d8313d261f05e2df0162a1839f3c455635d34d",
+      "trust/trust_model.py:0f10d35f72042496b4fd5f1cd930b73380d4e6657ee21ce6136a0aa2f9c538b3",
+      "trust/model_trust.py:af13c244b5123073bc16f46ccba84f14127003e1ecd77e0477255292ea1ffd94",
+      "rl/agent.py:413776e2928ece77e3d58a253e3496774ed2b67bf5f34410c59163531f913faa",
+      "rl/reward.py:3708a62ff418558bbf9ab8987ab8a9da6a78d56913a76050b7b28e7bee9b2505",
+      "baselines/heuristics.py:efcb32740c847a8a410fbd423d63fc0c8c220c616f93201e7acb8e21c0d25b0a",
+      "attacks/poisoning.py:374d931b87bfc285a215b54b06998f6803f169b482fab8f1953ec06b973ebba6",
+      "attacks/free_riding.py:180a0105712c60452c42c1f4a51e15a281fc2a21ae9f9c56401a1c5a418c59ab",
+      "configs/default_config.yaml:99e38deeaa69245249b19a200b1bcb8797905fa0f29091f9004c5e3a7a5db7a9"
+    ]
+  },
+  "environment_versions": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "attack_settings": {
+    "attack_ratio": 0.24,
+    "realised_malicious_clients": 6,
+    "poison_strength": 1.5,
+    "poison_type": "sign_flip"
+  },
+  "mobility_mode": "highway",
+  "provenance_disclosure": {
+    "task_profiles": "3GPP TR 36.885 derived, scaled by 0.1; modelling assumption",
+    "rl_environment": "simulated 3GPP-style V2X channel, deterministic edge queues, modelled reward",
+    "eval_isolation": "independent episodes, separate seeds, greedy policy, no buffer writes, no gradients",
+    "mobility": "procedural IDM"
+  },
+  "validation_status": "passed",
+  "validation_problems": [],
+  "figures": [
+    "fig1_baseline_comparison.png",
+    "fig2_paired_differences.png",
+    "fig3_attack_ratio_sweep.png",
+    "fig4_ablation_study.png",
+    "fig5_sensitivity_alpha.png",
+    "fig6_mobility_sweep.png"
+  ]
+}

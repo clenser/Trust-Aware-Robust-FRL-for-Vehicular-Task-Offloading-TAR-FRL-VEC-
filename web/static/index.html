@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Sreemanta Barman">
   <title>VANNET · Trust-Aware Federated RL for Vehicular Edge Offloading</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=6.2">
+  <link rel="stylesheet" href="/static/css/style.css?v=7.1">
 </head>
 <body>
   <div id="error-banner" class="banner" style="display:none;" role="alert"></div>
@@ -29,6 +30,8 @@
       <button class="tab" id="tab-research" role="tab" aria-selected="false" data-view="view-research">Research results</button>
     </nav>
     <div class="status-group">
+      <button class="btn ghost toggle active" id="btn-toggle-left" aria-pressed="true" title="Show / hide the controls panel">Controls</button>
+      <button class="btn ghost toggle" id="btn-toggle-right" aria-pressed="false" title="Show / hide the federated-learning monitor">Monitor</button>
       <span class="status" id="kpi-simstate">STOPPED</span>
       <span class="status muted" id="connection-status">connecting</span>
       <button class="btn ghost" id="btn-theme" title="Toggle light / dark theme">Theme</button>
@@ -77,6 +80,17 @@
             <input type="number" id="input-rsu-3" min="0" max="3200" step="10" value="2460" aria-label="RSU 3 position">
           </div>
         </label>
+        <label class="check" title="Poisoning vehicles also sabotage V2V tasks they serve; free riders refuse them">
+          <input type="checkbox" id="chk-dataplane" checked> Data-plane attack (malicious V2V helpers)</label>
+        <label class="field"><span>V2V peer selection</span>
+          <select id="select-v2v">
+            <option value="nearest">Nearest peer</option>
+            <option value="trust_aware">Trust-aware (trust, distance, spare queue)</option>
+          </select>
+        </label>
+        <label class="check" title="RSU co-tenant load and hand-over delay from the Alibaba edge-platform trace">
+          <input type="checkbox" id="chk-edgecal"> Edge-platform calibration (Alibaba trace)</label>
+        <div id="attack-summary" class="note">No attack data yet.</div>
         <button class="btn" id="btn-apply-config">Apply and start new session</button>
         <div id="config-message" class="note" role="status"></div>
       </section>
@@ -135,11 +149,16 @@
             <button class="seg-btn active" id="btn-view-follow">Close-up</button>
             <button class="seg-btn" id="btn-view-overview">Whole road</button>
           </div>
+          <span class="tools-spacer"></span>
+          <button class="seg-btn solo" id="btn-legend" title="Show / hide the colour legend">Legend</button>
+          <button class="seg-btn solo" id="btn-focus" title="Hide the side panels and the lower sections">Focus</button>
+          <button class="seg-btn solo" id="btn-fullscreen" title="Full-screen viewport">Full screen</button>
           <span class="legend-chip"><i class="lg ok"></i>completed offload</span>
           <span class="legend-chip"><i class="lg grey"></i>failed offload</span>
           <span class="legend-chip"><i class="lg bad"></i>detector alert / excluded update</span>
           <span class="legend-chip"><i class="lg blue"></i>update upload</span>
           <span class="legend-chip"><i class="lg amber"></i>V2V</span>
+          <span class="legend-chip"><i class="lg bad"></i>malicious helper drop</span>
           <span class="legend-chip"><i class="lg ring amber"></i>trust 0.4&ndash;0.6</span>
           <span class="legend-chip"><i class="lg ring bad"></i>trust &lt; &tau;</span>
         </div>
@@ -243,5 +262,7 @@
   <script src="/static/js/sim_view3d.js?v=6.1"></script>
   <script src="/static/js/dashboard.js?v=6.1"></script>
   <script src="/static/js/research.js?v=6.1"></script>
+  <script src="/static/js/ui_layout.js?v=1.0"></script>
+  <!-- VANNET - Sreemanta Barman -->
 </body>
 </html>

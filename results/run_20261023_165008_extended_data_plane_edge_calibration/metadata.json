@@ -1,0 +1,79 @@
+{
+  "run_id": "run_20261023_165008_extended_data_plane_edge_calibration",
+  "run_kind": "extended",
+  "supplements": "run_20261023_022608_env_v21_coverage_features",
+  "timestamp_utc": "2026-10-23T11:36:25Z",
+  "seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "evaluation_config": {
+    "episodes": 5,
+    "steps_per_episode": 30,
+    "seed_offset": 500000
+  },
+  "training_protocol": {
+    "num_rounds": 30,
+    "steps_per_round": 20,
+    "local_epochs": 16
+  },
+  "environment_model": {
+    "version": "2.1",
+    "state_features": "v2.1",
+    "honor_rsu_choice": true,
+    "uplink_contention": true,
+    "reward": {
+      "alpha_lat": 2.0,
+      "beta_energy": 1.0,
+      "gamma_fail": 5.0,
+      "delta_success": 3.0,
+      "lambda_trust": 0.0,
+      "e_norm": 0.01
+    }
+  },
+  "data_plane_attack": {
+    "malicious_drop_prob": 0.7,
+    "malicious_delay_factor": 3.0,
+    "selfish_drop_prob": 0.8
+  },
+  "edge_calibration": {
+    "enabled": false,
+    "summary_path": "data/traces/edge_platform_summary.json",
+    "peak_background_share": null,
+    "start_hour": 12.0,
+    "day_compression": 288.0,
+    "capacity_heterogeneity": true,
+    "backhaul_rtt": true
+  },
+  "compute_rich_helpers": {
+    "rich_fraction": 0.3,
+    "rich_cpu_ghz": [
+      4.0,
+      8.0
+    ]
+  },
+  "code_revision": {
+    "vcs": "git",
+    "commit": "5f3b241f6da6ffb40b296479b6316da4fcbb3e8c"
+  },
+  "environment_versions": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "reference_cells": "Cells of the supplemented run with the same seeds are the reference.",
+  "limitations": [
+    "The data-plane attack is a scripted behaviour (fixed drop probability and delay factor), not a measured one.",
+    "The edge trace calibrates RSU co-tenant load and hand-over delay only; it contains no vehicular data.",
+    "Edge capacity and background load use damped, clipped samples of the measured distributions.",
+    "Six seeds; exploratory, not multiplicity-corrected."
+  ],
+  "validation_status": "passed",
+  "validation_problems": []
+}

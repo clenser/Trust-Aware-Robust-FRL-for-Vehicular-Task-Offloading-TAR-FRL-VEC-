@@ -1,0 +1,256 @@
+[
+  {
+    "run_id": "run_20261021_150330",
+    "directory": "results\\run_20261021_150330",
+    "timestamp_utc": "2026-10-21T09:33:30Z",
+    "num_seeds": 3,
+    "seeds": [
+      42,
+      101,
+      777
+    ],
+    "note": "Historical run preserved unchanged. It used the pre-correction models and 3 seeds; its metrics are superseded by run_20261022_021652_corrected_full."
+  },
+  {
+    "run_id": "run_20261022_002030_diagnostic",
+    "directory": "results\\run_20261022_002030_diagnostic",
+    "timestamp_utc": "2026-10-21T19:07:49Z",
+    "num_seeds": 3,
+    "seeds": [
+      42,
+      101,
+      202
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "superseded": true,
+    "superseded_reason": "Executed before the model corrections (training budget, energy coefficient, trust term, on-board CPU). Its numbers must not be cited; see run_20261022_021652_corrected_full.",
+    "superseded_by": "run_20261022_094929_corrected_deadline_symmetric"
+  },
+  {
+    "run_id": "run_20261022_021652_corrected_full",
+    "directory": "results\\run_20261022_021652_corrected_full",
+    "timestamp_utc": "2026-10-21T22:04:10Z",
+    "num_seeds": 12,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505,
+      606,
+      707,
+      808,
+      909,
+      1010,
+      1111
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "superseded": true,
+    "superseded_by": "run_20261022_094929_corrected_deadline_symmetric",
+    "superseded_reason": "Published before run_20261022_094929_corrected_deadline_symmetric; its artefacts are preserved but it is no longer the active result set."
+  },
+  {
+    "run_id": "run_20261022_094929_corrected_deadline_symmetric",
+    "directory": "results\\run_20261022_094929_corrected_deadline_symmetric",
+    "timestamp_utc": "2026-10-22T05:54:13Z",
+    "num_seeds": 12,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505,
+      606,
+      707,
+      808,
+      909,
+      1010,
+      1111
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "superseded": true,
+    "superseded_by": "run_20261022_153536_corrected_participation_rule",
+    "superseded_reason": "Published before run_20261022_153536_corrected_participation_rule; its artefacts are preserved but it is no longer the active result set."
+  },
+  {
+    "run_id": "run_20261022_005703_corrected_full",
+    "directory": "results\\run_20261022_005703_corrected_full",
+    "timestamp_utc": null,
+    "num_seeds": 0,
+    "seeds": [],
+    "validation_status": "aborted",
+    "published_as_active": false,
+    "note": "Aborted benchmark invocation. The directory contains no artefacts (no results, no metadata, no figures); it is kept for completeness and must not be cited."
+  },
+  {
+    "run_id": "run_20261022_140055_corrected_participation_rule",
+    "directory": "results\\run_20261022_140055_corrected_participation_rule",
+    "timestamp_utc": null,
+    "num_seeds": 0,
+    "seeds": [],
+    "validation_status": "aborted",
+    "published_as_active": false,
+    "note": "Aborted benchmark invocation. The directory contains no artefacts (no results, no metadata, no figures); it is kept for completeness and must not be cited."
+  },
+  {
+    "run_id": "run_20261022_153536_corrected_participation_rule",
+    "directory": "results\\run_20261022_153536_corrected_participation_rule",
+    "timestamp_utc": "2026-10-22T11:44:43Z",
+    "num_seeds": 12,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505,
+      606,
+      707,
+      808,
+      909,
+      1010,
+      1111
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "superseded": true,
+    "superseded_by": "run_20261022_215233_env_v2_protocol",
+    "superseded_reason": "Published before run_20261022_215233_env_v2_protocol; its artefacts are preserved but it is no longer the active result set."
+  },
+  {
+    "run_id": "run_20261022_214609_smoke_v2",
+    "directory": "results\\run_20261022_214609_smoke_v2",
+    "timestamp_utc": "2026-10-22T16:21:50Z",
+    "num_seeds": 2,
+    "seeds": [
+      42,
+      101
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "note": "Diagnostic smoke run (2 seeds, 2 rounds x 4 steps, 1 evaluation episode of 4 steps) used only to test the pipeline end to end. Its numbers must not be cited.",
+    "run_kind": "quick"
+  },
+  {
+    "run_id": "run_20261022_215233_env_v2_protocol",
+    "directory": "results/run_20261022_215233_env_v2_protocol",
+    "timestamp_utc": "2026-10-22T20:53:15Z",
+    "num_seeds": 16,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505,
+      606,
+      707,
+      808,
+      909,
+      1010,
+      1111,
+      1212,
+      1313,
+      1414,
+      1515
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "note": "Active run. Interrupted once when the host reaped the process for low memory; resumed with --resume. The first two cells of experiment A (Proposed_TFRL, Standard_FedAvg_RL) were computed before the resume and reloaded from partial_results.json; the only code changed in between was the trace loader (environment/mobility.py), which the highway-mode cells do not use.",
+    "superseded": true,
+    "superseded_by": "run_20261023_022608_env_v21_coverage_features",
+    "superseded_reason": "First full run of environment model 2.0 (road-length-normalised RSU distances). The learned policies had not learned RSU coverage (27 % of failures out of coverage). Retained as the pre-change result; compared in results/claims_report.md section 14."
+  },
+  {
+    "run_id": "run_20261022_213338_smoke_v2",
+    "directory": "results\run_20261022_213338_smoke_v2",
+    "timestamp_utc": null,
+    "num_seeds": 0,
+    "seeds": [],
+    "validation_status": "aborted",
+    "published_as_active": false,
+    "note": "Smoke run stopped by the operator after it showed 25 s of process-spawn overhead per cell; replaced by a persistent worker pool. Contains only partial_results.json; must not be cited."
+  },
+  {
+    "run_id": "run_20261023_022608_env_v21_coverage_features",
+    "directory": "results\\run_20261023_022608_env_v21_coverage_features",
+    "timestamp_utc": "2026-10-22T23:44:25Z",
+    "num_seeds": 16,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505,
+      606,
+      707,
+      808,
+      909,
+      1010,
+      1111,
+      1212,
+      1313,
+      1414,
+      1515
+    ],
+    "validation_status": "passed",
+    "published_as_active": true,
+    "note": "Active run (environment model 2.1: honoured RSU choice, OFDMA uplink contention, neutral reward, coverage-relative state). Not interrupted. Its recorded code fingerprint omits trust/alt_detectors.py and experiments/experiment_runner.py (added to the fingerprint list afterwards) and web/app.py has since changed (claims API, form sync; not used by the offline benchmark).",
+    "superseded": false
+  },
+  {
+    "run_id": "run_20261023_095506_supp_quick",
+    "directory": "results\run_20261023_095506_supp_quick",
+    "timestamp_utc": null,
+    "num_seeds": 2,
+    "seeds": [],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "kind": "supplementary_smoke",
+    "note": "Smoke run of the supplementary suite (2 seeds, 2 rounds x 4 steps). Pipeline test only; must not be cited."
+  },
+  {
+    "run_id": "run_20261023_100858_supplementary_edge_node_staleness",
+    "directory": "results\\run_20261023_100858_supplementary_edge_node_staleness",
+    "timestamp_utc": "2026-10-23T05:28:00Z",
+    "num_seeds": 6,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "kind": "supplementary",
+    "supplements": "run_20261023_022608_env_v21_coverage_features",
+    "note": "Supplementary experiments (faulty edge node, intermittent connectivity, relabelled mixed threat) for the active run; the active run itself is unchanged."
+  },
+  {
+    "run_id": "run_20261023_165008_extended_data_plane_edge_calibration",
+    "directory": "results\\run_20261023_165008_extended_data_plane_edge_calibration",
+    "timestamp_utc": "2026-10-23T11:36:25Z",
+    "num_seeds": 6,
+    "seeds": [
+      42,
+      101,
+      202,
+      303,
+      404,
+      505
+    ],
+    "validation_status": "passed",
+    "published_as_active": false,
+    "kind": "extended",
+    "supplements": "run_20261023_022608_env_v21_coverage_features",
+    "note": "Extended experiments (data-plane attack and V2V, learned policy under it, empirical edge calibration) for the active run; the active run itself is unchanged."
+  }
+]

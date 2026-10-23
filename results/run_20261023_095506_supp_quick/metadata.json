@@ -1,0 +1,86 @@
+{
+  "run_id": "run_20261023_095506_supp_quick",
+  "run_kind": "quick",
+  "supplements": "run_20261023_022608_env_v21_coverage_features",
+  "timestamp_utc": "2026-10-23T04:25:36Z",
+  "seeds": [
+    42,
+    101
+  ],
+  "evaluation_config": {
+    "episodes": 1,
+    "steps_per_episode": 4,
+    "seed_offset": 500000
+  },
+  "training_protocol": {
+    "num_rounds": 2,
+    "steps_per_round": 4,
+    "local_epochs": 2
+  },
+  "environment_model": {
+    "version": "2.1",
+    "state_features": "v2.1",
+    "honor_rsu_choice": true,
+    "uplink_contention": true,
+    "reward": {
+      "alpha_lat": 2.0,
+      "beta_energy": 1.0,
+      "gamma_fail": 5.0,
+      "delta_success": 3.0,
+      "lambda_trust": 0.0,
+      "e_norm": 0.01
+    }
+  },
+  "faulty_rsu": [
+    {
+      "index": 1,
+      "drop_prob": 0.6,
+      "delay_factor": 1.0
+    }
+  ],
+  "connectivity": {
+    "connectivity_dropout": 0.4,
+    "missed_broadcast": true
+  },
+  "code_revision": {
+    "vcs": "content-hash",
+    "content_sha256": "ec28e89da9cdb9c8f29a90825de43c63ec8615ecd10d79a7d1a020257288a38a",
+    "files": [
+      "web/app.py:ba71659eed59c3e455cd67a0817125e275eb5e7f628f4d8ace9381dd6c2c22c7",
+      "environment/vanet_env.py:c638049f86b92c5776cb495f41c7332d639892de217e804c3cfc3243387041d0",
+      "environment/network.py:eb9d9a20fc9f4af21b9ae7374c163ad02d64754d4d6d7294e3322de0807f55a3",
+      "environment/task.py:f1b0607d6ceb3b0bfc4c1e01b38ab2fe7dfc0d630ea96096869128484fba348b",
+      "environment/rsu.py:166852e86a56d718c7481cc501cb67326208079ba9b0245baaeb0ea4244f938a",
+      "environment/mobility.py:5352b4801b9587d639e1f1b4593081c8bb8b6b4f888771ac01302e725fb2b7b6",
+      "federated/client.py:427d5907defcd196988f25f753b0d7b1a8a2cf1db46e30d6d0d090d21748d849",
+      "federated/server.py:317a4f455f010db3cff60b1689c7ea82cb9a648a4836c0b2d85150ee9a7f7d58",
+      "trust/trust_engine.py:3819df72a6903f555e25f12f27b71ab1c16280765ab21be6294b8ec427238bf5",
+      "trust/trust_model.py:0f10d35f72042496b4fd5f1cd930b73380d4e6657ee21ce6136a0aa2f9c538b3",
+      "trust/model_trust.py:d6a706994aeee86b6691495a2057343c68f7afc11b93c06bfb32db7ce54d569b",
+      "rl/agent.py:15dafcfd0f84c415916ac4aa4c4c5beaae11ba216fb3fc6dbb6587ca28e8e84c",
+      "rl/reward.py:3708a62ff418558bbf9ab8987ab8a9da6a78d56913a76050b7b28e7bee9b2505",
+      "baselines/heuristics.py:efcb32740c847a8a410fbd423d63fc0c8c220c616f93201e7acb8e21c0d25b0a",
+      "attacks/poisoning.py:f69e10229ec04491ec0077b09380aa2f4eb0719b5811bb8f9a59c22710dd7856",
+      "attacks/free_riding.py:180a0105712c60452c42c1f4a51e15a281fc2a21ae9f9c56401a1c5a418c59ab",
+      "trust/alt_detectors.py:ed3948e5ca2f17a46317eb50c509e82d4657881f7ce453f9349f35da49058323",
+      "experiments/experiment_runner.py:3c3ecee2a5a4392f12bc7f836c75fd56dc8d706853606bbf00b5f443e9c45865",
+      "configs/default_config.yaml:cd35a337993c297616ce951a7ee5dedafc0ab86f7720309515c7f674b455dc66"
+    ]
+  },
+  "environment_versions": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "reference_cells": "Cells of the supplemented run with the same seeds (Proposed_TFRL, Standard_FedAvg_RL, Nearest_RSU, Resource_Aware, Local_Only) are the no-fault / no-dropout references.",
+  "limitations": [
+    "The edge-node fault is injected (a scripted 60 % drop rate on one RSU), not measured.",
+    "Connectivity dropout is an independent Bernoulli process, not a mobility-derived outage model.",
+    "Behavioural trust of RSUs starts from the neutral prior in every evaluation episode and adapts within it.",
+    "Six seeds; exploratory, not multiplicity-corrected."
+  ],
+  "validation_status": "passed",
+  "validation_problems": []
+}

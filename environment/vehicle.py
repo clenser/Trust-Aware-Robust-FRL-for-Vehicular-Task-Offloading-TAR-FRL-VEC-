@@ -66,6 +66,12 @@ class Vehicle:
         self.helper_tasks_accepted = 0
         self.helper_tasks_completed = 0
         self.helper_tasks_dropped = 0
+        # Data-plane misbehaviour as a V2V helper (None = honest helper).  Set by
+        # the environment for model-level attackers when adversarial.data_plane
+        # is enabled; the 'unreliable' role keeps its own fixed behaviour.
+        self.helper_drop_prob = None
+        self.helper_delay_factor = 1.0
+        self.helper_tasks_sabotaged = 0
 
         # Trace-replay bookkeeping.  ``active`` is False when the vehicle is
         # not currently following a recorded source trajectory (it has not
@@ -131,8 +137,13 @@ class Vehicle:
         """
         self.helper_tasks_accepted += 1
 
-        if self.role == "unreliable" and np.random.rand() < 0.75:
-            # Drop the task maliciously or due to an artificial failure.
+        drop_p = self.helper_drop_prob
+        if drop_p is None:
+            drop_p = 0.75 if self.role == "unreliable" else 0.0
+        if drop_p > 0.0 and np.random.rand() < drop_p:
+            # Drop the task maliciously (or selfishly) or due to an artificial failure.
+            if self.helper_drop_prob is not None:
+                self.helper_tasks_sabotaged += 1
             self.helper_tasks_dropped += 1
             self.dropped_tasks += 1
             self.total_arrived += 1
@@ -157,6 +168,9 @@ class Vehicle:
         if self.role == "unreliable":
             # Inject malicious processing delay.
             service_time *= np.random.uniform(2.5, 5.0)
+        elif self.helper_delay_factor > 1.0:
+            service_time *= self.helper_delay_factor * np.random.uniform(0.8, 1.2)
+            self.helper_tasks_sabotaged += 1
 
         start_time = max(current_time, self.processor_free_time)
         wait_time = max(0.0, start_time - current_time)
@@ -227,6 +241,7 @@ class Vehicle:
             "tasks_failed": self.tasks_failed,
             "v2v_completed": self.helper_tasks_completed,
             "v2v_dropped": self.helper_tasks_dropped,
+            "v2v_sabotaged": self.helper_tasks_sabotaged,
             "queue_model": "deterministic single server",
             "active": bool(getattr(self, "active", True)),
             "source_vehicle_id": getattr(self, "source_vehicle_id", None)

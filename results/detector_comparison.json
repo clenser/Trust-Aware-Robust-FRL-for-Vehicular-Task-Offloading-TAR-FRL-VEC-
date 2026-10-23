@@ -1,0 +1,1369 @@
+{
+  "seed_bases": [
+    9001,
+    9002,
+    9003,
+    9004,
+    9005,
+    9006,
+    9007,
+    9008,
+    9009,
+    9010,
+    9011,
+    9012,
+    9013,
+    9014,
+    9015,
+    9016,
+    9017,
+    9018,
+    9019,
+    9020
+  ],
+  "n_clients": 20,
+  "dim": 64,
+  "scenarios": {
+    "honest_iid": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0,
+        "tn": 397,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0075,
+        "fpr_ci95": [
+          0.0026,
+          0.0218
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0,
+        "tn": 394,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.015,
+        "fpr_ci95": [
+          0.0069,
+          0.0323
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_non_iid": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "tn": 399,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0025,
+        "fpr_ci95": [
+          0.0004,
+          0.014
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "tn": 398,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.005,
+        "fpr_ci95": [
+          0.0014,
+          0.018
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_benign_outlier": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 24,
+        "fn": 0,
+        "tn": 376,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.06,
+        "fpr_ci95": [
+          0.0406,
+          0.0877
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 24,
+        "fn": 0,
+        "tn": 376,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.06,
+        "fpr_ci95": [
+          0.0406,
+          0.0877
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_varying_participation": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_small_legitimate_update": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_fully_disjoint": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0,
+        "tn": 397,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0075,
+        "fpr_ci95": [
+          0.0026,
+          0.0218
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 195,
+        "fn": 0,
+        "tn": 205,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.4875,
+        "fpr_ci95": [
+          0.4389,
+          0.5364
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 4,
+        "fn": 0,
+        "tn": 396,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.01,
+        "fpr_ci95": [
+          0.0039,
+          0.0254
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "honest_non_iid_strong": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "tn": 399,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0025,
+        "fpr_ci95": [
+          0.0004,
+          0.014
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 0,
+        "tn": 300,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.2101,
+          0.2947
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0,
+        "tn": 394,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.015,
+        "fpr_ci95": [
+          0.0069,
+          0.0323
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 6,
+        "fn": 0,
+        "tn": 394,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.015,
+        "fpr_ci95": [
+          0.0069,
+          0.0323
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 400,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0095
+        ]
+      }
+    },
+    "adversarial_sign_flip": {
+      "deployed_trust": {
+        "tp": 98,
+        "fp": 3,
+        "fn": 2,
+        "tn": 297,
+        "tpr": 0.98,
+        "tpr_ci95": [
+          0.93,
+          0.9945
+        ],
+        "fpr": 0.01,
+        "fpr_ci95": [
+          0.0034,
+          0.029
+        ]
+      },
+      "krum": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "cosine_median": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 87,
+        "fp": 0,
+        "fn": 13,
+        "tn": 300,
+        "tpr": 0.87,
+        "tpr_ci95": [
+          0.7902,
+          0.9224
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_sign_flip_partial_50": {
+      "deployed_trust": {
+        "tp": 64,
+        "fp": 2,
+        "fn": 36,
+        "tn": 298,
+        "tpr": 0.64,
+        "tpr_ci95": [
+          0.5424,
+          0.7273
+        ],
+        "fpr": 0.006666666666666667,
+        "fpr_ci95": [
+          0.0018,
+          0.024
+        ]
+      },
+      "krum": {
+        "tp": 99,
+        "fp": 1,
+        "fn": 1,
+        "tn": 299,
+        "tpr": 0.99,
+        "tpr_ci95": [
+          0.9455,
+          0.9982
+        ],
+        "fpr": 0.0033333333333333335,
+        "fpr_ci95": [
+          0.0006,
+          0.0186
+        ]
+      },
+      "cosine_median": {
+        "tp": 46,
+        "fp": 0,
+        "fn": 54,
+        "tn": 300,
+        "tpr": 0.46,
+        "tpr_ci95": [
+          0.3656,
+          0.5574
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 67,
+        "fp": 0,
+        "fn": 33,
+        "tn": 300,
+        "tpr": 0.67,
+        "tpr_ci95": [
+          0.5731,
+          0.7544
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_sign_flip_partial_25": {
+      "deployed_trust": {
+        "tp": 28,
+        "fp": 4,
+        "fn": 72,
+        "tn": 296,
+        "tpr": 0.28,
+        "tpr_ci95": [
+          0.2014,
+          0.3749
+        ],
+        "fpr": 0.013333333333333334,
+        "fpr_ci95": [
+          0.0052,
+          0.0338
+        ]
+      },
+      "krum": {
+        "tp": 80,
+        "fp": 20,
+        "fn": 20,
+        "tn": 280,
+        "tpr": 0.8,
+        "tpr_ci95": [
+          0.7112,
+          0.8666
+        ],
+        "fpr": 0.06666666666666667,
+        "fpr_ci95": [
+          0.0436,
+          0.1007
+        ]
+      },
+      "cosine_median": {
+        "tp": 7,
+        "fp": 0,
+        "fn": 93,
+        "tn": 300,
+        "tpr": 0.07,
+        "tpr_ci95": [
+          0.0343,
+          0.1375
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 32,
+        "fp": 0,
+        "fn": 68,
+        "tn": 300,
+        "tpr": 0.32,
+        "tpr_ci95": [
+          0.2367,
+          0.4166
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_scaling_unseen_2x": {
+      "deployed_trust": {
+        "tp": 97,
+        "fp": 0,
+        "fn": 3,
+        "tn": 300,
+        "tpr": 0.97,
+        "tpr_ci95": [
+          0.9155,
+          0.9897
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "krum": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_scaling_unseen_8x": {
+      "deployed_trust": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "krum": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_noise_unseen_weak": {
+      "deployed_trust": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "krum": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "cosine_median": {
+        "tp": 16,
+        "fp": 0,
+        "fn": 84,
+        "tn": 300,
+        "tpr": 0.16,
+        "tpr_ci95": [
+          0.101,
+          0.2442
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_noise_unseen_strong": {
+      "deployed_trust": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "krum": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "cosine_median": {
+        "tp": 53,
+        "fp": 0,
+        "fn": 47,
+        "tn": 300,
+        "tpr": 0.53,
+        "tpr_ci95": [
+          0.4329,
+          0.6249
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "adversarial_free_riding": {
+      "deployed_trust": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 100,
+        "fn": 100,
+        "tn": 200,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.3333333333333333,
+        "fpr_ci95": [
+          0.2824,
+          0.3885
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "distance_mad": {
+        "tp": 100,
+        "fp": 0,
+        "fn": 0,
+        "tn": 300,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.963,
+          1.0
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 100,
+        "tn": 300,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.037
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0126
+        ]
+      }
+    },
+    "honest_idle_clients": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "tn": 278,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.007142857142857143,
+        "fpr_ci95": [
+          0.002,
+          0.0257
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 80,
+        "fn": 0,
+        "tn": 200,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.2857142857142857,
+        "fpr_ci95": [
+          0.236,
+          0.3412
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 280,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0135
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "tn": 278,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.007142857142857143,
+        "fpr_ci95": [
+          0.002,
+          0.0257
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 280,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0135
+        ]
+      }
+    },
+    "honest_idle_majority": {
+      "deployed_trust": {
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "tn": 158,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0125,
+        "fpr_ci95": [
+          0.0034,
+          0.0444
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 40,
+        "fn": 0,
+        "tn": 120,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.25,
+        "fpr_ci95": [
+          0.1893,
+          0.3224
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 160,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0234
+        ]
+      },
+      "distance_mad": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0,
+        "tn": 157,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.01875,
+        "fpr_ci95": [
+          0.0064,
+          0.0537
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 160,
+        "tpr": null,
+        "tpr_ci95": null,
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0234
+        ]
+      }
+    },
+    "adversarial_free_rider_with_idle": {
+      "deployed_trust": {
+        "tp": 40,
+        "fp": 3,
+        "fn": 0,
+        "tn": 237,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.9124,
+          1.0
+        ],
+        "fpr": 0.0125,
+        "fpr_ci95": [
+          0.0043,
+          0.0361
+        ]
+      },
+      "krum": {
+        "tp": 0,
+        "fp": 80,
+        "fn": 40,
+        "tn": 160,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.0876
+        ],
+        "fpr": 0.3333333333333333,
+        "fpr_ci95": [
+          0.2767,
+          0.3952
+        ]
+      },
+      "cosine_median": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 40,
+        "tn": 240,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.0876
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0158
+        ]
+      },
+      "distance_mad": {
+        "tp": 40,
+        "fp": 2,
+        "fn": 0,
+        "tn": 238,
+        "tpr": 1.0,
+        "tpr_ci95": [
+          0.9124,
+          1.0
+        ],
+        "fpr": 0.008333333333333333,
+        "fpr_ci95": [
+          0.0023,
+          0.0299
+        ]
+      },
+      "no_detection": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 40,
+        "tn": 240,
+        "tpr": 0.0,
+        "tpr_ci95": [
+          0.0,
+          0.0876
+        ],
+        "fpr": 0.0,
+        "fpr_ci95": [
+          0.0,
+          0.0158
+        ]
+      }
+    }
+  }
+}

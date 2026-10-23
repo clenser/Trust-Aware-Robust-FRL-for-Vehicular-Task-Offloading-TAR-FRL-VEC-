@@ -1,0 +1,1658 @@
+{
+  "experiment_a": {
+    "Proposed_TFRL": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "Robust_FL_Median": {
+      "avg_latency_ms": 87.98,
+      "completion_rate": 0.9622,
+      "failure_rate": 0.0378,
+      "avg_reward": 1.77,
+      "avg_energy_j": 3.464,
+      "attack_detection_rate": null,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 87.98,
+          "std": 37.4,
+          "ci95": 92.91
+        },
+        "completion_rate": {
+          "mean": 0.9622,
+          "std": 0.0543,
+          "ci95": 0.1349
+        },
+        "reward": {
+          "mean": 1.77,
+          "std": 1.411,
+          "ci95": 3.504
+        },
+        "attack_detection": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    },
+    "Standard_FedAvg_RL": {
+      "avg_latency_ms": 94.64,
+      "completion_rate": 0.9533,
+      "failure_rate": 0.0467,
+      "avg_reward": 1.565,
+      "avg_energy_j": 3.5014,
+      "attack_detection_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 94.64,
+          "std": 32.8,
+          "ci95": 81.48
+        },
+        "completion_rate": {
+          "mean": 0.9533,
+          "std": 0.0503,
+          "ci95": 0.125
+        },
+        "reward": {
+          "mean": 1.565,
+          "std": 1.289,
+          "ci95": 3.202
+        },
+        "attack_detection": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    },
+    "Non_Federated_D3QN": {
+      "avg_latency_ms": 98.09,
+      "completion_rate": 0.9089,
+      "failure_rate": 0.0911,
+      "avg_reward": 1.025,
+      "avg_energy_j": 37.2539,
+      "attack_detection_rate": null,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 0.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 98.09,
+          "std": 9.91,
+          "ci95": 24.62
+        },
+        "completion_rate": {
+          "mean": 0.9089,
+          "std": 0.0735,
+          "ci95": 0.1825
+        },
+        "reward": {
+          "mean": 1.025,
+          "std": 0.984,
+          "ci95": 2.445
+        },
+        "attack_detection": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    },
+    "Local_Only": {
+      "avg_latency_ms": 60.48,
+      "completion_rate": 1.0,
+      "failure_rate": 0.0,
+      "avg_reward": 2.729,
+      "avg_energy_j": 3.2115,
+      "attack_detection_rate": null,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 0.0,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 60.48,
+          "std": 3.6,
+          "ci95": 8.94
+        },
+        "completion_rate": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    },
+    "Nearest_RSU": {
+      "avg_latency_ms": 77.12,
+      "completion_rate": 0.9867,
+      "failure_rate": 0.0133,
+      "avg_reward": 1.923,
+      "avg_energy_j": 222.509,
+      "attack_detection_rate": null,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 0.0,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 77.12,
+          "std": 2.36,
+          "ci95": 5.86
+        },
+        "completion_rate": {
+          "mean": 0.9867,
+          "std": 0.0044,
+          "ci95": 0.011
+        }
+      }
+    },
+    "Resource_Aware": {
+      "avg_latency_ms": 173.26,
+      "completion_rate": 0.3689,
+      "failure_rate": 0.6311,
+      "avg_reward": -6.0,
+      "avg_energy_j": 80.1164,
+      "attack_detection_rate": null,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 0.0,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 173.26,
+          "std": 1.24,
+          "ci95": 3.08
+        },
+        "completion_rate": {
+          "mean": 0.3689,
+          "std": 0.0044,
+          "ci95": 0.011
+        }
+      }
+    }
+  },
+  "experiment_b": {
+    "malicious_ratios": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "Proposed_TFRL": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.0,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.1,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.2,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 105.24,
+        "completion_rate": 0.9533,
+        "failure_rate": 0.0467,
+        "avg_reward": 1.34,
+        "avg_energy_j": 3.5362,
+        "attack_detection_rate": 0.75,
+        "false_positive_rate": 0.0061,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.3,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 105.24,
+            "std": 33.33,
+            "ci95": 82.79
+          },
+          "completion_rate": {
+            "mean": 0.9533,
+            "std": 0.0503,
+            "ci95": 0.125
+          },
+          "reward": {
+            "mean": 1.34,
+            "std": 1.261,
+            "ci95": 3.132
+          },
+          "attack_detection": {
+            "mean": 0.75,
+            "std": 0.05,
+            "ci95": 0.1242
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.9222,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.4,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.9222,
+            "std": 0.0839,
+            "ci95": 0.2084
+          }
+        }
+      }
+    ],
+    "Standard_FedAvg": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.0,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.1,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 94.64,
+        "completion_rate": 0.9533,
+        "failure_rate": 0.0467,
+        "avg_reward": 1.565,
+        "avg_energy_j": 3.5014,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.2,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 94.64,
+            "std": 32.8,
+            "ci95": 81.48
+          },
+          "completion_rate": {
+            "mean": 0.9533,
+            "std": 0.0503,
+            "ci95": 0.125
+          },
+          "reward": {
+            "mean": 1.565,
+            "std": 1.289,
+            "ci95": 3.202
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 108.34,
+        "completion_rate": 0.9533,
+        "failure_rate": 0.0467,
+        "avg_reward": 1.202,
+        "avg_energy_j": 3.7616,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.3,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 108.34,
+            "std": 35.33,
+            "ci95": 87.77
+          },
+          "completion_rate": {
+            "mean": 0.9533,
+            "std": 0.0503,
+            "ci95": 0.125
+          },
+          "reward": {
+            "mean": 1.202,
+            "std": 1.302,
+            "ci95": 3.235
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 110.17,
+        "completion_rate": 0.7289,
+        "failure_rate": 0.2711,
+        "avg_reward": -1.218,
+        "avg_energy_j": 57.8524,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.4,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 110.17,
+            "std": 52.89,
+            "ci95": 131.38
+          },
+          "completion_rate": {
+            "mean": 0.7289,
+            "std": 0.3041,
+            "ci95": 0.7555
+          },
+          "reward": {
+            "mean": -1.218,
+            "std": 4.184,
+            "ci95": 10.394
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      }
+    ],
+    "Trimmed_Mean": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": null,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.0,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": null,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.1,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": null,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.2,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": null,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.3,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": null,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.4,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "experiment_c": {
+    "strengths": [
+      0.2,
+      0.5,
+      1.0,
+      1.5,
+      2.0
+    ],
+    "Proposed_TFRL": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.8445,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.8445,
+            "std": 0.1388,
+            "ci95": 0.3447
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 1.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 1.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      }
+    ],
+    "Standard_FedAvg": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 94.64,
+        "completion_rate": 0.9533,
+        "failure_rate": 0.0467,
+        "avg_reward": 1.565,
+        "avg_energy_j": 3.5014,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 94.64,
+            "std": 32.8,
+            "ci95": 81.48
+          },
+          "completion_rate": {
+            "mean": 0.9533,
+            "std": 0.0503,
+            "ci95": 0.125
+          },
+          "reward": {
+            "mean": 1.565,
+            "std": 1.289,
+            "ci95": 3.202
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 108.38,
+        "completion_rate": 0.9533,
+        "failure_rate": 0.0467,
+        "avg_reward": 1.2,
+        "avg_energy_j": 3.5391,
+        "attack_detection_rate": 0.0,
+        "false_positive_rate": 0.0,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 108.38,
+            "std": 35.36,
+            "ci95": 87.85
+          },
+          "completion_rate": {
+            "mean": 0.9533,
+            "std": 0.0503,
+            "ci95": 0.125
+          },
+          "reward": {
+            "mean": 1.2,
+            "std": 1.303,
+            "ci95": 3.238
+          },
+          "attack_detection": {
+            "mean": 0.0,
+            "std": 0.0,
+            "ci95": 0.0
+          }
+        }
+      }
+    ]
+  },
+  "experiment_d": {
+    "highway": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "trace": {
+      "avg_latency_ms": 104.46,
+      "completion_rate": 0.9644,
+      "failure_rate": 0.0356,
+      "avg_reward": 1.385,
+      "avg_energy_j": 157.4242,
+      "attack_detection_rate": 1.0,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.2,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 104.46,
+          "std": 20.05,
+          "ci95": 49.81
+        },
+        "completion_rate": {
+          "mean": 0.9644,
+          "std": 0.0214,
+          "ci95": 0.0532
+        },
+        "reward": {
+          "mean": 1.385,
+          "std": 0.694,
+          "ci95": 1.723
+        },
+        "attack_detection": {
+          "mean": 1.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    }
+  },
+  "experiment_e_ablation": {
+    "Full_Proposed": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "Without_Behavioral_Trust": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "Without_Model_Trust": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "Without_Exclusion": {
+      "avg_latency_ms": 94.78,
+      "completion_rate": 0.9533,
+      "failure_rate": 0.0467,
+      "avg_reward": 1.561,
+      "avg_energy_j": 3.5051,
+      "attack_detection_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 94.78,
+          "std": 32.74,
+          "ci95": 81.33
+        },
+        "completion_rate": {
+          "mean": 0.9533,
+          "std": 0.0503,
+          "ci95": 0.125
+        },
+        "reward": {
+          "mean": 1.561,
+          "std": 1.287,
+          "ci95": 3.198
+        },
+        "attack_detection": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    },
+    "Without_Trust_Weighting": {
+      "avg_latency_ms": 86.25,
+      "completion_rate": 0.9667,
+      "failure_rate": 0.0333,
+      "avg_reward": 1.85,
+      "avg_energy_j": 3.4375,
+      "attack_detection_rate": 0.7778,
+      "false_positive_rate": 0.0056,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 86.25,
+          "std": 39.07,
+          "ci95": 97.05
+        },
+        "completion_rate": {
+          "mean": 0.9667,
+          "std": 0.0577,
+          "ci95": 0.1434
+        },
+        "reward": {
+          "mean": 1.85,
+          "std": 1.479,
+          "ci95": 3.675
+        },
+        "attack_detection": {
+          "mean": 0.7778,
+          "std": 0.1018,
+          "ci95": 0.253
+        }
+      }
+    },
+    "FedAvg_RL_No_Trust": {
+      "avg_latency_ms": 94.64,
+      "completion_rate": 0.9533,
+      "failure_rate": 0.0467,
+      "avg_reward": 1.565,
+      "avg_energy_j": 3.5014,
+      "attack_detection_rate": 0.0,
+      "false_positive_rate": 0.0,
+      "comm_overhead_kb": 900.0,
+      "num_rounds": 5,
+      "attack_ratio": 0.25,
+      "num_seeds": 3,
+      "stats": {
+        "latency": {
+          "mean": 94.64,
+          "std": 32.8,
+          "ci95": 81.48
+        },
+        "completion_rate": {
+          "mean": 0.9533,
+          "std": 0.0503,
+          "ci95": 0.125
+        },
+        "reward": {
+          "mean": 1.565,
+          "std": 1.289,
+          "ci95": 3.202
+        },
+        "attack_detection": {
+          "mean": 0.0,
+          "std": 0.0,
+          "ci95": 0.0
+        }
+      }
+    }
+  },
+  "experiment_f_sensitivity": {
+    "alphas": [
+      0.0,
+      0.2,
+      0.4,
+      0.5,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "metrics": [
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      },
+      {
+        "avg_latency_ms": 86.25,
+        "completion_rate": 0.9667,
+        "failure_rate": 0.0333,
+        "avg_reward": 1.85,
+        "avg_energy_j": 3.4375,
+        "attack_detection_rate": 0.7778,
+        "false_positive_rate": 0.0056,
+        "comm_overhead_kb": 900.0,
+        "num_rounds": 5,
+        "attack_ratio": 0.25,
+        "num_seeds": 3,
+        "stats": {
+          "latency": {
+            "mean": 86.25,
+            "std": 39.07,
+            "ci95": 97.05
+          },
+          "completion_rate": {
+            "mean": 0.9667,
+            "std": 0.0577,
+            "ci95": 0.1434
+          },
+          "reward": {
+            "mean": 1.85,
+            "std": 1.479,
+            "ci95": 3.675
+          },
+          "attack_detection": {
+            "mean": 0.7778,
+            "std": 0.1018,
+            "ci95": 0.253
+          }
+        }
+      }
+    ]
+  }
+}

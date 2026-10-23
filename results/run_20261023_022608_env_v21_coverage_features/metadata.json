@@ -1,0 +1,154 @@
+{
+  "run_id": "run_20261023_022608_env_v21_coverage_features",
+  "run_kind": "full",
+  "timestamp_utc": "2026-10-22T23:44:25Z",
+  "seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808,
+    909,
+    1010,
+    1111,
+    1212,
+    1313,
+    1414,
+    1515
+  ],
+  "num_seeds": 16,
+  "sweep_seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505
+  ],
+  "num_sweep_seeds": 6,
+  "evaluation_config": {
+    "episodes": 5,
+    "steps_per_episode": 30,
+    "seed_offset": 500000
+  },
+  "dataset_provenance": {
+    "highway": {
+      "mobility_mode": "highway",
+      "mobility_source": "procedural IDM highway (no trajectory file)",
+      "trace_path": null,
+      "trace_sha256": null,
+      "authentic": false
+    },
+    "trace": {
+      "mobility_mode": "trace",
+      "mobility_source": "calibrated synthetic NGSIM-style trace",
+      "trace_path": "data/synthetic_traces/synthetic_ngsim_highway.csv",
+      "trace_sha256": "0cd336f7ef61897ad4d7cde8c878d805714cae2985e71ca32c9df125ec77a0e4",
+      "trace_bytes": 1475678,
+      "authentic": false
+    },
+    "authentic_trace": {
+      "mobility_mode": "authentic_trace",
+      "mobility_source": "authentic FHWA NGSIM US-101 processed trace",
+      "trace_path": "data/traces/ngsim_us101_authentic.csv",
+      "trace_sha256": "723927c5f63fe7653ea7a6874f407e0c50f3ec4e04478d8e6ce4315cd93436b1",
+      "trace_bytes": 154158064,
+      "authentic": true
+    },
+    "task_profiles": {
+      "task_profile_path": "data/synthetic_traces/synthetic_v2x_task_profiles.csv",
+      "task_profile_sha256": "f556495041ac1618d1ea7153ab8285696da5e101022102624e8465e358a8d29c"
+    }
+  },
+  "code_revision": {
+    "vcs": "content-hash",
+    "content_sha256": "d9a76bbdc5805b244b6c395dc30f5ca1e25701de7fd3ecd8f33f45048a3465f1",
+    "files": [
+      "web/app.py:329c2a8a9d83e3843dcdcceb70ee617f4c0186a642237b58b55fac275cba1dc4",
+      "environment/vanet_env.py:5ef58266d2db927c9a3a557abbf0f70a3e7ac9b5d4957f91ede02462ef88cc4d",
+      "environment/network.py:eb9d9a20fc9f4af21b9ae7374c163ad02d64754d4d6d7294e3322de0807f55a3",
+      "environment/task.py:f1b0607d6ceb3b0bfc4c1e01b38ab2fe7dfc0d630ea96096869128484fba348b",
+      "environment/rsu.py:f84a83c1ad4b664c9f9c2ce99e53f170c0c8eec803139cb6e7b05fdf0f47633d",
+      "environment/mobility.py:5352b4801b9587d639e1f1b4593081c8bb8b6b4f888771ac01302e725fb2b7b6",
+      "federated/client.py:7d302866975f76007797da5b70210b2a3fa3fca3b6337d9a522a628ab2d999c5",
+      "federated/server.py:e409eeac2b1de08b01bce10ec5177dd3bc17124d61b4523a540a4bcd072e4299",
+      "trust/trust_engine.py:82ef2a0d7c09fed89005b81768d8313d261f05e2df0162a1839f3c455635d34d",
+      "trust/trust_model.py:0f10d35f72042496b4fd5f1cd930b73380d4e6657ee21ce6136a0aa2f9c538b3",
+      "trust/model_trust.py:d6a706994aeee86b6691495a2057343c68f7afc11b93c06bfb32db7ce54d569b",
+      "rl/agent.py:15dafcfd0f84c415916ac4aa4c4c5beaae11ba216fb3fc6dbb6587ca28e8e84c",
+      "rl/reward.py:3708a62ff418558bbf9ab8987ab8a9da6a78d56913a76050b7b28e7bee9b2505",
+      "baselines/heuristics.py:efcb32740c847a8a410fbd423d63fc0c8c220c616f93201e7acb8e21c0d25b0a",
+      "attacks/poisoning.py:f69e10229ec04491ec0077b09380aa2f4eb0719b5811bb8f9a59c22710dd7856",
+      "attacks/free_riding.py:180a0105712c60452c42c1f4a51e15a281fc2a21ae9f9c56401a1c5a418c59ab",
+      "configs/default_config.yaml:cd35a337993c297616ce951a7ee5dedafc0ab86f7720309515c7f674b455dc66"
+    ]
+  },
+  "environment_versions": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "attack_settings": {
+    "attack_ratio": 0.24,
+    "realised_malicious_clients": 6,
+    "poison_strength": 1.5,
+    "poison_type": "sign_flip"
+  },
+  "mobility_mode": "highway",
+  "training_protocol": {
+    "num_rounds": 30,
+    "steps_per_round": 20,
+    "local_epochs_gradient_steps_per_round": 16,
+    "initialisation": "federated methods: all clients start from the server's single global model; Non_Federated_D3QN: independent random initialisation per client",
+    "client_data": "each client trains only on its own replay buffer of its own vehicle's transitions (non-IID task mixture, Dirichlet concentration 0.4)",
+    "exploration": "epsilon-greedy during the first 40% of rounds, greedy afterwards",
+    "evaluation": "separate environments and seeds, greedy policy of the client's own (post-sync) network, no buffer writes, no gradient steps; parameter hash checked before/after",
+    "agent": "dueling double DQN, Huber loss, Adam, gamma/learning rate from federated_learning config"
+  },
+  "environment_model": {
+    "version": "2.1",
+    "state_features": "v2.1",
+    "honor_rsu_choice": true,
+    "uplink_contention": true,
+    "reward": {
+      "alpha_lat": 2.0,
+      "beta_energy": 1.0,
+      "gamma_fail": 5.0,
+      "delta_success": 3.0,
+      "lambda_trust": 0.0,
+      "e_norm": 0.01
+    },
+    "cell_bandwidth_mhz": 100.0
+  },
+  "limitations": [
+    "Tasks, channel, queues, rewards and attacks are simulated; only the optional mobility replay is measured data.",
+    "Edge queues are deterministic multi-core servers, not M/M/c; tasks of one slot arrive together in a seeded random order.",
+    "Attackers are scripted and non-adaptive except the norm-matched stealth sign flip.",
+    "Evaluation horizons are short (episodes x steps given in evaluation_config); results do not describe long-run behaviour.",
+    "Sweeps use fewer seeds than the main comparison (see sweep_seeds)."
+  ],
+  "provenance_disclosure": {
+    "task_profiles": "3GPP TR 36.885 derived, scaled by 0.1; modelling assumption",
+    "rl_environment": "simulated 3GPP-style V2X channel, deterministic edge queues, modelled reward",
+    "eval_isolation": "independent episodes, separate seeds, greedy policy, no buffer writes, no gradients",
+    "participation_rule": "clients holding fewer transitions than the minimum training batch (4) could not perform a gradient step; they are non-participants of the round and are not judged. The rule uses the client's available experience, never the ground-truth role. Identical to the live console (web/app.py).",
+    "mobility": "procedural IDM"
+  },
+  "resumed_from_partial_results": false,
+  "validation_status": "passed",
+  "validation_problems": [],
+  "figures": [
+    "fig1_baseline_comparison.png",
+    "fig2_paired_differences.png",
+    "fig3_attack_ratio_sweep.png",
+    "fig4_ablation_study.png",
+    "fig5_sensitivity_alpha.png",
+    "fig6_mobility_sweep.png"
+  ]
+}

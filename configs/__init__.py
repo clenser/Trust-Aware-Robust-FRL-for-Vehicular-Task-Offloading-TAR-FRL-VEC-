@@ -1,1 +1,2 @@
 from configs.config_loader import load_config, get_effective_config_snapshot
+__author__ = "Sreemanta Barman"

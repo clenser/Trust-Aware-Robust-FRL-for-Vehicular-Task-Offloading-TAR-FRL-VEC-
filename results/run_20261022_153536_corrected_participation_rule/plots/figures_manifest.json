@@ -1,0 +1,153 @@
+{
+  "generated_utc": "2026-10-22T11:44:55.701684+00:00",
+  "experiment_id": "run_20261022_153536_corrected_participation_rule",
+  "results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+  "results_file_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+  "metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+  "metadata_file_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+  "output_dir": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\plots",
+  "num_seeds": 12,
+  "seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808,
+    909,
+    1010,
+    1111
+  ],
+  "cross_check_problems": [],
+  "figures": [
+    {
+      "filename": "fig1_baseline_comparison.png",
+      "title": "Fig 1: Baseline latency and task-completion rate",
+      "sha256": "97a9a7e0e3eb4dfc02363c7eccf82de92d5137298e76f292092536b75284c29a",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_a_baseline_comparison",
+      "source_records": "experiment_a_baseline_comparison.<method>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Latency and task-completion rate per method, recomputed from the per-seed records of the main comparison.",
+      "series": [
+        "Proposed_TFRL",
+        "Robust_FL_Median",
+        "Standard_FedAvg_RL",
+        "Non_Federated_D3QN",
+        "Local_Only",
+        "Random_Valid",
+        "Nearest_RSU",
+        "Resource_Aware"
+      ]
+    },
+    {
+      "filename": "fig2_paired_differences.png",
+      "title": "Fig 2: Paired latency differences against Proposed TFRL",
+      "sha256": "5712b3c751c8b7dfc7ccd0b0f427103166fb0665b1163ce665a26b19e784a25d",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_a_baseline_comparison + experiment_a_paired_comparison",
+      "source_records": "experiment_a_baseline_comparison.<method>.per_seed_results[] (paired against Proposed_TFRL by seed)",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Paired latency difference of every method against Proposed TFRL; sign convention: difference = compared method - Proposed TFRL.",
+      "series": [
+        "Robust_FL_Median",
+        "Standard_FedAvg_RL",
+        "Non_Federated_D3QN",
+        "Local_Only",
+        "Random_Valid",
+        "Nearest_RSU",
+        "Resource_Aware"
+      ]
+    },
+    {
+      "filename": "fig3_attack_ratio_sweep.png",
+      "title": "Fig 3: Latency vs. malicious-client ratio",
+      "sha256": "222854d71db6c95fd4e0d54133726994594f1e41cd0c128b9759854fc9c31a6e",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_c_attack_ratio_sweep",
+      "source_records": "experiment_c_attack_ratio_sweep.<ratio>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Latency as a function of the malicious-client ratio.",
+      "series": [
+        "0.0",
+        "0.1",
+        "0.2",
+        "0.3",
+        "0.4"
+      ]
+    },
+    {
+      "filename": "fig4_ablation_study.png",
+      "title": "Fig 4: Ablation of the trust components",
+      "sha256": "f379b5573cdf79f3f5a1f559903a4953f31cd8e50a255d3332253590258e3621",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_d_ablation",
+      "source_records": "experiment_d_ablation.<variant>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Ablation of the two trust components.",
+      "series": [
+        "Full_Proposed",
+        "Without_Behavioral_Trust",
+        "Without_Model_Trust",
+        "Without_Exclusion",
+        "Without_Trust_Weighting",
+        "FedAvg_RL_No_Trust"
+      ]
+    },
+    {
+      "filename": "fig5_sensitivity_alpha.png",
+      "title": "Fig 5: Sensitivity to the joint-trust weight alpha",
+      "sha256": "b5a34db2c96074a0d7888cdc8ec877b795e5ccc1c28bde87c6e1450f6671443b",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_e_alpha_sensitivity",
+      "source_records": "experiment_e_alpha_sensitivity.<alpha>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Sensitivity of latency and completion to the trust-mixing weight.",
+      "series": [
+        "0.0",
+        "0.2",
+        "0.4",
+        "0.5",
+        "0.6",
+        "0.8",
+        "1.0"
+      ]
+    },
+    {
+      "filename": "fig6_mobility_sweep.png",
+      "title": "Fig 6: Latency and completion by mobility mode",
+      "sha256": "7f0c6bbe78cad75c521e90ce3386ad63dcc27d75822704daa2ac4eb35d8bde24",
+      "experiment_id": "run_20261022_153536_corrected_participation_rule",
+      "source_experiment": "experiment_b_mobility_sweep",
+      "source_records": "experiment_b_mobility_sweep.<mode>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\benchmark_results.json",
+      "source_results_sha256": "692d8d12dde7ff498ea9e1d63b08b0e834f33d14b3c374072a7b00a633e77777",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261022_153536_corrected_participation_rule\\metadata.json",
+      "source_metadata_sha256": "36eb8c55134b1d760c0eb2cb5eb240dd677ed70fa5196b2d0cbee38b71abab2c",
+      "description": "Latency and completion by mobility mode.",
+      "series": [
+        "highway",
+        "trace",
+        "authentic_trace"
+      ]
+    }
+  ]
+}

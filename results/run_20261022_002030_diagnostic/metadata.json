@@ -1,0 +1,92 @@
+{
+  "run_id": "run_20261022_002030_diagnostic",
+  "run_kind": "quick",
+  "timestamp_utc": "2026-10-21T19:07:49Z",
+  "seeds": [
+    42,
+    101,
+    202
+  ],
+  "num_seeds": 3,
+  "evaluation_config": {
+    "episodes": 3,
+    "steps_per_episode": 20,
+    "seed_offset": 500000
+  },
+  "dataset_provenance": {
+    "highway": {
+      "mobility_mode": "highway",
+      "mobility_source": "procedural IDM highway (no trajectory file)",
+      "trace_path": null,
+      "trace_sha256": null,
+      "authentic": false
+    },
+    "trace": {
+      "mobility_mode": "trace",
+      "mobility_source": "calibrated synthetic NGSIM-style trace",
+      "trace_path": "data/synthetic_traces/synthetic_ngsim_highway.csv",
+      "trace_sha256": "0cd336f7ef61897ad4d7cde8c878d805714cae2985e71ca32c9df125ec77a0e4",
+      "trace_bytes": 1475678,
+      "authentic": false
+    },
+    "authentic_trace": {
+      "mobility_mode": "authentic_trace",
+      "mobility_source": "authentic FHWA NGSIM US-101 processed trace",
+      "trace_path": "data/traces/ngsim_us101_authentic.csv",
+      "trace_sha256": "a0a46d5db94379487cbe4e6e13ec3b32766e7cfc37301a1516be4a6a1a508528",
+      "trace_bytes": 6881456,
+      "authentic": true
+    },
+    "task_profiles": {
+      "task_profile_path": "data/synthetic_traces/synthetic_v2x_task_profiles.csv",
+      "task_profile_sha256": "f556495041ac1618d1ea7153ab8285696da5e101022102624e8465e358a8d29c"
+    }
+  },
+  "code_revision": {
+    "vcs": "content-hash",
+    "content_sha256": "fbccc155e9feac5e2f8a4c9f40f6e300276cd43d1e236abd7d3755ae3e1b11dd",
+    "files": [
+      "web/app.py:55950c4db87c715af8e2382d9a823ffde623546e197b547a295e0a2f6004c664",
+      "environment/vanet_env.py:8202dea93fcf8d84ef0536bb40cc244e07ac7c624d74434f4b10637b1f45d5aa",
+      "environment/network.py:3514eb82b72bc732673ef6bec28277ef571bf95db0cb7492139460256052de75",
+      "environment/task.py:e7fd163be82f9cc4f4e51f21041d51cdac6ac133f41bb03a059092e1ee310d41",
+      "environment/rsu.py:f84a83c1ad4b664c9f9c2ce99e53f170c0c8eec803139cb6e7b05fdf0f47633d",
+      "environment/mobility.py:5e3b901e7bb4ba2238470a8b91f5f8f7f98d7199b30b693a614e6fb7d2f91ac0",
+      "federated/client.py:53b5ffa9c9de77a50ec5c61db53835f32209287959513653c08d942dc329f2ad",
+      "federated/server.py:93ce0a2875c198d927273935b3af2b23d6c134cc3b873cf0546b7198481768d8",
+      "trust/trust_engine.py:82ef2a0d7c09fed89005b81768d8313d261f05e2df0162a1839f3c455635d34d",
+      "trust/trust_model.py:0f10d35f72042496b4fd5f1cd930b73380d4e6657ee21ce6136a0aa2f9c538b3",
+      "trust/model_trust.py:af13c244b5123073bc16f46ccba84f14127003e1ecd77e0477255292ea1ffd94",
+      "rl/agent.py:413776e2928ece77e3d58a253e3496774ed2b67bf5f34410c59163531f913faa",
+      "rl/reward.py:3708a62ff418558bbf9ab8987ab8a9da6a78d56913a76050b7b28e7bee9b2505",
+      "baselines/heuristics.py:efcb32740c847a8a410fbd423d63fc0c8c220c616f93201e7acb8e21c0d25b0a",
+      "attacks/poisoning.py:374d931b87bfc285a215b54b06998f6803f169b482fab8f1953ec06b973ebba6",
+      "attacks/free_riding.py:180a0105712c60452c42c1f4a51e15a281fc2a21ae9f9c56401a1c5a418c59ab",
+      "configs/default_config.yaml:67f83b2a31d497edb5854b782862fe7aaa4eaeaa56c68b6c1860ff1417f65416"
+    ]
+  },
+  "environment_versions": {
+    "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cpu",
+    "numpy": "2.4.4",
+    "scipy": "1.17.1"
+  },
+  "attack_settings": {
+    "attack_ratio": 0.24,
+    "realised_malicious_clients": 6,
+    "poison_strength": 1.5,
+    "poison_type": "sign_flip"
+  },
+  "mobility_mode": "highway",
+  "provenance_disclosure": {
+    "task_profiles": "3GPP TR 36.885 derived, scaled by 0.1; modelling assumption",
+    "rl_environment": "simulated 3GPP-style V2X channel, deterministic edge queues, modelled reward",
+    "eval_isolation": "independent episodes, separate seeds, greedy policy, no buffer writes, no gradients",
+    "mobility": "procedural IDM"
+  },
+  "validation_status": "superseded",
+  "validation_problems": [],
+  "superseded": true,
+  "superseded_reason": "This diagnostic run was executed BEFORE the model corrections that followed: the local-training budget was 2 gradient steps per round (so the policy stayed at its random initialisation and every method degenerately produced the same behaviour), the computation-energy coefficient was 3 orders of magnitude too large, the reward's trust term structurally favoured local execution, and the on-board CPU was desktop-class so that offloading was never necessary. Its numbers must not be cited; the corrected run supersedes it."
+}

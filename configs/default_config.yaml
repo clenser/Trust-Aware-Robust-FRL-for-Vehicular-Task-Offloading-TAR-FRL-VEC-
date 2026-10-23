@@ -19,6 +19,10 @@ mobility:
   lane_width_m: 3.75
   num_vehicles: 25
   speed_range_mps: [14.0, 32.0]
+  # Compute-rich helper vehicles (assumption; 0 = all vehicles are 0.8-2 GHz SoCs).
+  vehicle_compute:
+    rich_fraction: 0.0
+    rich_cpu_ghz: [4.0, 8.0]
 
 edge_nodes:
   num_rsus: 3
@@ -60,6 +64,9 @@ network:
   tx_power_dbm: 23.0
   noise_power_dbm: -95.0
   v2v_comm_range_m: 180.0
+  # "nearest" = closest present peer (original); "trust_aware" = score by observed
+  # trust, proximity, spare queue and CPU.
+  v2v_peer_selection: "nearest"
   # Uplink capacity of one RSU cell, shared OFDMA-style among simultaneous
   # uplinks (3GPP NR FR1 maximum channel bandwidth).  Each UE is allocated at
   # most channel_bandwidth_mhz.
@@ -174,3 +181,22 @@ adversarial:
   attack_probability: 1.0  # per-round attack probability of a poisoning client (1.0 = always)
   free_riding_ratio: 0.5   # Fraction of adversaries performing free-riding
   unreliable_helper_ratio: 0.0  # honest-model but task-dropping V2V helpers (behavioural threat)
+  # Data-plane behaviour of the model-level attackers (default off = the
+  # published benchmark, where attackers are honest V2V helpers).  When on, a
+  # poisoning vehicle sabotages helper tasks and a free rider refuses them.
+  data_plane:
+    enabled: false
+    malicious_drop_prob: 0.7
+    malicious_delay_factor: 3.0
+    selfish_drop_prob: 0.8
+
+# Empirical edge calibration from the Alibaba edge-platform trace (default off).
+# See environment/edge_calibration.py and data/source/prepare_edge_trace.py.
+edge_calibration:
+  enabled: false
+  summary_path: "data/traces/edge_platform_summary.json"
+  peak_background_share: null     # null = measured p75 VM core allocation ratio
+  start_hour: 12.0                # hour of day at simulated t = 0
+  day_compression: 288.0          # 1 simulated second = 288 s of platform time (300 s = 24 h)
+  capacity_heterogeneity: true
+  backhaul_rtt: true

@@ -73,7 +73,9 @@ class VANETRoadView3D {
     this.userCam = false;
 
     this.three = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(this.cam.fov, 1.6, 0.5, 9000);
+    this.camera = new THREE.PerspectiveCamera(this.cam.fov, 1.6, 0.3, 30000);
+    // Free navigation: the look-at point can be moved in all three axes.
+    this.focusY = 2; this.focusZ = 0; this.freeCam = false; this.keys = new Set(); this.pointerInside = false;
     this._buildSky();
     this._buildLights();
     this.world = new THREE.Group();             // rebuilt when the scene changes
@@ -293,7 +295,7 @@ class VANETRoadView3D {
     if (!ev) return;
     this.links.push({
       vid: ev.vid, target: ev.target, action: ev.action, ok: !!ev.success,
-      alert: !!ev.detector_alert, born: performance.now(), line: null, pulse: null, label: null, ring: null,
+      alert: !!ev.detector_alert, sab: !!(ev.v2v && ev.ground_truth_malicious && !ev.success), sabRole: ev.target_role || '', born: performance.now(), line: null, pulse: null, label: null, ring: null,
     });
     if (this.links.length > 80) this._removeLink(this.links.shift());
   }
@@ -330,6 +332,7 @@ class VANETRoadView3D {
   setMode(mode) {
     this.mode = mode === 'overview' ? 'overview' : 'follow';
     this.manualCenter = false;
+    this.freeCam = false; this.focusY = 2; this.focusZ = 0;
     this.userCam = false;
     this._applyModeCamera();
   }
@@ -671,17 +674,17 @@ class VANETRoadView3D {
   _updateLinks(now) {
     const live = [];
     for (const l of this.links) {
-      const life = l.alert ? 3800 : 1700;
+      const life = (l.alert || l.sab) ? 3800 : 1700;
       const age = now - l.born;
       if (age > life) { this._removeLink(l); continue; }
       live.push(l);
       if (!this.showLinks) { if (l.line) l.line.visible = false; if (l.pulse) l.pulse.visible = false; continue; }
       const a = this._vehPos(l.vid), b = this._resolveTarget(l.target);
-      if (!a || !b || !this._inView(a) || !this._inView(b)) { if (l.line) { l.line.visible = false; l.pulse.visible = false; if (l.ring) l.ring.visible = false; if (l.label) l.label.visible = false; } continue; }
+      if (!a || !b || (!this.freeCam && (!this._inView(a) || !this._inView(b)))) { if (l.line) { l.line.visible = false; l.pulse.visible = false; if (l.ring) l.ring.visible = false; if (l.label) l.label.visible = false; } continue; }
       if (l.ring) l.ring.visible = true;
       if (l.label) l.label.visible = true;
       const isV2V = l.action === 4 || /^V?_?\d+$/.test(String(l.target));
-      const color = l.alert ? 0xff2d55 : (!l.ok ? 0x9aa4b8 : (isV2V ? 0xffb020 : 0x2ee6a6));
+      const color = l.alert ? 0xff2d55 : (l.sab ? 0xe040fb : (!l.ok ? 0x9aa4b8 : (isV2V ? 0xffb020 : 0x2ee6a6)));
       const fade = Math.max(0, 1 - Math.max(0, age - life * 0.55) / (life * 0.45));
       const pts = this._curvePoints(a, b, 28, Math.min(40, a.distanceTo(b) * 0.28 + 6));
       if (!l.line) {
@@ -691,10 +694,10 @@ class VANETRoadView3D {
         l.pulse = new THREE.Mesh(this.geo.sphere, new THREE.MeshBasicMaterial({ color, depthTest: false, transparent: true }));
         l.pulse.renderOrder = 11;
         this.dyn.add(l.line); this.dyn.add(l.pulse);
-        if (l.alert) {
-          l.ring = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.1, 40), new THREE.MeshBasicMaterial({ color: 0xff2d55, transparent: true, side: THREE.DoubleSide, depthTest: false }));
+        if (l.alert || l.sab) {
+          l.ring = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.1, 40), new THREE.MeshBasicMaterial({ color: l.sab && !l.alert ? 0xe040fb : 0xff2d55, transparent: true, side: THREE.DoubleSide, depthTest: false }));
           l.ring.rotation.x = -Math.PI / 2; l.ring.renderOrder = 12; this.dyn.add(l.ring);
-          l.label = this._label('DETECTOR ALERT', '#ffd5dc', 'rgba(120,10,30,.9)');
+          l.label = l.alert ? this._label('DETECTOR ALERT', '#ffd5dc', 'rgba(120,10,30,.9)') : this._label('V2V HELPER SABOTAGE' + (l.sabRole ? ' (' + l.sabRole.replace('_', ' ') + ')' : ''), '#f6d3ff', 'rgba(70,10,90,.9)');
           this.dyn.add(l.label);
         }
       }
@@ -771,7 +774,7 @@ class VANETRoadView3D {
 
   // ---------------------------------------------------------- camera/loop
   _autoCenter(now) {
-    if (this.mode !== 'follow' || this.manualCenter) return;
+    if (this.mode !== 'follow' || this.manualCenter || this.freeCam) return;
     const sel = this.selectedVid !== null ? this.vehicles.get(this.selectedVid) : null;
     if (sel && sel.group && sel.cur && sel.cur.active) {
       this.targetCenter = sel.group.position.x;
@@ -797,14 +800,43 @@ class VANETRoadView3D {
     this.center += (this.targetCenter - this.center) * 0.05;
   }
 
+  // Move the look-at point on the ground plane relative to the viewing direction.
+  _pan(right, forward) {
+    const yaw = this.camGoal.yaw;
+    this.center += right * Math.cos(yaw) - forward * Math.sin(yaw);
+    this.focusZ += -right * Math.sin(yaw) - forward * Math.cos(yaw);
+    this.targetCenter = this.center;
+    this.manualCenter = true; this.freeCam = true; this.userCam = true;
+  }
+
+  _flyKeys() {
+    if (!this.keys.size || !this.pointerInside) return;
+    const sp = Math.max(0.6, this.camGoal.dist * 0.02);
+    const k = this.keys;
+    let r = 0, f = 0;
+    if (k.has('d') || k.has('arrowright')) r += sp;
+    if (k.has('a') || k.has('arrowleft')) r -= sp;
+    if (k.has('w') || k.has('arrowup')) f += sp;
+    if (k.has('s') || k.has('arrowdown')) f -= sp;
+    if (r || f) this._pan(r, f);
+    if (k.has('e')) { this.focusY += sp; this.freeCam = true; this.userCam = true; }
+    if (k.has('q')) { this.focusY -= sp; this.freeCam = true; this.userCam = true; }
+  }
+
+  resetCamera() {
+    this.focusY = 2; this.focusZ = 0; this.freeCam = false; this.manualCenter = false;
+    this.selectedVid = null; this.userCam = false; this._applyModeCamera();
+  }
+
   _updateCamera() {
     const c = this.cam, g = this.camGoal;
     if (!this.userCam) { c.yaw += (g.yaw - c.yaw) * 0.06; c.pitch += (g.pitch - c.pitch) * 0.06; c.dist += (g.dist - c.dist) * 0.06; }
     else { c.yaw = g.yaw; c.pitch = g.pitch; c.dist = g.dist; }
-    const cx = this.center, ty = 2;
+    const cx = this.center, ty = this.focusY, tz = this.focusZ;
+    this._flyKeys();
     const cp = Math.cos(c.pitch), sp = Math.sin(c.pitch);
-    this.camera.position.set(cx + Math.sin(c.yaw) * cp * c.dist, ty + sp * c.dist, Math.cos(c.yaw) * cp * c.dist);
-    this.camera.lookAt(cx, ty, 0);
+    this.camera.position.set(cx + Math.sin(c.yaw) * cp * c.dist, ty + sp * c.dist, tz + Math.cos(c.yaw) * cp * c.dist);
+    this.camera.lookAt(cx, ty, tz);
     this.sun.position.set(cx - 140, 220, 160); this.sun.target.position.set(cx, 0, 0);
     this.sun.target.updateMatrixWorld();
   }
@@ -873,7 +905,7 @@ class VANETRoadView3D {
     const key = modeTxt + '|' + (this.flBanner ? this.flBanner.text : '') + '|' + (this.flBanner && now - this.flBanner.born < 6000);
     if (key !== this._hudKey) {
       this._hudKey = key;
-      this.hudLeft.textContent = (this.slowNote ? 'Rendering is slow on this device - switch to 2D for a lighter view. ' : '') + `3D · ${modeTxt} · vehicles drawn ${(this.SCALE_L * (this.mode === 'overview' ? this.overviewScale : 1)).toFixed(1)}× longer for legibility · drag to orbit, wheel to zoom, double-click to reset`;
+      this.hudLeft.textContent = (this.slowNote ? 'Rendering is slow on this device - switch to 2D for a lighter view. ' : '') + `3D · ${modeTxt} · vehicles drawn ${(this.SCALE_L * (this.mode === 'overview' ? this.overviewScale : 1)).toFixed(1)}× longer for legibility · drag = orbit · right-drag / shift-drag = pan · WASD/arrows move, Q/E down/up · wheel = zoom · R / double-click = reset`;
       this.hudRight.innerHTML = '';
       if (this.flBanner && now - this.flBanner.born < 6000) {
         const b = document.createElement('span');
@@ -920,33 +952,48 @@ class VANETRoadView3D {
       e.preventDefault();
       this.userCam = true;
       const k = e.deltaY < 0 ? 0.88 : 1.14;
-      this.camGoal.dist = Math.min(3200, Math.max(40, this.camGoal.dist * k));
+      this.camGoal.dist = Math.min(9000, Math.max(4, this.camGoal.dist * k));
     }, { passive: false });
     let drag = null;
-    this.canvas.addEventListener('mousedown', (e) => { drag = { x: e.clientX, y: e.clientY, yaw: this.camGoal.yaw, pitch: this.camGoal.pitch, moved: false }; });
+    this.canvas.setAttribute('tabindex', '0');
+    this.canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    this.canvas.addEventListener('mouseenter', () => { this.pointerInside = true; });
+    this.canvas.addEventListener('mouseleave', () => { this.pointerInside = false; this.keys.clear(); });
+    window.addEventListener('keydown', (e) => {
+      if (!this.pointerInside || e.ctrlKey || e.metaKey || e.altKey) return;
+      const key = e.key.toLowerCase();
+      if ('wasdqe'.includes(key) && key.length === 1 || key.startsWith('arrow')) { this.keys.add(key); e.preventDefault(); }
+      else if (key === 'r') this.resetCamera();
+    });
+    window.addEventListener('keyup', (e) => this.keys.delete(e.key.toLowerCase()));
+    this.canvas.addEventListener('mousedown', (e) => { this.canvas.focus({ preventScroll: true }); drag = { x: e.clientX, y: e.clientY, yaw: this.camGoal.yaw, pitch: this.camGoal.pitch, moved: false, pan: e.button === 2 || e.button === 1 || e.shiftKey, lx: e.clientX, ly: e.clientY }; });
     window.addEventListener('mouseup', (e) => { if (drag && !drag.moved) this._click(e); drag = null; });
     window.addEventListener('mousemove', (e) => {
       if (drag) {
         const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
         if (Math.abs(dx) + Math.abs(dy) > 4) drag.moved = true;
-        if (drag.moved) {
+        if (drag.moved && drag.pan) {
+          const k = Math.max(0.05, this.camGoal.dist * 0.0016);
+          this._pan(-(e.clientX - drag.lx) * k, (e.clientY - drag.ly) * k);
+        } else if (drag.moved) {
           this.userCam = true;
           this.camGoal.yaw = drag.yaw - dx * 0.006;
-          this.camGoal.pitch = Math.min(1.45, Math.max(0.08, drag.pitch + dy * 0.005));
+          this.camGoal.pitch = Math.min(1.52, Math.max(-1.2, drag.pitch + dy * 0.005));
         }
+        drag.lx = e.clientX; drag.ly = e.clientY;
         this.tip.style.display = 'none';
         return;
       }
       this._hover(e);
     });
     this.canvas.addEventListener('mouseleave', () => { this.hoverVid = null; this.tip.style.display = 'none'; });
-    this.canvas.addEventListener('dblclick', () => { this.manualCenter = false; this.selectedVid = null; this.userCam = false; this._applyModeCamera(); if (typeof this.onSelect === 'function') this.onSelect(null); });
+    this.canvas.addEventListener('dblclick', () => { this.resetCamera(); if (typeof this.onSelect === 'function') this.onSelect(null); });
     this.mini.addEventListener('click', (e) => {
       const r = this.mini.getBoundingClientRect();
       const f = (e.clientX - r.left - 8) / (r.width - 16);
       const L = this._roadL();
       this.center = this.targetCenter = this._roadX0() + Math.min(1, Math.max(0, f)) * L;
-      this.manualCenter = true; this.selectedVid = null; this.mode = 'follow'; this.userCam = false; this._applyModeCamera();
+      this.manualCenter = true; this.selectedVid = null; this.mode = 'follow'; this.focusZ = 0; this.userCam = false; this._applyModeCamera();
     });
   }
 
@@ -986,7 +1033,7 @@ class VANETRoadView3D {
     if (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom) return;
     const vid = this._pick(e);
     this.selectedVid = vid;
-    if (vid !== null) { this.manualCenter = false; this.mode = 'follow'; this.userCam = false; this._applyModeCamera(); }
+    if (vid !== null && !this.freeCam) { this.manualCenter = false; this.mode = 'follow'; this.userCam = false; this._applyModeCamera(); }
     if (typeof this.onSelect === 'function') this.onSelect(this.selectedVid);
   }
 

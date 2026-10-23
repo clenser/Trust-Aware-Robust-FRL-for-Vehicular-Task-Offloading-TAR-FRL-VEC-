@@ -47,6 +47,9 @@ class RSU:
         # multiplied by ``fault_delay_factor``.  Both default to a healthy node.
         self.fault_drop_prob = 0.0
         self.fault_delay_factor = 1.0
+        # Share of the CPU taken by co-tenants (edge-platform calibration);
+        # 0 means a dedicated RSU, which is the original behaviour.
+        self.background_share = 0.0
         self.num_cores = int(num_cores)  # Number of parallel processing cores
         self.is_rooftop = bool(is_rooftop)
         self.building_name = str(building_name)
@@ -88,6 +91,7 @@ class RSU:
     def _compute_service_time(self, task, channel):
         """Deterministic service time of a task on a single core."""
         cpu_per_core = self.cpu_capacity_ghz / self.num_cores
+        cpu_per_core *= max(0.1, 1.0 - self.background_share)
         delay_sec, energy_j = channel.compute_computation_delay(task.cpu_cycles_giga, cpu_per_core)
         return delay_sec, energy_j
 
@@ -239,6 +243,7 @@ class RSU:
             "num_cores": self.num_cores,
             "queue_length": self.get_queue_length(),
             "utilization": round(self.current_utilization, 2),
+            "background_share": round(self.background_share, 3),
             "is_malicious": self.is_malicious,
             "coverage_radius": self.coverage_radius_m,
             "total_processed": self.total_processed_tasks,

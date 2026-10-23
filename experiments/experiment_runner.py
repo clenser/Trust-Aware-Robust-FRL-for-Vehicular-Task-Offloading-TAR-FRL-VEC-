@@ -724,6 +724,38 @@ def _trust_greedy_action(env, v, task, min_trust=0.5):
     return best_action
 
 
+def _v2v_aware_action(env, v, task, use_trust, min_trust=0.5):
+    """Greedy minimum-estimated-delay heuristic that also considers the V2V peer.
+
+    ``use_trust`` False  -> trust-blind: RSUs and the peer are judged by estimated
+                            delay only (the peer is whichever the environment's
+                            selection rule returns).
+    ``use_trust`` True   -> candidates with behavioural trust below ``min_trust``
+                            are skipped (RSUs and the peer alike).
+    The peer delay estimate uses a nominal 50 Mbps V2V link (measured in this channel model: ~54 Mbps) and the peer's
+    advertised CPU and queue; it cannot see that a peer sabotages tasks.
+    """
+    if use_trust:
+        action = _trust_greedy_action(env, v, task, min_trust)
+    else:
+        action = _greedy_delay_action(env, v, task)
+    cur = {0: task.cpu_cycles_giga / max(1e-6, v.cpu_capacity_ghz) * (1 + v.queue_length)}
+    if action in (1, 2, 3):
+        r = env.rsus[action - 1]
+        per_core = r.cpu_capacity_ghz / max(1, r.num_cores)
+        service = task.cpu_cycles_giga / per_core
+        cur_est = task.data_size_mb * 8.0 / 20.0 + (r.queue_length / max(1, r.num_cores)) * service + service
+    else:
+        cur_est = cur[0]
+    peer, _ = env.select_v2v_peer(v)
+    if peer is None:
+        return action
+    if use_trust and env.trust_engine.behavior_tracker.get_trust(f"V{peer.vehicle_id}") < min_trust:
+        return action
+    est = task.data_size_mb * 8.0 / 50.0 + (peer.queue_length + 1) * task.cpu_cycles_giga / max(1e-6, peer.cpu_capacity_ghz)
+    return 4 if est < cur_est else action
+
+
 def run_heuristic_baseline(baseline_name, num_vehicles=None, attack_ratio=None,
                            mobility_mode=None, seed=None, config=None,
                            eval_config: Optional[EvaluationConfig] = None):
@@ -787,6 +819,10 @@ def run_heuristic_baseline(baseline_name, num_vehicles=None, attack_ratio=None,
                     action = _greedy_delay_action(env_eval, v, task)
                 elif baseline_name == "Trust_Greedy":
                     action = _trust_greedy_action(env_eval, v, task)
+                elif baseline_name == "Greedy_V2V":
+                    action = _v2v_aware_action(env_eval, v, task, use_trust=False)
+                elif baseline_name == "Trust_V2V":
+                    action = _v2v_aware_action(env_eval, v, task, use_trust=True)
                 else:
                     raise ValueError(baseline_name)
                 next_state, r_val, done, info, next_task = env_eval.step_vehicle(vid, action, task)

@@ -170,6 +170,13 @@ class SimulationState:
         self.attack_ratio = cfg_adv.get("attack_ratio", 0.24)
         self.mobility_mode = cfg_mob.get("scenario", "highway")
         self.rsu_x_positions: Optional[List[float]] = None
+        # Attack surface of the live console.  The console shows the FULL threat
+        # model by default - attackers poison their model uploads AND misbehave
+        # as V2V helpers - because a model-only attacker is invisible in the
+        # scene.  The offline benchmark keeps the model-only default.
+        self.data_plane_attack = True
+        self.v2v_peer_selection = "nearest"
+        self.edge_calibration = False
         self.aggregation_strategy = cfg_fl.get("aggregation_strategy", "trust_aware")
         self.alpha = cfg_trust.get("alpha", 0.50)
         self.exclusion_threshold = cfg_trust.get("exclusion_threshold_tau", 0.40)
@@ -377,6 +384,9 @@ class SimulationState:
             # random stream); benchmarks never do.
             live_cfg = copy.deepcopy(load_config())
             live_cfg.setdefault("task_profiles", {})["fast_sampling"] = True
+            live_cfg.setdefault("adversarial", {}).setdefault("data_plane", {})["enabled"] = bool(self.data_plane_attack)
+            live_cfg.setdefault("network", {})["v2v_peer_selection"] = self.v2v_peer_selection
+            live_cfg.setdefault("edge_calibration", {})["enabled"] = bool(self.edge_calibration)
             self.env = VANETOffloadingEnv(
                 config=live_cfg,
                 num_vehicles=self.num_vehicles,
@@ -521,7 +531,16 @@ class SimulationState:
                 # Record genuine offloading events with separated telemetry concepts.
                 if action > 0 and info["target"] not in ["None", "Local", ""] and not info["target"].endswith("_Local"):
                     v = self.env.vehicles[vid]
-                    ground_truth_malicious = v.role != "honest"
+                    # Ground truth is about the TARGET of the offload: a vehicle
+                    # helper with a non-honest role, or an RSU that is faulty now.
+                    is_v2v = (action == 4)
+                    target_role = None
+                    if is_v2v and info["target"].startswith("V") and info["target"][1:].isdigit():
+                        tv = self.env.vehicles.get(int(info["target"][1:]))
+                        target_role = tv.role if tv is not None else None
+                        ground_truth_malicious = bool(tv is not None and tv.role != "honest")
+                    else:
+                        ground_truth_malicious = info["target"] in self.env.faulty_rsu_ids()
                     task_failed = not info["success"]
 
                     # Detector alert: the trust engine actually flagged the target
@@ -543,6 +562,8 @@ class SimulationState:
                         "reward": info["reward"],
                         "energy_j": info.get("energy_j", 0.0),
                         "role": v.role,
+                        "v2v": is_v2v,
+                        "target_role": target_role,
                         "ground_truth_malicious": ground_truth_malicious,
                         "detector_alert": detector_alert,
                         "task_failed": task_failed,
@@ -1320,6 +1341,14 @@ class SimulationState:
                     "configured_vehicles": self.num_vehicles,
                     "configured_attack_ratio": self.attack_ratio,
                     "attackers": sum(1 for v in self.env.vehicles.values() if v.role != "honest"),
+                    "attack_model": ("model poisoning + data-plane (helper sabotage)"
+                                     if self.data_plane_attack else "model poisoning only"),
+                    "data_plane_attack": bool(self.data_plane_attack),
+                    "v2v_peer_selection": self.v2v_peer_selection,
+                    "edge_calibration": bool(self.edge_calibration),
+                    "v2v_helper_accepted": sum(v.helper_tasks_accepted for v in self.env.vehicles.values()),
+                    "v2v_helper_sabotaged": sum(v.helper_tasks_sabotaged for v in self.env.vehicles.values()),
+                    "rsu_background_share": [round(r.background_share, 2) for r in self.env.rsus],
                     "strategy": self.server.aggregation_strategy,
                     "fl_stage": self.fl_stage,
                     "fl_stage_detail": self.fl_stage_detail,
@@ -1385,6 +1414,11 @@ class SimulationState:
         }
         if geom:
             result["geometry"] = geom
+        integrity = getattr(self.env.mobility, "trace_integrity", None)
+        if integrity:
+            result["integrity"] = integrity
+            if integrity.get("status") == "verified":
+                result["note"] += " SHA-256 verified against the provenance record."
         return result
 
     # ------------------------------------------------------------------
@@ -1440,6 +1474,24 @@ class SimulationState:
                         raise HTTPException(400, "RSU positions must lie within [0, 3200] m")
                     self.rsu_x_positions = pos
                 updated["rsu_x_positions"] = self.rsu_x_positions
+                needs_rebuild = True
+
+            if "data_plane_attack" in config:
+                self.data_plane_attack = bool(config["data_plane_attack"])
+                updated["data_plane_attack"] = self.data_plane_attack
+                needs_rebuild = True
+
+            if "v2v_peer_selection" in config:
+                sel = str(config["v2v_peer_selection"])
+                if sel not in ("nearest", "trust_aware"):
+                    raise HTTPException(400, "v2v_peer_selection must be 'nearest' or 'trust_aware'")
+                self.v2v_peer_selection = sel
+                updated["v2v_peer_selection"] = sel
+                needs_rebuild = True
+
+            if "edge_calibration" in config:
+                self.edge_calibration = bool(config["edge_calibration"])
+                updated["edge_calibration"] = self.edge_calibration
                 needs_rebuild = True
 
             if "aggregation_strategy" in config:
@@ -1513,7 +1565,8 @@ class SimulationState:
             live = [k for k in updated if k not in ("rebuilt",)]
             return {"status": "updated", "config": updated,
                     "applied_live": [k for k in live if k not in
-                                     ("attack_ratio", "num_vehicles", "rsu_x_positions", "mobility_mode")],
+                                     ("attack_ratio", "num_vehicles", "rsu_x_positions", "mobility_mode",
+                                      "data_plane_attack", "v2v_peer_selection", "edge_calibration")],
                     "new_session_started": bool(updated.get("rebuilt"))}
 
     # ------------------------------------------------------------------

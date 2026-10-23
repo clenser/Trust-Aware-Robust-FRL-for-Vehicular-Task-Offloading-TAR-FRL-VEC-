@@ -13,6 +13,7 @@ import copy
 from environment.network import V2XChannel
 from environment.task import TaskGenerator
 from environment.rsu import RSU
+from environment.edge_calibration import EdgeCalibration
 from environment.vehicle import Vehicle
 from environment.mobility import HighwayMobility, TraceDrivenMobility
 from trust.trust_engine import TrustEngine
@@ -60,6 +61,28 @@ class VANETOffloadingEnv:
         # behavioural trust for the offloading decision can be measured.
         self.mask_trust_features = bool(cfg_model.get("mask_trust_features", False))
         self.faulty_rsus_cfg = list(cfg_adv.get("faulty_rsus", []) or [])
+        # Data-plane behaviour of the model-level attackers.  A poisoning
+        # vehicle may also sabotage the V2V tasks it is asked to serve, and a
+        # free rider is selfish: it refuses most helper work.  Both default to
+        # off, so the published benchmark (where the attackers behave honestly
+        # as helpers) is reproduced exactly.
+        dp = cfg_adv.get("data_plane") or {}
+        self.data_plane_enabled = bool(dp.get("enabled", False))
+        self.dp_malicious_drop = float(dp.get("malicious_drop_prob", 0.7))
+        self.dp_malicious_delay = float(dp.get("malicious_delay_factor", 3.0))
+        self.dp_selfish_drop = float(dp.get("selfish_drop_prob", 0.8))
+        # V2V peer choice: "nearest" (original) or "trust_aware" (scores every
+        # in-range, present peer by observed trust, proximity and spare queue).
+        # Optional compute-rich helper vehicles (e.g. trucks carrying an on-board
+        # server).  An ASSUMPTION, off by default: with the default 0.8-2 GHz
+        # automotive SoCs a peer is never faster than the vehicle itself, so V2V
+        # offloading cannot pay off whatever the policy.
+        vc = (config or {}).get("mobility", {}).get("vehicle_compute") or {}
+        self.rich_fraction = float(vc.get("rich_fraction", 0.0))
+        self.rich_cpu_range = tuple(vc.get("rich_cpu_ghz", (4.0, 8.0)))
+        self.v2v_peer_selection = str((cfg_net.get("v2v_peer_selection") or "nearest"))
+        if self.v2v_peer_selection not in ("nearest", "trust_aware"):
+            raise ValueError("network.v2v_peer_selection must be 'nearest' or 'trust_aware'")
         self.num_vehicles = int(num_vehicles if num_vehicles is not None else cfg_mob.get("num_vehicles", 20))
         self.attack_ratio = float(attack_ratio if attack_ratio is not None else cfg_adv.get("attack_ratio", 0.2))
         self.mobility_mode = str(mobility_mode if mobility_mode is not None else cfg_mob.get("scenario", "highway"))
@@ -187,6 +210,18 @@ class VANETOffloadingEnv:
                 for i, pos in enumerate(rsu_positions)
             ]
         
+        # Optional empirical edge calibration (Alibaba edge-platform trace).
+        self.current_time_sec = 0.0
+        self.edge_cal = EdgeCalibration.from_config(config, seed=self.random_seed)
+        if self.edge_cal is not None:
+            scales = self.edge_cal.capacity_scale(len(self.rsus))
+            self._site_factors = self.edge_cal.site_factors(len(self.rsus))
+            for rsu, sc in zip(self.rsus, scales):
+                rsu.cpu_capacity_ghz *= sc
+            self._apply_background_load()
+        else:
+            self._site_factors = [1.0] * len(self.rsus)
+
         # Optional user-specified RSU placement along the road axis.  It is only
         # valid for the procedural highway: a trace replay places the RSUs
         # inside the observed road segment, and arbitrary positions there would
@@ -271,6 +306,12 @@ class VANETOffloadingEnv:
             )
             v.v2v_range_m = float(self.config.get("network", {}).get("v2v_comm_range_m", 180.0)) if self.config else 180.0
             v.trust_score = init_t
+            if self.data_plane_enabled:
+                if role == "poisoning":
+                    v.helper_drop_prob = self.dp_malicious_drop
+                    v.helper_delay_factor = self.dp_malicious_delay
+                elif role == "free_rider":
+                    v.helper_drop_prob = self.dp_selfish_drop
             self.vehicles[vid] = v
 
             node_key = f"V{vid}"
@@ -291,6 +332,13 @@ class VANETOffloadingEnv:
             }
             self.trust_engine.final_trust_scores[node_key] = init_t
             
+        if self.rich_fraction > 0.0:
+            rs = np.random.RandomState(int(self.random_seed) + 41)
+            n_rich = int(round(self.rich_fraction * self.num_vehicles))
+            for vid in rs.choice(sorted(self.vehicles), size=n_rich, replace=False):
+                self.vehicles[int(vid)].cpu_capacity_ghz = float(rs.uniform(*self.rich_cpu_range))
+                self.vehicles[int(vid)].vclass = "Truck"
+
         # Distribute along 2400m highway with safe headway spacing
         self.mobility.initialize_spaced_positions(self.vehicles)
             
@@ -308,6 +356,7 @@ class VANETOffloadingEnv:
         if self._rotating is not None and self.step_count % self._rotating["every"] == 0:
             self._rotate_fault()
         self.mobility.step(self.vehicles)
+        self._apply_background_load()
 
         # Advance the edge and vehicle queue simulations so that the waiting
         # times, service times and completion counters reflect the work that
@@ -318,6 +367,41 @@ class VANETOffloadingEnv:
             v.step(self.current_time_sec)
 
 
+
+    def _apply_background_load(self):
+        """Set each RSU's co-tenant CPU share from the empirical diurnal profile."""
+        if self.edge_cal is None:
+            return
+        for rsu, f in zip(self.rsus, self._site_factors):
+            rsu.background_share = self.edge_cal.background_share(self.current_time_sec, f)
+
+    def _v2v_candidates(self, v):
+        """In-range, currently present peers of ``v`` with their distance."""
+        out = []
+        for p_id, p in self.vehicles.items():
+            if p_id == v.vehicle_id or not getattr(p, "active", True):
+                continue
+            d = v.get_distance_to(p.x, p.y)
+            if d <= v.v2v_range_m:
+                out.append((p, d))
+        return out
+
+    def select_v2v_peer(self, v):
+        """Peer used by action 4 and described by the peer state features."""
+        cands = self._v2v_candidates(v)
+        if not cands:
+            return None, 999.0
+        if self.v2v_peer_selection == "nearest":
+            return min(cands, key=lambda c: c[1])
+        tracker = self.trust_engine.behavior_tracker
+
+        def score(c):
+            p, d = c
+            spare = 1.0 - p.queue_length / float(p.max_queue)
+            return (tracker.get_trust(f"V{p.vehicle_id}")
+                    + 0.35 * (1.0 - d / v.v2v_range_m) + 0.15 * spare
+                    + 0.1 * (p.cpu_capacity_ghz / 2.0))
+        return max(cands, key=score)
 
     def _rotate_fault(self):
         """Move the rotating fault to a different RSU (never the same one twice in a row)."""
@@ -373,13 +457,10 @@ class VANETOffloadingEnv:
         # Find best candidate peer vehicle
         best_peer_dist = 999.0
         best_peer_trust = 0.5
-        for peer_id, peer in self.vehicles.items():
-            if peer_id == v.vehicle_id:
-                continue
-            dist = v.get_distance_to(peer.x, peer.y)
-            if dist <= v.v2v_range_m and dist < best_peer_dist:
-                best_peer_dist = dist
-                best_peer_trust = self.trust_engine.behavior_tracker.get_trust(f"V{peer_id}")
+        peer, dist = self.select_v2v_peer(v)
+        if peer is not None:
+            best_peer_dist = dist
+            best_peer_trust = self.trust_engine.behavior_tracker.get_trust(f"V{peer.vehicle_id}")
                 
         half_len = max(100.0, self.road_length / 2.0)
         if self.state_features == "v2.1":
@@ -578,7 +659,12 @@ class VANETOffloadingEnv:
                     # adjacent RSU (Xn handover, 25 ms signalling) if one covers
                     # the end position, otherwise the task is lost.
                     handover_candidates = [r for r in self.rsus if r.get_distance_to(end_x, v.y) <= r.coverage_radius_m]
-                    if handover_candidates:
+                    if handover_candidates and self.edge_cal is not None:
+                        # Measured inter-site backhaul: delay and loss of the hand-over.
+                        handover_delay = self.edge_cal.handover_delay_sec()
+                        if self.edge_cal.handover_lost():
+                            tx_delay = float('inf')
+                    elif handover_candidates:
                         handover_delay = 0.025
                     else:
                         tx_delay = float('inf')
@@ -608,16 +694,8 @@ class VANETOffloadingEnv:
             # 3. V2V Peer Offloading
             target_name = "V2V_Peer"
             # Locate nearest vehicle peer in front or behind
-            best_peer = None
-            best_dist = 999.0
-            for p_id, p in self.vehicles.items():
-                if p_id == vid:
-                    continue
-                d = v.get_distance_to(p.x, p.y)
-                if d <= v.v2v_range_m and d < best_dist:
-                    best_dist = d
-                    best_peer = p
-                    
+            best_peer, best_dist = self.select_v2v_peer(v)
+
             if best_peer is None:
                 # No peer in range -> Task drops
                 target_name = "None"

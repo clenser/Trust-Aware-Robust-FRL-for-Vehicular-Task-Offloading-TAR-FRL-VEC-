@@ -1,0 +1,13 @@
+# REPRODUCIBILITY FINGERPRINT of the local copy of the FHWA NGSIM raw export.
+#
+# The official USDOT catalogue publishes NO checksum for dataset 8ect-6jqj,
+# so this hash is a fingerprint, not an authenticity proof.  It is listed
+# here because it was established independently: the file was downloaded
+# again from the official endpoint and compared byte-for-byte, and the
+# evidence is recorded in data/source/verification_record.json
+# (retrieval date, source URL, portal metadata, official licence).
+#
+# Official source : https://data.transportation.gov/api/views/8ect-6jqj/rows.csv?accessType=DOWNLOAD
+# Dataset id      : 8ect-6jqj
+# Licence         : Creative Commons Attribution | Share Alike 3.0 Unported (CC BY-SA 3.0)
+6b1516b78d60d9a4e7b90905cf4893ddadfdeb01a69e7cd6d3079e170957ecc6  us101_raw.csv

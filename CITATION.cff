@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this simulator or its evaluation protocol, please cite it as below."
+title: "VANNET: evaluating trust-aware federated RL for VANET task offloading"
+type: software
+authors:
+  - family-names: "Barman"
+    given-names: "Sreemanta"
+date-released: 2026-10-23

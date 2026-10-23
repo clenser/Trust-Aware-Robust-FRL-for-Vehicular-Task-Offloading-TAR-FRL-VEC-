@@ -1,0 +1,239 @@
+{
+  "generated_utc": "2026-10-22T23:53:29.360633+00:00",
+  "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+  "results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+  "results_file_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+  "metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+  "metadata_file_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+  "output_dir": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\plots",
+  "num_seeds": 16,
+  "seeds": [
+    42,
+    101,
+    202,
+    303,
+    404,
+    505,
+    606,
+    707,
+    808,
+    909,
+    1010,
+    1111,
+    1212,
+    1313,
+    1414,
+    1515
+  ],
+  "cross_check_problems": [],
+  "figures": [
+    {
+      "filename": "fig1_baseline_comparison.png",
+      "title": "Fig 1: Baseline latency and task-completion rate",
+      "sha256": "6ec3c25696195cf17776ba54fcb5acaa35c08d027319040bbe3e127c73582fbb",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_a_baseline_comparison",
+      "source_records": "experiment_a_baseline_comparison.<method>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Latency and task-completion rate per method, recomputed from the per-seed records of the main comparison.",
+      "series": [
+        "Proposed_TFRL",
+        "Standard_FedAvg_RL",
+        "Robust_FL_Median",
+        "Robust_FL_TrimmedMean",
+        "Robust_FL_MultiKrum",
+        "Non_Federated_D3QN",
+        "FedAvg_Clean_Reference",
+        "Oracle_Exclusion_Upper_Bound",
+        "Local_Only",
+        "Random_Valid",
+        "Nearest_RSU",
+        "Resource_Aware"
+      ]
+    },
+    {
+      "filename": "fig2_paired_differences.png",
+      "title": "Fig 2: Paired latency differences against Proposed TFRL",
+      "sha256": "a6232615976b1074da4c0f16d9da0194042459e515dc27956e0adf1f79e110a4",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_a_baseline_comparison + experiment_a_paired_comparison",
+      "source_records": "experiment_a_baseline_comparison.<method>.per_seed_results[] (paired against Proposed_TFRL by seed)",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Paired latency difference of every method against Proposed TFRL; sign convention: difference = compared method - Proposed TFRL.",
+      "series": [
+        "Standard_FedAvg_RL",
+        "Robust_FL_Median",
+        "Robust_FL_TrimmedMean",
+        "Robust_FL_MultiKrum",
+        "Non_Federated_D3QN",
+        "FedAvg_Clean_Reference",
+        "Oracle_Exclusion_Upper_Bound",
+        "Local_Only",
+        "Random_Valid",
+        "Nearest_RSU",
+        "Resource_Aware"
+      ]
+    },
+    {
+      "filename": "fig3_attack_ratio_sweep.png",
+      "title": "Fig 3: Latency vs. malicious-client ratio",
+      "sha256": "ac5b83ce26290246d3715271b16181317312b5125169732905ef5b90757fc58c",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_c_attack_ratio_sweep",
+      "source_records": "experiment_c_attack_ratio_sweep.<ratio>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Latency as a function of the malicious-client ratio.",
+      "series": [
+        "0.0",
+        "0.24",
+        "0.4"
+      ]
+    },
+    {
+      "filename": "fig4_ablation_study.png",
+      "title": "Fig 4: Ablation of the trust components",
+      "sha256": "850d0609ffdfc492c45b4af7afdad6d05d51b0c6cc3ce3b2f3a0ad230a2f7a06",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_d_ablation",
+      "source_records": "experiment_d_ablation.<variant>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Ablation of the two trust components.",
+      "series": [
+        "Full_Proposed",
+        "FedAvg_RL_No_Trust",
+        "Without_Behavioral_Trust",
+        "Without_Model_Trust",
+        "Without_Exclusion",
+        "Without_Trust_Weighting"
+      ]
+    },
+    {
+      "filename": "fig5_sensitivity_alpha.png",
+      "title": "Fig 5: Sensitivity to the joint-trust weight alpha",
+      "sha256": "8af0236b34290ba3379586b06f68b4aa91efe5e0536dd3ac99993145bc260cee",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_e_alpha_sensitivity",
+      "source_records": "experiment_e_alpha_sensitivity.<alpha>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Sensitivity of latency and completion to the trust-mixing weight.",
+      "series": [
+        "0.0",
+        "0.2",
+        "0.5",
+        "0.8",
+        "1.0"
+      ]
+    },
+    {
+      "filename": "fig6_mobility_sweep.png",
+      "title": "Fig 6: Latency and completion by mobility mode",
+      "sha256": "c26cd5a28f5fb0f2b0ac648e3ca3bbd14d282bfb232ea3900c33c44c98243151",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_b_mobility_sweep",
+      "source_records": "experiment_b_mobility_sweep.<mode>.per_seed_results[]",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Latency and completion by mobility mode.",
+      "series": [
+        "highway",
+        "authentic_trace"
+      ]
+    },
+    {
+      "filename": "fig7_downstream_claims.png",
+      "title": "Fig 7: Downstream claims - paired completion differences with Holm-adjusted verdicts",
+      "sha256": "9f2ef9189c37bef0bf9bade3deb7ed0a9376e766e6ca0d688d02e9ddf6d67dde",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_a_baseline_comparison",
+      "source_records": "experiment_a_baseline_comparison.<method>.per_seed_results[].completion_rate (paired by seed)",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Forest plot of the eight pre-specified paired comparisons of task completion.",
+      "series": [
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "H6",
+        "H7",
+        "H8"
+      ]
+    },
+    {
+      "filename": "fig8_defence_by_attack_ratio.png",
+      "title": "Fig 8: Defence benefit and cost by attack ratio",
+      "sha256": "51d5ceceb87ef86356587f5eee63cc0be05faefd3cce7a07eed0e69ed038f18d",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_c_attack_ratio_sweep + experiment_c2_attack_ratio_fedavg",
+      "source_records": "experiment_c*.<ratio>.per_seed_results[].completion_rate",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Completion of FedAvg and trust-aware aggregation as the malicious fraction grows.",
+      "series": [
+        "0.0",
+        "0.24",
+        "0.4"
+      ]
+    },
+    {
+      "filename": "fig9_detector_comparison.png",
+      "title": "Fig 9: Detector comparison on real federated updates and false exclusions over rounds",
+      "sha256": "56982e4675402a46f9a9e2bb6cf28c20a65a178df2d30315b6c85d79bfaa5f37",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_a_baseline_comparison.Proposed_TFRL",
+      "source_records": "Proposed_TFRL.per_seed_results[].confusion_counts / training_rounds[] / pooled_shadow_confusion",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "Deployed detector vs shadow rules on identical updates, and the false-exclusion rate per round.",
+      "series": [
+        "deployed",
+        "krum",
+        "cosine_median",
+        "distance_mad"
+      ]
+    },
+    {
+      "filename": "fig10_attack_families.png",
+      "title": "Fig 10: Detection by attack family",
+      "sha256": "0705b4af0abe64cd37f1aea3e7caeb98a1b27a6bba8195d7673eeb8ba5cb1926",
+      "experiment_id": "run_20261023_022608_env_v21_coverage_features",
+      "source_experiment": "experiment_f_attack_families",
+      "source_records": "experiment_f_attack_families.<attack>/trust_aware.pooled_(shadow_)confusion",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\benchmark_results.json",
+      "source_results_sha256": "5435540ced4d3bdbf1ca476fa4c6c5be52dfb1836ef8115952d57b5b4c01bebe",
+      "source_metadata_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\run_20261023_022608_env_v21_coverage_features\\metadata.json",
+      "source_metadata_sha256": "5b4c9580b25cd7a722ae518b018609f6eae85b14031415bb77a4541c54243e91",
+      "description": "TPR of the deployed detector and two shadow rules per attack family.",
+      "series": [
+        "intermittent_sign_flip_p0.5",
+        "sign_flip_full",
+        "sign_flip_partial_25",
+        "stealth_sign_flip_norm_matched"
+      ]
+    }
+  ]
+}

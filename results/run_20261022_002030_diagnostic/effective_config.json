@@ -1,0 +1,144 @@
+{
+  "system": {
+    "random_seed": 42,
+    "simulation_duration_sec": 300,
+    "time_step_dt": 0.5,
+    "max_steps": 300
+  },
+  "mobility": {
+    "scenario": "highway",
+    "trace_dataset": "data/synthetic_traces/synthetic_ngsim_highway.csv",
+    "authentic_trace_dataset": "data/traces/ngsim_us101_authentic.csv",
+    "road_length_m": 3200.0,
+    "num_lanes": 5,
+    "lane_width_m": 3.75,
+    "num_vehicles": 25,
+    "speed_range_mps": [
+      14.0,
+      32.0
+    ]
+  },
+  "edge_nodes": {
+    "num_rsus": 3,
+    "positions_m": [
+      420.0,
+      1480.0,
+      2460.0
+    ],
+    "rsu_cpu_capacity_ghz": 32.0,
+    "coverage_radius_m": 480.0,
+    "rsu_nodes": [
+      {
+        "id": "RSU_1",
+        "x_m": 420.0,
+        "y_m": 15.0,
+        "z_height_m": 14.0,
+        "cpu_capacity_ghz": 32.0,
+        "coverage_radius_m": 480.0,
+        "num_cores": 8,
+        "is_rooftop": false,
+        "building_name": "Roadside Pole gNodeB"
+      },
+      {
+        "id": "RSU_2",
+        "x_m": 1480.0,
+        "y_m": -42.0,
+        "z_height_m": 38.0,
+        "cpu_capacity_ghz": 48.0,
+        "coverage_radius_m": 650.0,
+        "num_cores": 16,
+        "is_rooftop": true,
+        "building_name": "Apex Tech Center (Rooftop 5G)"
+      },
+      {
+        "id": "RSU_3",
+        "x_m": 2460.0,
+        "y_m": 38.0,
+        "z_height_m": 28.0,
+        "cpu_capacity_ghz": 40.0,
+        "coverage_radius_m": 550.0,
+        "num_cores": 12,
+        "is_rooftop": true,
+        "building_name": "Logistics Cloud Hub (Rooftop 5G)"
+      }
+    ]
+  },
+  "network": {
+    "carrier_frequency_ghz": 5.9,
+    "channel_bandwidth_mhz": 20.0,
+    "tx_power_dbm": 23.0,
+    "noise_power_dbm": -95.0,
+    "v2v_comm_range_m": 180.0
+  },
+  "task_profiles": {
+    "catalog_csv": "data/synthetic_traces/synthetic_v2x_task_profiles.csv",
+    "cooperative_perception": {
+      "data_size_mb": 0.45,
+      "cpu_cycles_giga": 0.22,
+      "deadline_ms": 160.0
+    },
+    "sensor_fusion": {
+      "data_size_mb": 0.18,
+      "cpu_cycles_giga": 0.12,
+      "deadline_ms": 90.0
+    },
+    "video_analytics": {
+      "data_size_mb": 0.95,
+      "cpu_cycles_giga": 0.4,
+      "deadline_ms": 280.0
+    },
+    "trajectory_planning": {
+      "data_size_mb": 0.08,
+      "cpu_cycles_giga": 0.06,
+      "deadline_ms": 65.0
+    }
+  },
+  "trust_management": {
+    "alpha": 0.5,
+    "beta_weight": 0.5,
+    "temporal_decay_eta": 0.85,
+    "exclusion_threshold_tau": 0.4,
+    "penalty_weight": 0.35,
+    "initial_trust_prior": 0.7,
+    "behavioral_weights": {
+      "historical_b": 0.3,
+      "reliability_r": 0.35,
+      "availability_a": 0.15,
+      "communication_c": 0.2
+    }
+  },
+  "federated_learning": {
+    "aggregation_strategy": "trust_aware",
+    "num_rounds": 10,
+    "steps_per_round": 10,
+    "local_epochs": 2,
+    "learning_rate": 0.001,
+    "batch_size": 32,
+    "gamma_discount": 0.95,
+    "epsilon_start": 1.0,
+    "epsilon_min": 0.05,
+    "epsilon_decay": 0.995,
+    "eval_episodes": 3,
+    "eval_steps": 20,
+    "eval_seed_offset": 500000,
+    "min_buffer_size": 10,
+    "min_clients": 2,
+    "fl_interval_steps": 20
+  },
+  "reinforcement_learning": {
+    "learning_rate": 0.001,
+    "gamma": 0.95,
+    "epsilon_start": 1.0,
+    "epsilon_min": 0.05,
+    "epsilon_decay": 0.995,
+    "buffer_capacity": 10000,
+    "batch_size": 32,
+    "target_update_freq": 20
+  },
+  "adversarial": {
+    "attack_ratio": 0.24,
+    "poison_type": "sign_flip",
+    "poison_strength": 1.5,
+    "free_riding_ratio": 0.5
+  }
+}

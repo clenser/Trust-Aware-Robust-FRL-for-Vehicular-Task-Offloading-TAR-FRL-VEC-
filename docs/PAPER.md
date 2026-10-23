@@ -1,4 +1,6 @@
-# Does excluding poisoned clients protect a federated task-offloading policy? A paired evaluation in a simulated vehicular edge network
+# Evaluating trust-aware federated RL for VANET offloading: a downstream-impact protocol
+
+*Sreemanta Barman.  Subtitle: does excluding poisoned clients protect a federated task-offloading policy?  A paired evaluation in a simulated vehicular edge network.*
 
 *Draft manuscript generated from the active benchmark run.  Every number is
 taken from `results/claims_report.md` / `results/benchmark_results.json` (run
@@ -373,3 +375,19 @@ short training budget, a state that is too coarse to separate a transient fault 
 congestion.
 
 Target-venue note: with one supported headline claim and null or negative supplementary results, the work fits a workshop or an evaluation/negative-results track better than IEEE TVT/TMC or INFOCOM main tracks until a method improvement is demonstrated.
+
+---
+
+## Extended experiments: data-plane attacks, V2V trust and empirical edge calibration
+
+*Run `run_20261023_165008_extended_data_plane_edge_calibration` (6 seeds, same protocol as the supplementary run; exploratory, not multiplicity-corrected; Fig. 13).  The active benchmark is unchanged.*
+
+**Motivation.**  A system audit (`docs/SYSTEM_AUDIT.md`) found that the benchmark's model-level attackers behaved honestly as V2V helpers, so the behavioural tier of the trust framework had nothing to detect.  The "behavioural trust adds nothing" finding is therefore conditional on that threat model.  We add a data-plane attacker (poisoning vehicles drop 70 % of V2V tasks and slow the rest 3x; free riders refuse 80 %), compute-rich helper vehicles (30 % at 4-8 GHz; without them a peer is never faster than the requester and V2V cannot pay off), and a trust-aware peer-selection rule.
+
+**P - V2V heuristics under the data-plane attack.**  The attack costs a trust-blind V2V heuristic 2.9 pp (CI [-3.6, -2.2]).  A heuristic that skips peers with behavioural trust below 0.5 recovers 0.9 pp (CI [+0.7, +1.1]), and one that also selects the peer by trust, proximity and spare queue recovers 2.2 pp (CI [+1.5, +2.9]), i.e. it is back to the unattacked level.  Two cautions: (i) the peer-selection rule also gains 1.6 pp (CI [+1.1, +2.1]) *without* any attack, so part of the gain is spare-queue and CPU awareness, not trust; the trust-gating effect alone is +0.9 pp under attack versus +0.1 pp without (a small but attack-specific effect); (ii) under attack a trust-blind V2V heuristic is 1.8 pp worse than the same heuristic ignoring V2V altogether (CI [-3.3, -0.3]).  This is the first measurement in this project in which behavioural trust has a measurable, attack-specific benefit, and it is small (about 1 pp).
+
+**Q - learned policy under the data-plane attack.**  With trust features 77.6 % versus 76.7 % masked (+0.9 pp, CI [-1.4, +3.3]): not established.  The learned policy does not exploit behavioural trust even where a heuristic does.
+
+**R - empirical edge calibration** (Alibaba edge-platform trace: co-tenant load following the measured diurnal profile, measured hand-over delay and loss).  At the 20:00 peak the co-tenant share reaches about 60 % of RSU CPU and Nearest-RSU collapses to 16.8 % completion; Resource-Aware holds 59.9 %.  The learned policy (58.3 %) is identical to Local-Only: it has collapsed to local execution.  At the 05:00 trough it is 12.9 pp below Resource-Aware (CI [-24.6, -1.2]).  **The learned policy still does not beat a simple load-aware heuristic.**
+
+**Reading.**  These results strengthen the honest-evaluation framing: the threat model determines whether behavioural trust matters, load-awareness matters more than trust or learning, and the DQN has not learned to use the information the heuristics use.  Effects in P are small and come from 6 seeds.  Limits: the attack is scripted, the trace calibrates only the edge side (it contains no vehicular data), and its capacity heterogeneity is damped and clipped.

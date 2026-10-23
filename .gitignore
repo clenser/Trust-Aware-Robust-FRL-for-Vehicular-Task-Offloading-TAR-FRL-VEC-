@@ -143,6 +143,8 @@ Thumbs.db
 # Large files / data
 *.pdf
 *.png
+!evidence/**/*.png
+!plots/*.png
 *.jpg
 *.jpeg
 *.gif
@@ -150,10 +152,26 @@ Thumbs.db
 *.tiff
 *.ico
 
-# Data directories
-data/
-results/
-plots/
+# Data: code, provenance and small summaries are tracked; raw/large data are not
+data/source/us101_raw.csv
+Full_trace/
+Full_trace.7z
+*.7z
+
+# Results: small reports and run metadata are tracked (the evidence behind the
+# paper); the 250 MB raw per-round benchmark dumps are shipped gzipped under
+# evidence/ instead (see experiments/export_evidence.py).
+results/*
+!results/*.json
+!results/*.md
+results/benchmark_results.json
+!results/run_*/
+results/run_*/*
+!results/run_*/metadata.json
+!results/run_*/effective_config.json
+!results/run_*/plots/
+!evidence/
+!plots/*.png
 *.csv
 *.pkl
 *.pickle

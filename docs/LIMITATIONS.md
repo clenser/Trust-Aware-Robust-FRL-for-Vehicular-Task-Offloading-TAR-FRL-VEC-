@@ -129,3 +129,20 @@ claimed is the evaluation methodology, the corrected labels for unreliable-but-h
 vehicles, and the negative results with their limits.  Possible reasons (untested):
 short training budget, a state that is too coarse to separate a transient fault from
 congestion.
+
+## Added with the extended experiments (October 2026)
+
+* The data-plane attack is scripted (fixed drop probability and delay factor); a
+  real attacker could adapt, collude or bad-mouth.
+* Compute-rich helper vehicles are an assumption.  Without them V2V offloading
+  cannot pay off in this model (all vehicles are 0.8-2 GHz).
+* The Alibaba trace calibrates RSU co-tenant load, capacity spread and hand-over
+  delay/loss only.  It has no vehicles, tasks or radio; capacity spread is damped
+  (power 0.35, clipped 0.6-1.4) and the 288x day compression is a modelling choice.
+  Block-sampled statistics (40 x 16 MiB of 36 GB of RTT data) are not a census.
+* The extended experiments use 6 seeds and are exploratory.
+* The learned policy was not improved: under edge calibration it collapses to
+  local execution, and no method change that beats the heuristics was found.
+* Roles, vehicle CPUs and drop draws use the global NumPy RNG, seeded per run by the
+  experiment runner; the live console is not seed-reproducible.
+

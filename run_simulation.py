@@ -3,6 +3,8 @@ Launcher for the Trust-Aware Federated Reinforcement Learning VANET Simulator.
 Starts the FastAPI Web and WebSocket server on http://localhost:8000
 """
 
+__author__ = "Sreemanta Barman"
+
 import uvicorn
 import webbrowser
 import os

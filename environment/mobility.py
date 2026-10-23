@@ -144,8 +144,11 @@ class TraceDrivenMobility:
 
         cached = self._TRACE_CACHE.get(cache_key)
         if cached is None:
+            integrity = self._verify_trace_integrity()
             cached = self._parse_trace()
+            cached["integrity"] = integrity
             self._TRACE_CACHE[cache_key] = cached
+        self.trace_integrity = cached.get("integrity", {"status": "not_checked"})
 
         self.df = cached["df"]
         self.trace_data = cached["trace_data"]
@@ -157,6 +160,37 @@ class TraceDrivenMobility:
         self.trace_lane_count = cached["lane_count"]
         self.trace_vehicle_count = cached["vehicle_count"]
         self.trace_duration_sec = cached["duration"]
+
+    def _verify_trace_integrity(self):
+        """Check the trace file against the SHA-256 recorded in its provenance file.
+
+        A trace with a ``<name>.provenance.json`` sibling is verified before it is
+        replayed, so a silently modified or truncated recording cannot be used by
+        accident.  A trace without a provenance record (the synthetic ones) is
+        reported as ``unverified``.  Set ``VANNET_SKIP_TRACE_HASH=1`` to skip the
+        check (it costs about one second for the 4-million-row NGSIM export).
+        """
+        import hashlib
+        import json
+        prov_path = os.path.splitext(self.trace_file)[0] + ".provenance.json"
+        if os.environ.get("VANNET_SKIP_TRACE_HASH") == "1":
+            return {"status": "skipped"}
+        if not os.path.exists(prov_path):
+            return {"status": "unverified", "reason": "no provenance record"}
+        with open(prov_path, encoding="utf-8") as fh:
+            expected = (json.load(fh).get("output") or {}).get("sha256")
+        if not expected:
+            return {"status": "unverified", "reason": "provenance record has no checksum"}
+        h = hashlib.sha256()
+        with open(self.trace_file, "rb") as fh:
+            for block in iter(lambda: fh.read(1 << 22), b""):
+                h.update(block)
+        if h.hexdigest() != expected:
+            raise ValueError(
+                "trace integrity check failed for %s: sha256 %s does not match the "
+                "recorded %s (regenerate it with data/source/prepare_ngsim.py)"
+                % (self.trace_file, h.hexdigest(), expected))
+        return {"status": "verified", "sha256": expected}
 
     def _parse_trace(self):
         """Read the CSV, convert the schema and index it by timestamp."""

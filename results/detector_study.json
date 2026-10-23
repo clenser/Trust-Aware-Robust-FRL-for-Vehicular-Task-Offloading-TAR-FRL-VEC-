@@ -1,0 +1,2767 @@
+{
+  "protocol_comparison": {
+    "validation": {
+      "False": {
+        "honest_false_positives": 19,
+        "honest_denominator": 160,
+        "honest_fpr": 0.11875,
+        "free_rider_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 25,
+            "fn": 0,
+            "tn": 153
+          },
+          "tpr": 1.0,
+          "fpr": 0.1404494382022472,
+          "fnr": 0.0,
+          "precision": 0.07407407407407407,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.1404494382022472,
+            "n": 178,
+            "ci95_low": 0.09697634357915351,
+            "ci95_high": 0.1991137734444563
+          },
+          "honest_denominator": 178,
+          "malicious_denominator": 2
+        },
+        "per_scenario": {
+          "honest_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_benign_outlier": {
+            "confusion": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.05,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "honest_varying_participation": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_fully_disjoint": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_small_legitimate_update": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_idle_clients": {
+            "confusion": {
+              "tp": 0,
+              "fp": 6,
+              "fn": 0,
+              "tn": 14
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 6,
+              "fn": 0,
+              "tn": 14,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.3,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.7
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "honest_idle_majority": {
+            "confusion": {
+              "tp": 0,
+              "fp": 12,
+              "fn": 0,
+              "tn": 8
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 12,
+              "fn": 0,
+              "tn": 8,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.6,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.4
+            },
+            "non_participants": [
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "adversarial_free_rider_with_idle": {
+            "confusion": {
+              "tp": 2,
+              "fp": 6,
+              "fn": 0,
+              "tn": 12
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 6,
+              "fn": 0,
+              "tn": 12,
+              "n_decisions": 20,
+              "n_malicious": 2,
+              "n_honest": 18,
+              "tpr": 1.0,
+              "fpr": 0.3333333333333333,
+              "fnr": 0.0,
+              "precision": 0.25,
+              "recall": 1.0,
+              "accuracy": 0.7
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          }
+        }
+      },
+      "True": {
+        "honest_false_positives": 1,
+        "honest_denominator": 142,
+        "honest_fpr": 0.007042253521126761,
+        "free_rider_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tn": 153
+          },
+          "tpr": 1.0,
+          "fpr": 0.006493506493506494,
+          "fnr": 0.0,
+          "precision": 0.6666666666666666,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.006493506493506494,
+            "n": 154,
+            "ci95_low": 0.0011471844871179318,
+            "ci95_high": 0.035861209036830544
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        },
+        "per_scenario": {
+          "honest_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_benign_outlier": {
+            "confusion": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.05,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "honest_varying_participation": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_fully_disjoint": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_small_legitimate_update": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_idle_clients": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 14
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 14,
+              "n_decisions": 14,
+              "n_malicious": 0,
+              "n_honest": 14,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "honest_idle_majority": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 8
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 8,
+              "n_decisions": 8,
+              "n_malicious": 0,
+              "n_honest": 8,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "adversarial_free_rider_with_idle": {
+            "confusion": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 0,
+              "tn": 12
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 0,
+              "tn": 12,
+              "n_decisions": 14,
+              "n_malicious": 2,
+              "n_honest": 12,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          }
+        }
+      }
+    },
+    "heldout": {
+      "False": {
+        "honest_false_positives": 19,
+        "honest_denominator": 180,
+        "honest_fpr": 0.10555555555555556,
+        "free_rider_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 38,
+            "fp": 25,
+            "fn": 4,
+            "tn": 293
+          },
+          "tpr": 0.9047619047619048,
+          "fpr": 0.07861635220125786,
+          "fnr": 0.09523809523809523,
+          "precision": 0.6031746031746031,
+          "tpr_ci": {
+            "value": 0.9047619047619048,
+            "n": 42,
+            "ci95_low": 0.7793489418773291,
+            "ci95_high": 0.9623377512022161
+          },
+          "fpr_ci": {
+            "value": 0.07861635220125786,
+            "n": 318,
+            "ci95_low": 0.05381505286535558,
+            "ci95_high": 0.11347681506080824
+          },
+          "honest_denominator": 318,
+          "malicious_denominator": 42
+        },
+        "per_scenario": {
+          "honest_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_benign_outlier": {
+            "confusion": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.05,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "honest_varying_participation": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_small_legitimate_update": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_fully_disjoint": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid_strong": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip_partial_50": {
+            "confusion": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 0.8,
+              "fpr": 0.0,
+              "fnr": 0.2,
+              "precision": 1.0,
+              "recall": 0.8,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip_partial_25": {
+            "confusion": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 3,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 3,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 0.4,
+              "fpr": 0.0,
+              "fnr": 0.6,
+              "precision": 1.0,
+              "recall": 0.4,
+              "accuracy": 0.85
+            },
+            "non_participants": []
+          },
+          "adversarial_scaling_unseen_2x": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_scaling_unseen_8x": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_noise_unseen_weak": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_noise_unseen_strong": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_free_riding": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_idle_clients": {
+            "confusion": {
+              "tp": 0,
+              "fp": 6,
+              "fn": 0,
+              "tn": 14
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 6,
+              "fn": 0,
+              "tn": 14,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.3,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.7
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "honest_idle_majority": {
+            "confusion": {
+              "tp": 0,
+              "fp": 12,
+              "fn": 0,
+              "tn": 8
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 12,
+              "fn": 0,
+              "tn": 8,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.6,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.4
+            },
+            "non_participants": [
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "adversarial_free_rider_with_idle": {
+            "confusion": {
+              "tp": 2,
+              "fp": 6,
+              "fn": 0,
+              "tn": 12
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 6,
+              "fn": 0,
+              "tn": 12,
+              "n_decisions": 20,
+              "n_malicious": 2,
+              "n_honest": 18,
+              "tpr": 1.0,
+              "fpr": 0.3333333333333333,
+              "fnr": 0.0,
+              "precision": 0.25,
+              "recall": 1.0,
+              "accuracy": 0.7
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          }
+        }
+      },
+      "True": {
+        "honest_false_positives": 1,
+        "honest_denominator": 162,
+        "honest_fpr": 0.006172839506172839,
+        "free_rider_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 38,
+            "fp": 1,
+            "fn": 4,
+            "tn": 293
+          },
+          "tpr": 0.9047619047619048,
+          "fpr": 0.003401360544217687,
+          "fnr": 0.09523809523809523,
+          "precision": 0.9743589743589743,
+          "tpr_ci": {
+            "value": 0.9047619047619048,
+            "n": 42,
+            "ci95_low": 0.7793489418773291,
+            "ci95_high": 0.9623377512022161
+          },
+          "fpr_ci": {
+            "value": 0.003401360544217687,
+            "n": 294,
+            "ci95_low": 0.000600676199653526,
+            "ci95_high": 0.019011968882031965
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        },
+        "per_scenario": {
+          "honest_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_benign_outlier": {
+            "confusion": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 1,
+              "fn": 0,
+              "tn": 19,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.05,
+              "fnr": null,
+              "precision": 0.0,
+              "recall": null,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "honest_varying_participation": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_small_legitimate_update": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_fully_disjoint": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_non_iid_strong": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 20,
+              "n_decisions": 20,
+              "n_malicious": 0,
+              "n_honest": 20,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip_partial_50": {
+            "confusion": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 4,
+              "fp": 0,
+              "fn": 1,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 0.8,
+              "fpr": 0.0,
+              "fnr": 0.2,
+              "precision": 1.0,
+              "recall": 0.8,
+              "accuracy": 0.95
+            },
+            "non_participants": []
+          },
+          "adversarial_sign_flip_partial_25": {
+            "confusion": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 3,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 3,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 0.4,
+              "fpr": 0.0,
+              "fnr": 0.6,
+              "precision": 1.0,
+              "recall": 0.4,
+              "accuracy": 0.85
+            },
+            "non_participants": []
+          },
+          "adversarial_scaling_unseen_2x": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_scaling_unseen_8x": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_noise_unseen_weak": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_noise_unseen_strong": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "adversarial_free_riding": {
+            "confusion": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15
+            },
+            "rates": {
+              "tp": 5,
+              "fp": 0,
+              "fn": 0,
+              "tn": 15,
+              "n_decisions": 20,
+              "n_malicious": 5,
+              "n_honest": 15,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": []
+          },
+          "honest_idle_clients": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 14
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 14,
+              "n_decisions": 14,
+              "n_malicious": 0,
+              "n_honest": 14,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "honest_idle_majority": {
+            "confusion": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 8
+            },
+            "rates": {
+              "tp": 0,
+              "fp": 0,
+              "fn": 0,
+              "tn": 8,
+              "n_decisions": 8,
+              "n_malicious": 0,
+              "n_honest": 8,
+              "tpr": null,
+              "fpr": 0.0,
+              "fnr": null,
+              "precision": null,
+              "recall": null,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          },
+          "adversarial_free_rider_with_idle": {
+            "confusion": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 0,
+              "tn": 12
+            },
+            "rates": {
+              "tp": 2,
+              "fp": 0,
+              "fn": 0,
+              "tn": 12,
+              "n_decisions": 14,
+              "n_malicious": 2,
+              "n_honest": 12,
+              "tpr": 1.0,
+              "fpr": 0.0,
+              "fnr": 0.0,
+              "precision": 1.0,
+              "recall": 1.0,
+              "accuracy": 1.0
+            },
+            "non_participants": [
+              14,
+              15,
+              16,
+              17,
+              18,
+              19
+            ]
+          }
+        }
+      }
+    },
+    "selected_rule": true,
+    "selection_basis": "validation suite only (seed base 1)"
+  },
+  "threshold_sensitivity": {
+    "grid": [
+      0.25,
+      0.3,
+      0.35,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6
+    ],
+    "validation": {
+      "0.25": {
+        "honest_false_positives": 0,
+        "honest_denominator": 142,
+        "honest_fpr": 0.0,
+        "mean_attack_tpr": 0.0,
+        "pooled": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "tn": 154
+          },
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "fnr": 1.0,
+          "precision": null,
+          "tpr_ci": {
+            "value": 0.0,
+            "n": 2,
+            "ci95_low": 0.0,
+            "ci95_high": 0.6576197725990219
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 154,
+            "ci95_low": 0.0,
+            "ci95_high": 0.02433745133347411
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.3": {
+        "honest_false_positives": 0,
+        "honest_denominator": 142,
+        "honest_fpr": 0.0,
+        "mean_attack_tpr": 0.0,
+        "pooled": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 2,
+            "tn": 154
+          },
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "fnr": 1.0,
+          "precision": null,
+          "tpr_ci": {
+            "value": 0.0,
+            "n": 2,
+            "ci95_low": 0.0,
+            "ci95_high": 0.6576197725990219
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 154,
+            "ci95_low": 0.0,
+            "ci95_high": 0.02433745133347411
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.35": {
+        "honest_false_positives": 1,
+        "honest_denominator": 142,
+        "honest_fpr": 0.007042253521126761,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tn": 153
+          },
+          "tpr": 1.0,
+          "fpr": 0.006493506493506494,
+          "fnr": 0.0,
+          "precision": 0.6666666666666666,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.006493506493506494,
+            "n": 154,
+            "ci95_low": 0.0011471844871179318,
+            "ci95_high": 0.035861209036830544
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.4": {
+        "honest_false_positives": 1,
+        "honest_denominator": 142,
+        "honest_fpr": 0.007042253521126761,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tn": 153
+          },
+          "tpr": 1.0,
+          "fpr": 0.006493506493506494,
+          "fnr": 0.0,
+          "precision": 0.6666666666666666,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.006493506493506494,
+            "n": 154,
+            "ci95_low": 0.0011471844871179318,
+            "ci95_high": 0.035861209036830544
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.45": {
+        "honest_false_positives": 1,
+        "honest_denominator": 142,
+        "honest_fpr": 0.007042253521126761,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 1,
+            "fn": 0,
+            "tn": 153
+          },
+          "tpr": 1.0,
+          "fpr": 0.006493506493506494,
+          "fnr": 0.0,
+          "precision": 0.6666666666666666,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.006493506493506494,
+            "n": 154,
+            "ci95_low": 0.0011471844871179318,
+            "ci95_high": 0.035861209036830544
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.5": {
+        "honest_false_positives": 3,
+        "honest_denominator": 142,
+        "honest_fpr": 0.02112676056338028,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 3,
+            "fn": 0,
+            "tn": 151
+          },
+          "tpr": 1.0,
+          "fpr": 0.01948051948051948,
+          "fnr": 0.0,
+          "precision": 0.4,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.01948051948051948,
+            "n": 154,
+            "ci95_low": 0.00664690044175709,
+            "ci95_high": 0.05570337746314011
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.55": {
+        "honest_false_positives": 9,
+        "honest_denominator": 142,
+        "honest_fpr": 0.06338028169014084,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 9,
+            "fn": 0,
+            "tn": 145
+          },
+          "tpr": 1.0,
+          "fpr": 0.05844155844155844,
+          "fnr": 0.0,
+          "precision": 0.18181818181818182,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.05844155844155844,
+            "n": 154,
+            "ci95_low": 0.03104768058879962,
+            "ci95_high": 0.10732825045894376
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      },
+      "0.6": {
+        "honest_false_positives": 11,
+        "honest_denominator": 142,
+        "honest_fpr": 0.07746478873239436,
+        "mean_attack_tpr": 1.0,
+        "pooled": {
+          "confusion": {
+            "tp": 2,
+            "fp": 11,
+            "fn": 0,
+            "tn": 143
+          },
+          "tpr": 1.0,
+          "fpr": 0.07142857142857142,
+          "fnr": 0.0,
+          "precision": 0.15384615384615385,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 2,
+            "ci95_low": 0.3423802274009781,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.07142857142857142,
+            "n": 154,
+            "ci95_low": 0.040349744558145974,
+            "ci95_high": 0.12336807087054613
+          },
+          "honest_denominator": 154,
+          "malicious_denominator": 2
+        }
+      }
+    },
+    "heldout": {
+      "0.25": {
+        "honest_false_positives": 0,
+        "honest_denominator": 162,
+        "honest_fpr": 0.0,
+        "mean_attack_tpr": 0.0,
+        "pooled": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 42,
+            "tn": 294
+          },
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "fnr": 1.0,
+          "precision": null,
+          "tpr_ci": {
+            "value": 0.0,
+            "n": 42,
+            "ci95_low": 0.0,
+            "ci95_high": 0.08379879090173831
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 294,
+            "ci95_low": 0.0,
+            "ci95_high": 0.012897663198683339
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.3": {
+        "honest_false_positives": 0,
+        "honest_denominator": 162,
+        "honest_fpr": 0.0,
+        "mean_attack_tpr": 0.0,
+        "pooled": {
+          "confusion": {
+            "tp": 0,
+            "fp": 0,
+            "fn": 42,
+            "tn": 294
+          },
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "fnr": 1.0,
+          "precision": null,
+          "tpr_ci": {
+            "value": 0.0,
+            "n": 42,
+            "ci95_low": 0.0,
+            "ci95_high": 0.08379879090173831
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 294,
+            "ci95_low": 0.0,
+            "ci95_high": 0.012897663198683339
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.35": {
+        "honest_false_positives": 1,
+        "honest_denominator": 162,
+        "honest_fpr": 0.006172839506172839,
+        "mean_attack_tpr": 0.911111111111111,
+        "pooled": {
+          "confusion": {
+            "tp": 38,
+            "fp": 1,
+            "fn": 4,
+            "tn": 293
+          },
+          "tpr": 0.9047619047619048,
+          "fpr": 0.003401360544217687,
+          "fnr": 0.09523809523809523,
+          "precision": 0.9743589743589743,
+          "tpr_ci": {
+            "value": 0.9047619047619048,
+            "n": 42,
+            "ci95_low": 0.7793489418773291,
+            "ci95_high": 0.9623377512022161
+          },
+          "fpr_ci": {
+            "value": 0.003401360544217687,
+            "n": 294,
+            "ci95_low": 0.000600676199653526,
+            "ci95_high": 0.019011968882031965
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.4": {
+        "honest_false_positives": 1,
+        "honest_denominator": 162,
+        "honest_fpr": 0.006172839506172839,
+        "mean_attack_tpr": 0.911111111111111,
+        "pooled": {
+          "confusion": {
+            "tp": 38,
+            "fp": 1,
+            "fn": 4,
+            "tn": 293
+          },
+          "tpr": 0.9047619047619048,
+          "fpr": 0.003401360544217687,
+          "fnr": 0.09523809523809523,
+          "precision": 0.9743589743589743,
+          "tpr_ci": {
+            "value": 0.9047619047619048,
+            "n": 42,
+            "ci95_low": 0.7793489418773291,
+            "ci95_high": 0.9623377512022161
+          },
+          "fpr_ci": {
+            "value": 0.003401360544217687,
+            "n": 294,
+            "ci95_low": 0.000600676199653526,
+            "ci95_high": 0.019011968882031965
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.45": {
+        "honest_false_positives": 1,
+        "honest_denominator": 162,
+        "honest_fpr": 0.006172839506172839,
+        "mean_attack_tpr": 0.911111111111111,
+        "pooled": {
+          "confusion": {
+            "tp": 38,
+            "fp": 1,
+            "fn": 4,
+            "tn": 293
+          },
+          "tpr": 0.9047619047619048,
+          "fpr": 0.003401360544217687,
+          "fnr": 0.09523809523809523,
+          "precision": 0.9743589743589743,
+          "tpr_ci": {
+            "value": 0.9047619047619048,
+            "n": 42,
+            "ci95_low": 0.7793489418773291,
+            "ci95_high": 0.9623377512022161
+          },
+          "fpr_ci": {
+            "value": 0.003401360544217687,
+            "n": 294,
+            "ci95_low": 0.000600676199653526,
+            "ci95_high": 0.019011968882031965
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.5": {
+        "honest_false_positives": 3,
+        "honest_denominator": 162,
+        "honest_fpr": 0.018518518518518517,
+        "mean_attack_tpr": 0.9777777777777779,
+        "pooled": {
+          "confusion": {
+            "tp": 41,
+            "fp": 3,
+            "fn": 1,
+            "tn": 291
+          },
+          "tpr": 0.9761904761904762,
+          "fpr": 0.01020408163265306,
+          "fnr": 0.023809523809523808,
+          "precision": 0.9318181818181818,
+          "tpr_ci": {
+            "value": 0.9761904761904762,
+            "n": 42,
+            "ci95_low": 0.8767879842266275,
+            "ci95_high": 0.9957845958669547
+          },
+          "fpr_ci": {
+            "value": 0.01020408163265306,
+            "n": 294,
+            "ci95_low": 0.0034762607320266686,
+            "ci95_high": 0.029566348115663124
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.55": {
+        "honest_false_positives": 8,
+        "honest_denominator": 162,
+        "honest_fpr": 0.04938271604938271,
+        "mean_attack_tpr": 0.9777777777777779,
+        "pooled": {
+          "confusion": {
+            "tp": 41,
+            "fp": 9,
+            "fn": 1,
+            "tn": 285
+          },
+          "tpr": 0.9761904761904762,
+          "fpr": 0.030612244897959183,
+          "fnr": 0.023809523809523808,
+          "precision": 0.82,
+          "tpr_ci": {
+            "value": 0.9761904761904762,
+            "n": 42,
+            "ci95_low": 0.8767879842266275,
+            "ci95_high": 0.9957845958669547
+          },
+          "fpr_ci": {
+            "value": 0.030612244897959183,
+            "n": 294,
+            "ci95_low": 0.01618721494153529,
+            "ci95_high": 0.05714528520416744
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      },
+      "0.6": {
+        "honest_false_positives": 11,
+        "honest_denominator": 162,
+        "honest_fpr": 0.06790123456790123,
+        "mean_attack_tpr": 0.9777777777777779,
+        "pooled": {
+          "confusion": {
+            "tp": 41,
+            "fp": 12,
+            "fn": 1,
+            "tn": 282
+          },
+          "tpr": 0.9761904761904762,
+          "fpr": 0.04081632653061224,
+          "fnr": 0.023809523809523808,
+          "precision": 0.7735849056603774,
+          "tpr_ci": {
+            "value": 0.9761904761904762,
+            "n": 42,
+            "ci95_low": 0.8767879842266275,
+            "ci95_high": 0.9957845958669547
+          },
+          "fpr_ci": {
+            "value": 0.04081632653061224,
+            "n": 294,
+            "ci95_low": 0.023500330978524876,
+            "ci95_high": 0.06997711481618431
+          },
+          "honest_denominator": 294,
+          "malicious_denominator": 42
+        }
+      }
+    },
+    "selected_tau": 0.4,
+    "selected_interval": [
+      0.35,
+      0.4,
+      0.45
+    ],
+    "selection_basis": "validation suite only (seed base 1)"
+  },
+  "heterogeneity_sweep": {
+    "1.0": {
+      "confusion": {
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "tn": 19
+      },
+      "fpr": 0.05,
+      "fpr_ci": {
+        "value": 0.05,
+        "n": 20,
+        "ci95_low": 0.008881448797866148,
+        "ci95_high": 0.23613119350676545
+      }
+    },
+    "0.9": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.8": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.7": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.6": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.5": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.4": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.3": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.2": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.1": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    },
+    "0.0": {
+      "confusion": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "tn": 20
+      },
+      "fpr": 0.0,
+      "fpr_ci": {
+        "value": 0.0,
+        "n": 20,
+        "ci95_low": 0.0,
+        "ci95_high": 0.16112515811625733
+      }
+    }
+  },
+  "participation_sweep": {
+    "0": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 18
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 18
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      }
+    },
+    "2": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 2,
+          "fn": 0,
+          "tn": 16
+        },
+        "tpr": 1.0,
+        "fpr": 0.1111111111111111,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 16
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 16,
+        "malicious_denominator": 2
+      }
+    },
+    "4": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 4,
+          "fn": 0,
+          "tn": 14
+        },
+        "tpr": 1.0,
+        "fpr": 0.2222222222222222,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 14
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 14,
+        "malicious_denominator": 2
+      }
+    },
+    "6": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 6,
+          "fn": 0,
+          "tn": 12
+        },
+        "tpr": 1.0,
+        "fpr": 0.3333333333333333,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 12
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 12,
+        "malicious_denominator": 2
+      }
+    },
+    "8": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 8,
+          "fn": 0,
+          "tn": 10
+        },
+        "tpr": 1.0,
+        "fpr": 0.4444444444444444,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 10
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 10,
+        "malicious_denominator": 2
+      }
+    },
+    "10": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 10,
+          "fn": 0,
+          "tn": 8
+        },
+        "tpr": 1.0,
+        "fpr": 0.5555555555555556,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 8
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 8,
+        "malicious_denominator": 2
+      }
+    },
+    "12": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 12,
+          "fn": 0,
+          "tn": 6
+        },
+        "tpr": 1.0,
+        "fpr": 0.6666666666666666,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 6
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 6,
+        "malicious_denominator": 2
+      }
+    },
+    "14": {
+      "without_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 14,
+          "fn": 0,
+          "tn": 4
+        },
+        "tpr": 1.0,
+        "fpr": 0.7777777777777778,
+        "honest_denominator": 18,
+        "malicious_denominator": 2
+      },
+      "with_rule": {
+        "confusion": {
+          "tp": 2,
+          "fp": 0,
+          "fn": 0,
+          "tn": 4
+        },
+        "tpr": 1.0,
+        "fpr": 0.0,
+        "honest_denominator": 4,
+        "malicious_denominator": 2
+      }
+    }
+  },
+  "realistic_protocol": {
+    "highway": {
+      "without_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 180,
+            "fp": 0,
+            "fn": 0,
+            "tn": 570
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 180,
+            "ci95_low": 0.9791045020687847,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 570,
+            "ci95_low": 0.0,
+            "ci95_high": 0.006694285962501945
+          },
+          "honest_denominator": 570,
+          "malicious_denominator": 180,
+          "fp_by_mechanism": {}
+        },
+        "per_seed": {
+          "42": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "101": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "202": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          }
+        }
+      },
+      "with_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 180,
+            "fp": 0,
+            "fn": 0,
+            "tn": 570
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 180,
+            "ci95_low": 0.9791045020687847,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 570,
+            "ci95_low": 0.0,
+            "ci95_high": 0.006694285962501945
+          },
+          "honest_denominator": 570,
+          "malicious_denominator": 180,
+          "fp_by_mechanism": {}
+        },
+        "per_seed": {
+          "42": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "101": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "202": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          }
+        }
+      }
+    },
+    "trace": {
+      "without_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 179,
+            "fp": 0,
+            "fn": 1,
+            "tn": 570
+          },
+          "tpr": 0.9944444444444445,
+          "fpr": 0.0,
+          "fnr": 0.005555555555555556,
+          "precision": 1.0,
+          "tpr_ci": {
+            "value": 0.9944444444444445,
+            "n": 180,
+            "ci95_low": 0.9692069292238028,
+            "ci95_high": 0.9990186339331064
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 570,
+            "ci95_low": 0.0,
+            "ci95_high": 0.006694285962501945
+          },
+          "honest_denominator": 570,
+          "malicious_denominator": 180,
+          "fp_by_mechanism": {}
+        },
+        "per_seed": {
+          "42": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "101": {
+            "tp": 59,
+            "fp": 0,
+            "fn": 1,
+            "tn": 190
+          },
+          "202": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          }
+        }
+      },
+      "with_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 179,
+            "fp": 0,
+            "fn": 1,
+            "tn": 570
+          },
+          "tpr": 0.9944444444444445,
+          "fpr": 0.0,
+          "fnr": 0.005555555555555556,
+          "precision": 1.0,
+          "tpr_ci": {
+            "value": 0.9944444444444445,
+            "n": 180,
+            "ci95_low": 0.9692069292238028,
+            "ci95_high": 0.9990186339331064
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 570,
+            "ci95_low": 0.0,
+            "ci95_high": 0.006694285962501945
+          },
+          "honest_denominator": 570,
+          "malicious_denominator": 180,
+          "fp_by_mechanism": {}
+        },
+        "per_seed": {
+          "42": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "101": {
+            "tp": 59,
+            "fp": 0,
+            "fn": 1,
+            "tn": 190
+          },
+          "202": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          }
+        }
+      }
+    },
+    "authentic_trace": {
+      "without_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 174,
+            "fp": 69,
+            "fn": 6,
+            "tn": 501
+          },
+          "tpr": 0.9666666666666667,
+          "fpr": 0.12105263157894737,
+          "fnr": 0.03333333333333333,
+          "precision": 0.7160493827160493,
+          "tpr_ci": {
+            "value": 0.9666666666666667,
+            "n": 180,
+            "ci95_low": 0.929195659579689,
+            "ci95_high": 0.9846352090178433
+          },
+          "fpr_ci": {
+            "value": 0.12105263157894737,
+            "n": 570,
+            "ci95_low": 0.09678083529776574,
+            "ci95_high": 0.1503979919580252
+          },
+          "honest_denominator": 570,
+          "malicious_denominator": 180,
+          "fp_by_mechanism": {
+            "free_riding_by_norm_ratio": 51,
+            "joint_trust_below_threshold": 18
+          }
+        },
+        "per_seed": {
+          "42": {
+            "tp": 58,
+            "fp": 23,
+            "fn": 2,
+            "tn": 167
+          },
+          "101": {
+            "tp": 58,
+            "fp": 27,
+            "fn": 2,
+            "tn": 163
+          },
+          "202": {
+            "tp": 58,
+            "fp": 19,
+            "fn": 2,
+            "tn": 171
+          }
+        }
+      },
+      "with_rule": {
+        "pooled": {
+          "confusion": {
+            "tp": 165,
+            "fp": 0,
+            "fn": 0,
+            "tn": 519
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "tpr_ci": {
+            "value": 1.0,
+            "n": 165,
+            "ci95_low": 0.9772481305877865,
+            "ci95_high": 1.0
+          },
+          "fpr_ci": {
+            "value": 0.0,
+            "n": 519,
+            "ci95_low": 0.0,
+            "ci95_high": 0.007347272787335028
+          },
+          "honest_denominator": 519,
+          "malicious_denominator": 165,
+          "fp_by_mechanism": {}
+        },
+        "per_seed": {
+          "42": {
+            "tp": 55,
+            "fp": 0,
+            "fn": 0,
+            "tn": 173
+          },
+          "101": {
+            "tp": 55,
+            "fp": 0,
+            "fn": 0,
+            "tn": 173
+          },
+          "202": {
+            "tp": 55,
+            "fp": 0,
+            "fn": 0,
+            "tn": 173
+          }
+        }
+      }
+    }
+  }
+}

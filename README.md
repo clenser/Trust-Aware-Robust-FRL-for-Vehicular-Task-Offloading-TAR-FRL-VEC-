@@ -31,6 +31,9 @@ real data (FHWA NGSIM US-101).
 | Behavioural trust | adds nothing measurable; at default weights it cannot exclude a model-honest client |
 | Learned policy vs Nearest-RSU heuristic | -0.4 pp, CI [-3.2, +2.4] - **not established**; depends on simulator semantics |
 | Energy | local execution uses ~31x less energy per task |
+| *Extended run (6 seeds):* data-plane attack on V2V helpers | costs a trust-blind V2V heuristic 2.9 pp; trust-aware peer selection recovers 2.2 pp (part of it not trust-related) - small |
+| *Extended run:* learned policy under that attack | trust features +0.9 pp, CI [-1.4, +3.3] - not established |
+| *Extended run:* Alibaba edge-trace calibration, peak hour | Nearest-RSU 16.8 %, Resource-Aware 59.9 %, learned policy = Local-Only (58.3 %) |
 
 What must **not** be claimed: that trust-aware FL improves completion at the
 default attack ratio, that the detector has a near-zero false-positive rate,
@@ -61,6 +64,20 @@ The console has two tabs:
 The simulation is advanced by one central loop; browser tabs only subscribe, so
 extra tabs do not speed it up (verified by `tests/browser_verification.py`).
 
+## Attacks, V2V and the edge trace
+
+* Attackers poison / withhold model uploads **and, in the console and the
+  extended suite, sabotage the V2V tasks they serve** (`adversarial.data_plane`;
+  off in the published benchmark).  The 3D scene draws sabotaged V2V links.
+* `network.v2v_peer_selection: trust_aware` and `mobility.vehicle_compute`
+  (compute-rich helper vehicles, an assumption) make V2V meaningful.
+* `edge_calibration` uses the Alibaba edge-platform trace (`Full_trace`, 41 GB, not
+  committed) through an 8 KB summary built by `data/source/prepare_edge_trace.py`.
+* The console has collapsible Controls / Monitor panels, a Focus mode and a freely
+  navigable 3D camera (right-drag pan, WASD, Q/E, R to reset).
+* Audit of all of this: [`docs/SYSTEM_AUDIT.md`](docs/SYSTEM_AUDIT.md); publication
+  strategy: [`docs/PUBLICATION_PLAN.md`](docs/PUBLICATION_PLAN.md).
+
 ## Mobility sources
 
 | Mode | Source | Status |
@@ -85,6 +102,9 @@ python -m experiments.verify_statistics results/benchmark_results.json results/s
 python -m experiments.claims_report                          # verdict table
 python -m experiments.detector_comparison                    # held-out detector comparison
 python -m experiments.research_figures                       # figures 7-10
+python -m experiments.extended_suite                         # data-plane / V2V / edge calibration (~40 min)
+python -m experiments.supplementary_figures                  # figures 11-13
+python -m experiments.export_evidence                        # gzipped raw results + SHA256SUMS
 python -m pytest tests -q -p no:cacheprovider                # full test suite (run once)
 python tests/browser_verification.py                         # real-browser check (server running)
 ```

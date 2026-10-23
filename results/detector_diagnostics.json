@@ -1,0 +1,2494 @@
+{
+  "seeds": [
+    42,
+    101,
+    202
+  ],
+  "mobility_modes": [
+    "highway",
+    "trace",
+    "authentic_trace"
+  ],
+  "attack_ratio": 0.24,
+  "runs": {
+    "highway": {
+      "42": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 0.6970812052631579,
+              "median": 0.206258,
+              "p05": -1.0392621,
+              "p95": 4.22897309999999,
+              "min": -4.603856,
+              "max": 10.039109
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.16870156315789475,
+              "median": 0.0,
+              "p05": -0.86344135,
+              "p95": 1.8639090499999997,
+              "min": -1.475951,
+              "max": 4.271562
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.0316813999999999,
+              "median": 1.0,
+              "p05": 0.81354565,
+              "p95": 1.3710553499999998,
+              "min": 0.728782,
+              "max": 1.541169
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 139.892,
+        "completion_rate": 82.2,
+        "avg_energy_j": 0.017356
+      },
+      "101": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 0.4339545157894737,
+              "median": 0.38424650000000005,
+              "p05": -1.4383381499999999,
+              "p95": 2.3313566999999957,
+              "min": -4.621809,
+              "max": 4.043892
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.22874090526315793,
+              "median": 0.0,
+              "p05": -0.81767905,
+              "p95": 2.2072503999999973,
+              "min": -1.154701,
+              "max": 3.679059
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.0459959842105264,
+              "median": 1.0,
+              "p05": 0.8021689000000001,
+              "p95": 1.4740039,
+              "min": 0.709891,
+              "max": 1.917369
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 139.236,
+        "completion_rate": 82.2,
+        "avg_energy_j": 0.017045
+      },
+      "202": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 0.7405952157894737,
+              "median": 0.2996605,
+              "p05": -1.7871342499999998,
+              "p95": 4.518544649999998,
+              "min": -8.195985,
+              "max": 15.765335
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.10731397368421053,
+              "median": 0.0,
+              "p05": -0.9576368000000001,
+              "p95": 1.9083978999999986,
+              "min": -1.649484,
+              "max": 4.385469
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.015747347368421,
+              "median": 1.0,
+              "p05": 0.7999836,
+              "p95": 1.3410933999999999,
+              "min": 0.689564,
+              "max": 1.753362
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 147.11,
+        "completion_rate": 81.2667,
+        "avg_energy_j": 0.018648
+      }
+    },
+    "trace": {
+      "42": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 2.6772690157894736,
+              "median": 0.26264,
+              "p05": -0.69030725,
+              "p95": 3.935014399999984,
+              "min": -12.711185,
+              "max": 143.829834
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.046216573684210525,
+              "median": 0.0,
+              "p05": -0.98351725,
+              "p95": 1.1563960999999991,
+              "min": -1.314866,
+              "max": 1.783174
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.005937047368421,
+              "median": 1.0,
+              "p05": 0.83691795,
+              "p95": 1.2128693,
+              "min": 0.673342,
+              "max": 1.335975
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 142.766,
+        "completion_rate": 82.9333,
+        "avg_energy_j": 0.018542
+      },
+      "101": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 5,
+            "true_positives": 5,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 59,
+            "fp": 0,
+            "fn": 1,
+            "tn": 190
+          },
+          "tpr": 0.9833333333333333,
+          "fpr": 0.0,
+          "fnr": 0.016666666666666666,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 0.22172288947368418,
+              "median": 0.339802,
+              "p05": -1.7503059,
+              "p95": 1.7219141499999993,
+              "min": -4.034184,
+              "max": 2.811435
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.06994641578947369,
+              "median": 0.0,
+              "p05": -0.93710785,
+              "p95": 1.285165099999999,
+              "min": -1.933938,
+              "max": 2.748548
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.0086284315789475,
+              "median": 1.0,
+              "p05": 0.76630785,
+              "p95": 1.2612740999999996,
+              "min": 0.637677,
+              "max": 1.498384
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 136.868,
+        "completion_rate": 85.0,
+        "avg_energy_j": 0.017398
+      },
+      "202": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 60,
+            "fp": 0,
+            "fn": 0,
+            "tn": 190
+          },
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "fnr": 0.0,
+          "precision": 1.0,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {},
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 0
+            },
+            "dist_z": {
+              "n": 0
+            },
+            "norm_ratio": {
+              "n": 0
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 190,
+              "mean": 0.6321143842105263,
+              "median": 0.34647,
+              "p05": -0.9717687499999998,
+              "p95": 3.136365299999998,
+              "min": -2.997112,
+              "max": 7.097484
+            },
+            "dist_z": {
+              "n": 190,
+              "mean": 0.1302189105263158,
+              "median": 0.0,
+              "p05": -0.9192887999999998,
+              "p95": 1.5519415499999976,
+              "min": -1.6463,
+              "max": 3.310423
+            },
+            "norm_ratio": {
+              "n": 190,
+              "mean": 1.0171517947368423,
+              "median": 1.0,
+              "p05": 0.8300635,
+              "p95": 1.2410481999999998,
+              "min": 0.709827,
+              "max": 1.452881
+            }
+          },
+          "false_positive_clients": []
+        },
+        "avg_latency_ms": 135.363,
+        "completion_rate": 84.5333,
+        "avg_energy_j": 0.017177
+      }
+    },
+    "authentic_trace": {
+      "42": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 18,
+            "true_positives": 5,
+            "false_positives": 13,
+            "true_negatives": 6,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 9,
+            "true_positives": 5,
+            "false_positives": 4,
+            "true_negatives": 15,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 8,
+            "true_positives": 6,
+            "false_positives": 2,
+            "true_negatives": 17,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 58,
+            "fp": 22,
+            "fn": 2,
+            "tn": 168
+          },
+          "tpr": 0.9666666666666667,
+          "fpr": 0.11578947368421053,
+          "fnr": 0.03333333333333333,
+          "precision": 0.725,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {
+            "free_riding_by_norm_ratio": 17,
+            "joint_trust_below_threshold": 5
+          },
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 22,
+              "mean": -0.25302018181818187,
+              "median": 0.0,
+              "p05": -1.32584155,
+              "p95": 0.0,
+              "min": -2.258967,
+              "max": 0.621434
+            },
+            "dist_z": {
+              "n": 5,
+              "mean": 0.7565708000000001,
+              "median": 1.063603,
+              "p05": -0.24761679999999997,
+              "p95": 1.3839934,
+              "min": -0.451904,
+              "max": 1.439448
+            },
+            "norm_ratio": {
+              "n": 22,
+              "mean": 0.22754063636363633,
+              "median": 0.0,
+              "p05": 0.0,
+              "p95": 0.99865865,
+              "min": 0.0,
+              "max": 1.132905
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 168,
+              "mean": 0.2662976309523809,
+              "median": 0.2267795,
+              "p05": -0.89176685,
+              "p95": 1.2029406500000002,
+              "min": -1.313157,
+              "max": 2.028461
+            },
+            "dist_z": {
+              "n": 168,
+              "mean": 0.08515525595238096,
+              "median": 0.0,
+              "p05": -1.0971870000000001,
+              "p95": 1.4042107000000001,
+              "min": -1.772399,
+              "max": 2.406907
+            },
+            "norm_ratio": {
+              "n": 168,
+              "mean": 47550332857.24757,
+              "median": 1.0046865,
+              "p05": 0.8386992,
+              "p95": 1.3089635000000002,
+              "min": 0.781034,
+              "max": 1464583909510.526
+            }
+          },
+          "false_positive_clients": [
+            {
+              "client_id": 9,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 12,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 13,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 16,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 17,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 18,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 19,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 20,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 21,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.218091,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.558097,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.304049,
+              "reason": "scored",
+              "agreement": -0.001758,
+              "agreement_z": -1.317188,
+              "norm_ratio": 0.973173,
+              "dist_z": 1.162175,
+              "ratio_z": -0.257797,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.602293,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.326147,
+              "reason": "scored",
+              "agreement": 0.178656,
+              "agreement_z": 0.621434,
+              "norm_ratio": 0.962155,
+              "dist_z": -0.451904,
+              "ratio_z": -0.365738,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.725247,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.387624,
+              "reason": "scored",
+              "agreement": 0.049568,
+              "agreement_z": -1.326297,
+              "norm_ratio": 0.937661,
+              "dist_z": 1.063603,
+              "ratio_z": -0.473385,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.592144,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.321072,
+              "reason": "scored",
+              "agreement": 0.009238,
+              "agreement_z": -2.258967,
+              "norm_ratio": 1.0,
+              "dist_z": 0.569532,
+              "ratio_z": 0.0,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.682055,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.366028,
+              "reason": "scored",
+              "agreement": 0.0,
+              "agreement_z": -1.285426,
+              "norm_ratio": 1.132905,
+              "dist_z": 1.439448,
+              "ratio_z": 0.709614,
+              "mechanism": "joint_trust_below_threshold"
+            }
+          ]
+        },
+        "avg_latency_ms": 130.498,
+        "completion_rate": 88.7097,
+        "avg_energy_j": 0.016969
+      },
+      "101": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 18,
+            "true_positives": 5,
+            "false_positives": 13,
+            "true_negatives": 6,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 9,
+            "true_positives": 5,
+            "false_positives": 4,
+            "true_negatives": 15,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 9,
+            "true_positives": 6,
+            "false_positives": 3,
+            "true_negatives": 16,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 58,
+            "fp": 27,
+            "fn": 2,
+            "tn": 163
+          },
+          "tpr": 0.9666666666666667,
+          "fpr": 0.14210526315789473,
+          "fnr": 0.03333333333333333,
+          "precision": 0.6823529411764706,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {
+            "free_riding_by_norm_ratio": 17,
+            "joint_trust_below_threshold": 10
+          },
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 27,
+              "mean": -0.3264281111111111,
+              "median": 0.0,
+              "p05": -1.2967545,
+              "p95": 0.0,
+              "min": -1.858068,
+              "max": 1.132826
+            },
+            "dist_z": {
+              "n": 10,
+              "mean": 1.0542418,
+              "median": 1.247279,
+              "p05": 0.09404615,
+              "p95": 1.6613957499999998,
+              "min": -0.051757,
+              "max": 1.740382
+            },
+            "norm_ratio": {
+              "n": 27,
+              "mean": 0.4390436666666666,
+              "median": 0.0,
+              "p05": 0.0,
+              "p95": 1.3094611999999999,
+              "min": 0.0,
+              "max": 1.33564
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 163,
+              "mean": 0.4907993374233129,
+              "median": 0.405396,
+              "p05": -0.7024515,
+              "p95": 2.307926500000003,
+              "min": -1.779018,
+              "max": 6.053934
+            },
+            "dist_z": {
+              "n": 163,
+              "mean": 0.06846918404907976,
+              "median": 0.0,
+              "p05": -0.9061787,
+              "p95": 1.3598927,
+              "min": -1.295144,
+              "max": 2.552017
+            },
+            "norm_ratio": {
+              "n": 163,
+              "mean": 48167642606.27163,
+              "median": 1.0,
+              "p05": 0.7852492,
+              "p95": 1.3969832,
+              "min": 0.679977,
+              "max": 1380869936542.06
+            }
+          },
+          "false_positive_clients": [
+            {
+              "client_id": 10,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 11,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 13,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 15,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 16,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 18,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 19,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 20,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 21,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.613691,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.331845,
+              "reason": "scored",
+              "agreement": 0.0,
+              "agreement_z": -1.204317,
+              "norm_ratio": 1.068649,
+              "dist_z": 0.759165,
+              "ratio_z": 0.265025,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.575047,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.312524,
+              "reason": "scored",
+              "agreement": 0.296694,
+              "agreement_z": 1.132826,
+              "norm_ratio": 1.125929,
+              "dist_z": 0.27225,
+              "ratio_z": 0.473439,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.634212,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.342106,
+              "reason": "scored",
+              "agreement": 0.13575,
+              "agreement_z": -0.134978,
+              "norm_ratio": 1.0,
+              "dist_z": -0.051757,
+              "ratio_z": 0.0,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.450997,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.250498,
+              "reason": "scored",
+              "agreement": 0.00939,
+              "agreement_z": -1.858068,
+              "norm_ratio": 1.122722,
+              "dist_z": 1.333952,
+              "ratio_z": 0.75214,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.696579,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.37329,
+              "reason": "scored",
+              "agreement": -0.04278,
+              "agreement_z": -1.085608,
+              "norm_ratio": 1.124934,
+              "dist_z": 0.990468,
+              "ratio_z": 0.674491,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.742574,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.396287,
+              "reason": "scored",
+              "agreement": -0.022847,
+              "agreement_z": -1.007771,
+              "norm_ratio": 1.183562,
+              "dist_z": 1.160606,
+              "ratio_z": 0.834059,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.719222,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.384611,
+              "reason": "scored",
+              "agreement": -0.015563,
+              "agreement_z": -0.942919,
+              "norm_ratio": 1.283139,
+              "dist_z": 1.415133,
+              "ratio_z": 1.05228,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.687961,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.368981,
+              "reason": "scored",
+              "agreement": -0.052747,
+              "agreement_z": -1.31436,
+              "norm_ratio": 1.31645,
+              "dist_z": 1.740382,
+              "ratio_z": 1.066962,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.69499,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.372495,
+              "reason": "scored",
+              "agreement": -0.03861,
+              "agreement_z": -1.255675,
+              "norm_ratio": 1.33564,
+              "dist_z": 1.564857,
+              "ratio_z": 1.076482,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.719119,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.38456,
+              "reason": "scored",
+              "agreement": -0.02118,
+              "agreement_z": -1.142689,
+              "norm_ratio": 1.293154,
+              "dist_z": 1.357362,
+              "ratio_z": 1.074827,
+              "mechanism": "joint_trust_below_threshold"
+            }
+          ]
+        },
+        "avg_latency_ms": 124.252,
+        "completion_rate": 87.9032,
+        "avg_energy_j": 0.01557
+      },
+      "202": {
+        "per_round": [
+          {
+            "eligible_clients": 25,
+            "excluded_count": 18,
+            "true_positives": 5,
+            "false_positives": 13,
+            "true_negatives": 6,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 9,
+            "true_positives": 5,
+            "false_positives": 4,
+            "true_negatives": 15,
+            "false_negatives": 1
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 7,
+            "true_positives": 6,
+            "false_positives": 1,
+            "true_negatives": 18,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          },
+          {
+            "eligible_clients": 25,
+            "excluded_count": 6,
+            "true_positives": 6,
+            "false_positives": 0,
+            "true_negatives": 19,
+            "false_negatives": 0
+          }
+        ],
+        "summary": {
+          "confusion": {
+            "tp": 58,
+            "fp": 21,
+            "fn": 2,
+            "tn": 169
+          },
+          "tpr": 0.9666666666666667,
+          "fpr": 0.11052631578947368,
+          "fnr": 0.03333333333333333,
+          "precision": 0.7341772151898734,
+          "honest_denominator": 190,
+          "malicious_denominator": 60,
+          "fp_by_mechanism": {
+            "free_riding_by_norm_ratio": 17,
+            "joint_trust_below_threshold": 4
+          },
+          "false_positive_statistics": {
+            "agreement_z": {
+              "n": 21,
+              "mean": -0.203113380952381,
+              "median": 0.0,
+              "p05": -1.348132,
+              "p95": 0.0,
+              "min": -1.519692,
+              "max": 0.0
+            },
+            "dist_z": {
+              "n": 4,
+              "mean": 1.12601,
+              "median": 1.0499589999999999,
+              "p05": 0.8647296,
+              "p95": 1.4937617999999997,
+              "min": 0.848493,
+              "max": 1.555629
+            },
+            "norm_ratio": {
+              "n": 21,
+              "mean": 0.21139214285714286,
+              "median": 0.0,
+              "p05": 0.0,
+              "p95": 1.118295,
+              "min": 0.0,
+              "max": 1.161626
+            }
+          },
+          "true_negative_statistics": {
+            "agreement_z": {
+              "n": 169,
+              "mean": 0.5729742485207101,
+              "median": 0.361849,
+              "p05": -0.6084564,
+              "p95": 2.0891831999999995,
+              "min": -1.132027,
+              "max": 6.531168
+            },
+            "dist_z": {
+              "n": 169,
+              "mean": 0.05175453254437869,
+              "median": 0.0,
+              "p05": -0.9390624,
+              "p95": 1.4017783999999995,
+              "min": -1.325786,
+              "max": 2.280393
+            },
+            "norm_ratio": {
+              "n": 169,
+              "mean": 44836739773.9275,
+              "median": 1.0,
+              "p05": 0.812302,
+              "p95": 1.2593809999999999,
+              "min": 0.766394,
+              "max": 1349514775682.3882
+            }
+          },
+          "false_positive_clients": [
+            {
+              "client_id": 8,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 10,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.315711,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 11,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 13,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 15,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 17,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 19,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 20,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 21,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.35,
+              "joint_trust": 0.3,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 23,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 24,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.207913,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 25,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.05,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.2,
+              "reason": "free_riding",
+              "agreement": 0.0,
+              "agreement_z": 0.0,
+              "norm_ratio": 0.0,
+              "dist_z": null,
+              "ratio_z": null,
+              "mechanism": "free_riding_by_norm_ratio"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.577728,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.313864,
+              "reason": "scored",
+              "agreement": 0.0,
+              "agreement_z": -0.979477,
+              "norm_ratio": 1.05792,
+              "dist_z": 0.956737,
+              "ratio_z": 0.380416,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.467032,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.258516,
+              "reason": "scored",
+              "agreement": 0.0,
+              "agreement_z": -1.519692,
+              "norm_ratio": 1.161626,
+              "dist_z": 1.143181,
+              "ratio_z": 0.64444,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.730325,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.390163,
+              "reason": "scored",
+              "agreement": 0.010574,
+              "agreement_z": -1.348132,
+              "norm_ratio": 1.118295,
+              "dist_z": 0.848493,
+              "ratio_z": 0.565577,
+              "mechanism": "joint_trust_below_threshold"
+            },
+            {
+              "client_id": 22,
+              "role": "honest",
+              "is_malicious": false,
+              "excluded": true,
+              "model_trust": 0.678381,
+              "behavioural_trust": 0.05,
+              "joint_trust": 0.36419,
+              "reason": "scored",
+              "agreement": 0.0,
+              "agreement_z": -0.41808,
+              "norm_ratio": 1.101394,
+              "dist_z": 1.555629,
+              "ratio_z": 0.837753,
+              "mechanism": "joint_trust_below_threshold"
+            }
+          ]
+        },
+        "avg_latency_ms": 135.415,
+        "completion_rate": 88.8441,
+        "avg_energy_j": 0.01759
+      }
+    }
+  }
+}

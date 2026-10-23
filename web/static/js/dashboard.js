@@ -613,6 +613,13 @@ function updateSimulationStatus(data) {
   syncField('select-speed', k.sim_speed);
   syncField('input-vehicles', k.configured_vehicles);
   syncField('input-attack-ratio', k.configured_attack_ratio);
+  syncField('select-v2v', k.v2v_peer_selection);
+  [['chk-dataplane', k.data_plane_attack], ['chk-edgecal', k.edge_calibration]].forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && document.activeElement !== el && !formDirty.has(id)) el.checked = !!val;
+  });
+  setText('attack-summary', `${k.attacker_count ?? k.attackers ?? 0} attackers · ${k.attack_model || 'n/a'} · ` +
+    `V2V helper tasks sabotaged ${fmt(k.v2v_helper_sabotaged ?? 0)} of ${fmt(k.v2v_helper_accepted ?? 0)}`);
   if (data.scene && data.scene.mobility_mode === 'highway' && data.scene.rsus) {
     data.scene.rsus.forEach((r, i) => syncField('input-rsu-' + (i + 1), Math.round(r.x)));
   }
@@ -841,7 +848,9 @@ function updateEventFeed(data) {
     // Ground truth, detector decision and task outcome are separate concepts.
     const badges = [];
     if (ev.detector_alert) badges.push('<span class="badge badge-alert">detector alert</span>');
-    if (ev.ground_truth_malicious) badges.push('<span class="badge badge-truth">role ' + escapeHtml(ev.role) + '</span>');
+    if (ev.ground_truth_malicious) badges.push('<span class="badge badge-truth">' +
+      (ev.v2v ? 'helper is ' + escapeHtml(String(ev.target_role || '').replace('_', ' ')) : 'faulty RSU') + '</span>');
+    if (ev.v2v) badges.push('<span class="badge">V2V</span>');
     if (ev.task_failed) badges.push('<span class="badge badge-fail">task failed</span>');
     return `<div class="event-item ${ev.success ? 'success' : 'failure'}">
       <span class="ev-head">V${ev.vid} ${ev.success ? 'completed' : 'failed'} → ${escapeHtml(ev.target)}</span>
@@ -918,6 +927,9 @@ function readExperimentForm() {
     mobility_mode: document.getElementById('select-mobility').value,
     num_vehicles: num('input-vehicles'),
     attack_ratio: num('input-attack-ratio'),
+    data_plane_attack: document.getElementById('chk-dataplane').checked,
+    v2v_peer_selection: document.getElementById('select-v2v').value,
+    edge_calibration: document.getElementById('chk-edgecal').checked,
     rebuild: true,
   };
   if (body.mobility_mode === 'highway') {
@@ -998,7 +1010,7 @@ function setupEventListeners() {
   mobilitySel.addEventListener('change', syncRsuInputs);
   syncRsuInputs();
 
-  ['input-vehicles', 'input-attack-ratio', 'input-rsu-1', 'input-rsu-2', 'input-rsu-3'].forEach((id) => {
+  ['input-vehicles', 'input-attack-ratio', 'input-rsu-1', 'input-rsu-2', 'input-rsu-3', 'chk-dataplane', 'select-v2v', 'chk-edgecal'].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.addEventListener('input', () => formDirty.add(id));
   });
