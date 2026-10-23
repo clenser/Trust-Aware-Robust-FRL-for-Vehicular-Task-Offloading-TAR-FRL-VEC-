@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=7.1">
+  <link rel="stylesheet" href="/static/css/style.css?v=7.4">
 </head>
 <body>
   <div id="error-banner" class="banner" style="display:none;" role="alert"></div>
@@ -24,6 +24,11 @@
       <span class="chip" id="chip-mobility" title="Active mobility source">mobility: —</span>
       <span class="chip" id="chip-strategy" title="Aggregation strategy in use">strategy: —</span>
       <span class="chip" id="chip-session" title="Session identifier">session: none</span>
+    </div>
+    <div class="runbar" role="group" aria-label="Run controls">
+      <button class="btn primary" id="btn-start" title="Start / resume the simulation">&#9654; Start</button>
+      <button class="btn" id="btn-pause" title="Pause the simulation">&#10074;&#10074; Pause</button>
+      <button class="btn" id="btn-stop" title="Stop and reset the session">&#9632; Stop / Reset</button>
     </div>
     <nav class="tabs" role="tablist">
       <button class="tab active" id="tab-sim" role="tab" aria-selected="true" data-view="view-sim">Simulation</button>
@@ -43,11 +48,7 @@
     <aside class="panel controls" id="panel-left" aria-label="Simulation controls">
       <section>
         <h2>Run</h2>
-        <div class="btn-row">
-          <button class="btn primary" id="btn-start">Start</button>
-          <button class="btn" id="btn-pause">Pause</button>
-          <button class="btn" id="btn-stop">Reset</button>
-        </div>
+        <p class="hint">Start, Pause and Reset are in the top bar.</p>
         <div id="fl-stage-detail" class="note">Ready. Press Start to run the simulation.</div>
         <dl class="kv">
           <dt>Session</dt><dd id="session-id">no session</dd>

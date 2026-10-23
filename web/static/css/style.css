@@ -315,3 +315,17 @@ section.folded > .fold-head::before { content: "B8"; }
 @media (max-width: 1280px) {
   .workspace > #panel-left, .workspace > .stage, .workspace > #panel-right { grid-column: 1; grid-row: auto; }
 }
+
+.runbar { display: flex; gap: 6px; margin-left: 12px; }
+.runbar .btn { padding: 7px 14px; font-size: 13px; }
+.runbar .btn.primary { min-width: 92px; }
+.topbar { flex-wrap: nowrap; gap: 10px; padding: 6px 12px; overflow: hidden; }
+.topbar .brand-sub { display: none; }
+.topbar .chips { flex-wrap: nowrap; }
+.topbar .chip { max-width: 16ch; overflow: hidden; text-overflow: ellipsis; }
+.topbar .tabs { margin-left: auto; }
+.topbar .status-group { flex-wrap: nowrap; white-space: nowrap; }
+@media (max-width: 1200px) { .topbar .chips { display: none; } }
+@media (max-width: 760px) { .topbar { flex-wrap: wrap; } }
+.fold-head::before { content: ""; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid var(--text-muted); display: inline-block; margin-right: 4px; }
+section.folded > .fold-head::before { border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 5px solid var(--text-muted); border-right: 0; }
