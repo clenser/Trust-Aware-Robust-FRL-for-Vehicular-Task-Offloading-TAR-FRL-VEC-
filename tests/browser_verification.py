@@ -73,7 +73,7 @@ def wait_for(page, fn, timeout=40, interval=0.5):
 
 def main():
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(args=["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"])
         ctx = browser.new_context(viewport={"width": 1600, "height": 950})
         page = ctx.new_page()
         errors = []
@@ -81,7 +81,7 @@ def main():
         page.on("pageerror", lambda e: errors.append("PAGEERROR " + str(e)))
 
         print("1. load")
-        page.goto(BASE + "/", wait_until="domcontentloaded")
+        page.goto(BASE + "/?view=2d", wait_until="domcontentloaded")
         ok = wait_for(page, lambda: page.inner_text("#connection-status").strip() == "connected", 20)
         check("telemetry socket connects", ok)
         check("no console errors on load", not errors, errors[:3])
@@ -89,7 +89,8 @@ def main():
         # start from a clean state
         if page.is_enabled("#btn-stop"):
             page.click("#btn-stop")
-            wait_for(page, lambda: page.inner_text("#kpi-simstate").strip() == "STOPPED", 10)
+            wait_for(page, lambda: page.inner_text("#kpi-simstate").strip() == "STOPPED", 60)
+        wait_for(page, lambda: page.is_enabled("#btn-start"), 30)
 
         print("2. start")
         page.click("#btn-start")
@@ -99,7 +100,7 @@ def main():
         s1 = steps(page)
         check("step counter advances", s1 > s0, (s0, s1))
         snap = api("/api/state")
-        check("viewport canvas exists", page.locator("#viewport canvas").count() == 1)
+        check("viewport canvas exists", page.locator("#viewport canvas.road-canvas").count() == 1)
         check("vehicles reported by backend", len(snap["vehicles"]) == snap["kpis"]["active_vehicles"])
         page.screenshot(path=os.path.join(OUT, "01_running.png"))
 
@@ -118,7 +119,7 @@ def main():
 
         print("4. two tabs do not double the speed")
         page2 = ctx.new_page()
-        page2.goto(BASE + "/", wait_until="domcontentloaded")
+        page2.goto(BASE + "/?view=2d", wait_until="domcontentloaded")
         page2.wait_for_timeout(1500)
         t0 = api("/api/state")["kpis"]["sim_steps"]
         time.sleep(6)
@@ -138,7 +139,7 @@ def main():
         check("scene has 3 RSUs and a road length", len(scene["rsus"]) == 3 and scene["road_length_m"] > 100)
 
         page.click("#btn-stop")
-        wait_for(page, lambda: page.inner_text("#kpi-simstate").strip() == "STOPPED", 10)
+        wait_for(page, lambda: page.inner_text("#kpi-simstate").strip() == "STOPPED", 40)
         check("reset returns to STOPPED", page.inner_text("#kpi-simstate").strip() == "STOPPED")
 
         print("6. validation")
@@ -169,7 +170,8 @@ def main():
         print("7b. RSU placement")
         page.fill("#input-rsu-1", "300"); page.fill("#input-rsu-2", "320"); page.fill("#input-rsu-3", "2800")
         page.click("#btn-apply-config")
-        check("overlapping RSUs rejected with a visible message", "closer than 50 m" in page.inner_text("#config-message"))
+        check("overlapping RSUs rejected with a visible message",
+              wait_for(page, lambda: "closer than 50 m" in page.inner_text("#config-message"), 10))
         page.fill("#input-rsu-2", "1200")
         page.click("#btn-apply-config")
         ok = wait_for(page, lambda: [round(r["x"]) for r in api("/api/state")["scene"]["rsus"]] == [300, 1200, 2800], 30)
@@ -220,7 +222,12 @@ def main():
             page.set_viewport_size({"width": w, "height": h})
             page.wait_for_timeout(600)
             overflow = page.evaluate("() => document.documentElement.scrollWidth - document.documentElement.clientWidth")
-            check("no horizontal overflow at %d px" % w, overflow <= 1, overflow)
+            if overflow > 1:
+                overflow = "%s %s" % (overflow, page.evaluate("""() => { const W = document.documentElement.clientWidth;
+                  const clipped = (e) => { for (let a = e.parentElement; a; a = a.parentElement) if (getComputedStyle(a).overflowX !== 'visible') return true; return false; };
+                  return [...document.querySelectorAll('body *')].filter((e) => e.getBoundingClientRect().right > W + 1 && !clipped(e)).slice(0, 6)
+                    .map((e) => e.tagName + '.' + e.className + '#' + e.id + ' ' + Math.round(e.getBoundingClientRect().right)); }"""))
+            check("no horizontal overflow at %d px" % w, (isinstance(overflow, (int, float)) and overflow <= 1), overflow)
             page.screenshot(path=os.path.join(OUT, "05_width_%d.png" % w))
         page.set_viewport_size({"width": 1600, "height": 950})
 
@@ -230,6 +237,25 @@ def main():
         theme = page.evaluate("() => document.documentElement.getAttribute('data-theme')")
         check("theme toggles", theme in ("dark", "light"), theme)
         page.screenshot(path=os.path.join(OUT, "06_theme.png"))
+
+        print("12. 3D viewport")
+        page3 = ctx.new_page()
+        errs3 = []
+        page3.on("console", lambda m: errs3.append(m.text) if m.type == "error" else None)
+        page3.on("pageerror", lambda e: errs3.append(str(e)))
+        page3.goto(BASE + "/?view=3d", wait_until="domcontentloaded")
+        page3.wait_for_timeout(4000)
+        check("the 3D renderer starts (WebGL)", page3.evaluate("viewKind") == "3d")
+        check("3D canvas exists", page3.locator("#viewport canvas.road-canvas-3d").count() == 1)
+        check("3D scene holds RSU towers, vehicles and buildings",
+              page3.evaluate("roadView.rsuObjs.size") == 3 and page3.evaluate("roadView.world.children.length") > 100)
+        page3.click("#btn-dim-2d"); page3.wait_for_timeout(800)
+        check("2D toggle swaps the renderer", page3.evaluate("viewKind") == "2d")
+        page3.click("#btn-dim-3d"); page3.wait_for_timeout(1500)
+        check("3D toggle swaps back", page3.evaluate("viewKind") == "3d")
+        page3.screenshot(path=os.path.join(OUT, "07_3d.png"))
+        check("no console errors in the 3D page", not errs3, errs3[:3])
+        page3.close()
 
         check("no console errors during the whole session", not errors, errors[:5])
         browser.close()

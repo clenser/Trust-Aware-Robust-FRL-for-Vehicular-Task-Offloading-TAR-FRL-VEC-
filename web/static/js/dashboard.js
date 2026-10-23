@@ -16,6 +16,9 @@
  */
 
 let roadView = null;
+// Experiment-form fields the user has edited and not yet applied; the backend sync never overwrites them.
+const formDirty = new Set();
+let lastScene = null, lastRsus = null, viewKind = '2d';
 let latencyChart = null;
 let trustChart = null;
 let socket = null;
@@ -93,17 +96,37 @@ const STRATEGY_LABELS = {
   trust_no_exclusion: 'weighting only',
 };
 
+/** Build the 3D (WebGL) or the 2D viewport; 3D falls back to 2D when WebGL is unavailable. */
+function startRoadView(kind) {
+  const host = document.getElementById('viewport');
+  if (roadView && typeof roadView.destroy === 'function') roadView.destroy();
+  roadView = null;
+  host.innerHTML = '';
+  let view = null;
+  if (kind === '3d' && typeof VANETRoadView3D === 'function') {
+    try { view = new VANETRoadView3D('viewport'); viewKind = '3d'; }
+    catch (err) { console.warn('3D view unavailable, using 2D:', err && err.message); host.innerHTML = ''; view = null; }
+  }
+  if (!view && typeof VANETRoadView === 'function') { view = new VANETRoadView('viewport'); viewKind = '2d'; }
+  if (!view) return;
+  view.onSelect = (vid) => showInspector(vid);
+  roadView = view;
+  if (lastScene) view.setScene(lastScene, lastRsus);
+  if (lastVehicles) view.updateVehicles(lastVehicles);
+  const b3 = document.getElementById('btn-dim-3d'), b2 = document.getElementById('btn-dim-2d');
+  if (b3 && b2) { b3.classList.toggle('active', viewKind === '3d'); b2.classList.toggle('active', viewKind === '2d'); }
+  const mode = document.getElementById('btn-view-overview').classList.contains('active') ? 'overview' : 'follow';
+  view.setMode(mode);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initTabs();
 
   try {
-    if (typeof VANETRoadView === 'function') {
-      roadView = new VANETRoadView('viewport');
-      roadView.onSelect = (vid) => showInspector(vid);
-    } else {
-      showDegradation('The road viewport script did not load. Controls and the federated-learning monitor remain functional.');
-    }
+    const wanted = new URLSearchParams(location.search).get('view');
+    startRoadView(wanted === '2d' ? '2d' : (typeof VANETRoadView3D === 'function' ? '3d' : '2d'));
+    if (!roadView) showDegradation('The road viewport script did not load. Controls and the federated-learning monitor remain functional.');
   } catch (err) {
     roadView = null;
     showDegradation('The road viewport could not start: ' + (err && err.message ? err.message : err) +
@@ -460,7 +483,10 @@ function applyState(data) {
     }
     resetSeries();
     redrawSeriesCharts();
-    if (roadView) { roadView._lastFlRound = undefined; roadView.flAnim = null; roadView.links = []; }
+    if (roadView) {
+      if (typeof roadView.resetSession === 'function') roadView.resetSession();
+      else { roadView._lastFlRound = undefined; roadView.flAnim = null; roadView.links = []; }
+    }
     if (sid) backfillSeries();
   }
 
@@ -476,6 +502,8 @@ function applyState(data) {
 function updateRoadView(data) {
   if (!roadView) return;
   try {
+    if (data.scene) lastScene = data.scene;
+    if (data.rsus && data.rsus.length) lastRsus = data.rsus;
     if (data.scene) roadView.setScene(data.scene, data.rsus);
     else if (data.rsus && data.rsus.length) roadView.setScene(null, data.rsus);
     if (data.vehicles) {
@@ -580,7 +608,7 @@ function updateSimulationStatus(data) {
   // (never overwrite a field the user is editing).
   const syncField = (id, value) => {
     const el = document.getElementById(id);
-    if (el && value !== undefined && value !== null && document.activeElement !== el) el.value = value;
+    if (el && value !== undefined && value !== null && document.activeElement !== el && !formDirty.has(id)) el.value = value;
   };
   syncField('select-speed', k.sim_speed);
   syncField('input-vehicles', k.configured_vehicles);
@@ -970,6 +998,10 @@ function setupEventListeners() {
   mobilitySel.addEventListener('change', syncRsuInputs);
   syncRsuInputs();
 
+  ['input-vehicles', 'input-attack-ratio', 'input-rsu-1', 'input-rsu-2', 'input-rsu-3'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => formDirty.add(id));
+  });
   document.getElementById('btn-apply-config').addEventListener('click', async () => {
     const body = readExperimentForm();
     const problem = validateExperimentForm(body);
@@ -988,6 +1020,7 @@ function setupEventListeners() {
         return;
       }
       if (msg) { msg.textContent = 'Applied. A new session was created; press Start to run it.'; msg.className = 'note'; }
+      formDirty.clear();
       clearBanner(true);
       await refreshState();
     } catch (err) {
@@ -1004,6 +1037,9 @@ function setupEventListeners() {
   };
   document.getElementById('btn-view-follow').addEventListener('click', () => setView('follow'));
   document.getElementById('btn-view-overview').addEventListener('click', () => setView('overview'));
+  const dim3 = document.getElementById('btn-dim-3d'), dim2 = document.getElementById('btn-dim-2d');
+  if (dim3) dim3.addEventListener('click', () => { if (viewKind !== '3d') startRoadView('3d'); });
+  if (dim2) dim2.addEventListener('click', () => { if (viewKind !== '2d') startRoadView('2d'); });
 
   // Display toggles act on the viewport only.
   const bindToggle = (id, prop) => {

@@ -346,3 +346,5 @@ seed.
 The claims of the supplementary run (S1-S6) are tested with the same rule as the
 headline claims (paired CI, Holm correction across the six).  They are exploratory
 (6 seeds).
+
+Experiment N moves the faulty RSU every 40 steps (`faulty_rsus: [{index: "random", rotate_every_steps: 40}]`, seeded, deterministic per environment seed); claims S7-S8 compare the learned policy with trust features masked and with the Resource-Aware heuristic.

@@ -1935,6 +1935,7 @@ def _supplementary_claims(sres, parent_results):
     from experiments.claims_report import paired_cells, holm, verdict
     L = sres.get("experiment_l_faulty_edge_node") or {}
     M = sres.get("experiment_m_intermittent_connectivity") or {}
+    N = sres.get("experiment_n_rotating_faulty_edge_node") or {}
     A = parent_results.get("experiment_a_baseline_comparison") or {}
     spec = [
         ("S1", "Behavioural trust protects offloading from a faulty edge node (policy with trust features minus the same policy with them masked)",
@@ -1949,6 +1950,10 @@ def _supplementary_claims(sres, parent_results):
          M.get("trust_aware_staleness_discount"), M.get("trust_aware_no_staleness_handling"), +1),
         ("S6", "Trust-aware aggregation beats FedAvg under intermittent connectivity",
          M.get("trust_aware_no_staleness_handling"), M.get("fedavg_stale_uploads"), +1),
+        ("S7", "With a faulty RSU that moves every 40 steps, behavioural trust features help the learned policy (vs the same policy with them masked)",
+         N.get("learned_with_trust_features"), N.get("learned_trust_features_masked"), +1),
+        ("S8", "...and the learned policy beats the Resource-Aware heuristic under the rotating fault",
+         N.get("learned_with_trust_features"), N.get("Resource_Aware_rotating"), +1),
     ]
     rows = []
     for cid, text, a, b, direction in spec:

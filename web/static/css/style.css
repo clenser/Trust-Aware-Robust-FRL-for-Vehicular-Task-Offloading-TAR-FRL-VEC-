@@ -239,7 +239,9 @@ input[type=range] { width: 100%; }
 .chart-card h3 { margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; }
 .chart-card .chart-box { height: 130px; }
 .kpi-sub { display: block; font: 10px var(--mono); color: var(--text-muted); }
-@media (max-width: 900px) { .charts-row { grid-template-columns: 1fr; } }
+@media (max-width: 900px) { .charts-row { grid-template-columns: minmax(0, 1fr); } }
+.chart-card, .chart-box { min-width: 0; }
+.chart-box canvas { max-width: 100%; }
 
 /* ------------------------------------------------------------ research charts */
 svg.chart { width: 100%; height: auto; max-width: 900px; display: block; margin: 6px 0 2px; }

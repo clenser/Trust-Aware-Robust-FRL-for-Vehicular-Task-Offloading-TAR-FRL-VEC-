@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <link rel="stylesheet" href="/static/css/style.css?v=6.0">
+  <link rel="stylesheet" href="/static/css/style.css?v=6.2">
 </head>
 <body>
   <div id="error-banner" class="banner" style="display:none;" role="alert"></div>
@@ -127,6 +127,10 @@
       </div>
       <div class="viewport-wrap">
         <div class="viewport-tools">
+          <div class="seg" role="group" aria-label="Dimension">
+            <button class="seg-btn active" id="btn-dim-3d">3D</button>
+            <button class="seg-btn" id="btn-dim-2d">2D</button>
+          </div>
           <div class="seg" role="group" aria-label="View">
             <button class="seg-btn active" id="btn-view-follow">Close-up</button>
             <button class="seg-btn" id="btn-view-overview">Whole road</button>
@@ -234,8 +238,10 @@
     </div>
   </main>
 
-  <script src="/static/js/sim_view.js?v=6.0"></script>
-  <script src="/static/js/dashboard.js?v=6.0"></script>
-  <script src="/static/js/research.js?v=6.0"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="/static/js/sim_view.js?v=6.1"></script>
+  <script src="/static/js/sim_view3d.js?v=6.1"></script>
+  <script src="/static/js/dashboard.js?v=6.1"></script>
+  <script src="/static/js/research.js?v=6.1"></script>
 </body>
 </html>

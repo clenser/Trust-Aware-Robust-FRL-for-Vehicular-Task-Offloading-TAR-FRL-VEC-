@@ -245,6 +245,7 @@ const CLAIM_SHORT = {
   H7: 'H7 trust-aware − Nearest-RSU', H8: 'H8 trust-aware − greedy resource-aware',
   S1: 'S1 trust features − masked (faulty RSU)', S2: 'S2 learned − Nearest-RSU (faulty RSU)', S3: 'S3 learned − trust-greedy (faulty RSU)',
   S4: 'S4 faulty RSU − no fault', S5: 'S5 staleness discount − none', S6: 'S6 trust-aware − FedAvg (intermittent)',
+  S7: 'S7 trust features − masked (rotating fault)', S8: 'S8 learned − Resource-Aware (rotating fault)',
 };
 
 function cellRow(label, cell, kind, perSeed) {
@@ -381,11 +382,12 @@ async function loadResearch() {
   (summary.supplementary || []).forEach((sup) => {
     const SR = sup.results || {};
     const L = SR.experiment_l_faulty_edge_node, M = SR.experiment_m_intermittent_connectivity, K2 = SR.experiment_k2_mixed_threat_relabelled;
+    const N = SR.experiment_n_rotating_faulty_edge_node;
     const PS = sup.per_seed_completion || {};
     if (sup.claims && sup.claims.length) {
       const rows = sup.claims.map((c) => ({ id: c.id, short: CLAIM_SHORT[c.id] || c.id, mean: c.mean_difference, lo: c.ci95_low, hi: c.ci95_high, p: c.p_value, pHolm: c.p_holm, verdict: c.verdict }));
       section('sec-supp-claims', 'Supplementary claims', card('Supplementary claims: faulty edge node and intermittent connectivity',
-        `Run ${rEsc(sup.run_id)} supplements the active run (same seeds, protocol and code paths); these are the problem statement’s edge-node and connectivity requirements. Exploratory: 6 seeds, Holm-adjusted across the six claims.`,
+        `Run ${rEsc(sup.run_id)} supplements the active run (same seeds, protocol and code paths); these are the problem statement’s edge-node and connectivity requirements. Exploratory: 6 seeds, Holm-adjusted across the supplementary claims.`,
         forestPlot(rows, { xLabel: 'Paired difference in completion, percentage points (95 % CI)', label: 'Supplementary claims' }) + claimsTable(sup.claims, ''), 'sec-supp-claims'));
     }
     if (L) {
@@ -402,6 +404,16 @@ async function loadResearch() {
         'RSU_2 silently drops 60 % of the tasks it is given (injected fault). Behavioural trust of each RSU is part of the learned policy’s state; the masked policy cannot see it. ' +
         'The no-fault bar is the main-run policy on the same seeds.',
         barsCI(rows, { min: 20, max: 100, xLabel: 'Task completion, %', label: 'Faulty edge node' }) + '<h3>All cells</h3>' + methodTable(L), 'sec-edge'));
+    }
+    if (N) {
+      const rows = [
+        cellRow('learned + trust features, rotating fault', N.learned_with_trust_features, 'defence', (PS.experiment_n_rotating_faulty_edge_node || {}).learned_with_trust_features),
+        cellRow('learned, trust features masked, rotating fault', N.learned_trust_features_masked, 'undefended', (PS.experiment_n_rotating_faulty_edge_node || {}).learned_trust_features_masked),
+        cellRow('trust-greedy heuristic, rotating fault', N.Trust_Greedy_rotating, 'heuristic', null),
+        cellRow('resource-aware heuristic, rotating fault', N.Resource_Aware_rotating, 'heuristic', null)].filter(Boolean);
+      section('sec-rot', 'Rotating fault', card('Rotating faulty edge node: the unreliable RSU changes every 40 steps',
+        'A fixed fault can be memorised by a policy that simply learns to avoid one RSU. Here the dropping RSU moves every 40 steps (seeded schedule, different in training and evaluation), so the policy must read behavioural trust.',
+        barsCI(rows, { min: 20, max: 100, xLabel: 'Task completion, %', label: 'Rotating faulty edge node' }) + '<h3>All cells</h3>' + methodTable(N), 'sec-rot'));
     }
     if (M) {
       const rows = [cellRow('FedAvg, stale uploads', M.fedavg_stale_uploads, 'undefended', null),

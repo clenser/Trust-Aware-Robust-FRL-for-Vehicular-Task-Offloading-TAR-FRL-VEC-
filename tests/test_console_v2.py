@@ -122,7 +122,7 @@ class TestHttpCachingAndResearchSummary(unittest.TestCase):
         cls.client = TestClient(create_app())
 
     def test_versioned_static_assets_are_cacheable(self):
-        r = self.client.get("/static/js/dashboard.js?v=6.0")
+        r = self.client.get("/static/js/dashboard.js?v=6.1")
         self.assertEqual(r.status_code, 200)
         self.assertIn("max-age", r.headers.get("cache-control", ""))
 

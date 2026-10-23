@@ -258,3 +258,30 @@ heavy contamination; that the studied trust detector finds simple poisoning but
 pays for it in false exclusions and gains nothing from behavioural trust.  It does
 **not** support the claim that trust-aware federated RL improves vehicular task
 offloading at the default attack ratio, nor any real-world claim.
+
+## Addendum: supplementary experiments
+
+Supplementary run `run_20261023_100858_supplementary_edge_node_staleness` (6 seeds, exploratory, Holm across S1-S8):
+
+| Claim | Paired difference (pp, 95 % CI) | Verdict |
+|---|---|---|
+| S1 trust features vs masked, fixed faulty RSU | -0.01 [-2.17, +2.16] | not established |
+| S2 learned vs Nearest-RSU, faulty RSU | +8.06 [+2.94, +13.19], Holm p = 0.069 | not established after Holm |
+| S3 learned vs trust-greedy heuristic | +0.40 [-3.94, +4.73] | not established |
+| S4 faulty RSU vs no fault | -5.07 [-9.71, -0.43], Holm p = 0.22 | not established after Holm |
+| S5 staleness discount vs none | +1.55 [-4.42, +7.52] | not established |
+| S6 trust-aware vs FedAvg, intermittent connectivity | +2.84 [-9.49, +15.16] | not established |
+| S7 trust features vs masked, rotating fault | -1.53 [-3.32, +0.25] | not established |
+| S8 learned vs Resource-Aware, rotating fault | -10.07 [-11.53, -8.61], Holm p < 0.001 | **contradicted** |
+
+Reading: in these experiments behavioural trust features in the state give the
+learned policy **no measurable benefit**, a simple trust-aware greedy heuristic
+matches it, and when the faulty RSU moves the learned policy (about 60 % completion)
+is clearly worse than the Resource-Aware heuristic (about 69 %).  The framework's
+only supported headline result remains H6 (federation gain over non-federated
+learning).  The dual-tier (behavioural + model-update) trust hypothesis is **not**
+supported by this evidence and must not be claimed as a contribution; what can be
+claimed is the evaluation methodology, the corrected labels for unreliable-but-honest
+vehicles, and the negative results with their limits.  Possible reasons (untested):
+short training budget, a state that is too coarse to separate a transient fault from
+congestion.

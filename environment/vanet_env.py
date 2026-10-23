@@ -204,12 +204,28 @@ class VANETOffloadingEnv:
             for rsu, x in zip(self.rsus, xs):
                 rsu.x = x
 
+        # A fault is either FIXED (an integer RSU index) or ROTATING (``"random"``):
+        # a rotating fault moves to a different, randomly chosen RSU every
+        # ``rotate_every_steps`` simulation steps.  The schedule is a seeded function
+        # of the environment seed (identical for every method evaluated on it), and
+        # it differs between training and evaluation environments, so a policy
+        # cannot memorise WHICH node is faulty - it has to observe behaviour.
+        self._rotating = None
+        self._fault_rng = np.random.RandomState(int(self.random_seed) + 23)
         for spec in self.faulty_rsus_cfg:
+            if str(spec.get("index", 0)) == "random":
+                self._rotating = {"drop_prob": float(spec.get("drop_prob", 0.0)),
+                                  "delay_factor": float(spec.get("delay_factor", 1.0)),
+                                  "every": max(1, int(spec.get("rotate_every_steps", 40))),
+                                  "current": None}
+                continue
             idx = int(spec.get("index", 0))
             if not 0 <= idx < len(self.rsus):
                 raise ValueError("faulty_rsus index %d is outside 0..%d" % (idx, len(self.rsus) - 1))
             self.rsus[idx].fault_drop_prob = float(spec.get("drop_prob", 0.0))
             self.rsus[idx].fault_delay_factor = float(spec.get("delay_factor", 1.0))
+        if self._rotating is not None:
+            self._rotate_fault()
 
         self.vehicles = {}
         self.current_time_sec = 0.0
@@ -289,6 +305,8 @@ class VANETOffloadingEnv:
         self.current_time_sec += self.dt
         self.step_count += 1
         self._uplinks_this_slot = {}
+        if self._rotating is not None and self.step_count % self._rotating["every"] == 0:
+            self._rotate_fault()
         self.mobility.step(self.vehicles)
 
         # Advance the edge and vehicle queue simulations so that the waiting
@@ -300,6 +318,20 @@ class VANETOffloadingEnv:
             v.step(self.current_time_sec)
 
 
+
+    def _rotate_fault(self):
+        """Move the rotating fault to a different RSU (never the same one twice in a row)."""
+        r = self._rotating
+        choices = [i for i in range(len(self.rsus)) if i != r["current"]]
+        r["current"] = int(self._fault_rng.choice(choices))
+        for i, rsu in enumerate(self.rsus):
+            on = (i == r["current"])
+            rsu.fault_drop_prob = r["drop_prob"] if on else 0.0
+            rsu.fault_delay_factor = r["delay_factor"] if on else 1.0
+
+    def faulty_rsu_ids(self):
+        """Identifiers of the RSUs that are currently faulty (evaluation only)."""
+        return [r.rsu_id for r in self.rsus if r.fault_drop_prob > 0.0 or r.fault_delay_factor > 1.0]
 
     def scene_description(self):
         """Geometry the visual representation must use (the backend's own numbers)."""

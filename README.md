@@ -124,3 +124,7 @@ Smoke and aborted runs are marked as such and must not be cited.
 * [`docs/SCIENTIFIC_CONTRIBUTION.md`](docs/SCIENTIFIC_CONTRIBUTION.md) - the contribution at the level the data support
 * [`docs/PAPER.md`](docs/PAPER.md) - manuscript draft with results, validity threats and venue notes
 * [`docs/ACCEPTANCE_REPORT.md`](docs/ACCEPTANCE_REPORT.md) - PASS / FAIL / BLOCKED per criterion with evidence
+
+## Supplementary results (summary)
+
+Edge-node fault, rotating fault and intermittent-connectivity experiments are in the Research tab and docs/LIMITATIONS.md. They do **not** show a benefit of behavioural trust features; under a rotating fault the learned policy is worse than the Resource-Aware heuristic.

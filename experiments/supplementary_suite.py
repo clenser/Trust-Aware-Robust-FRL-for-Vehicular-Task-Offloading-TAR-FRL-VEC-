@@ -42,6 +42,8 @@ from experiments import experiment_runner as er
 RESULTS = os.path.join(er.PROJECT_ROOT, "results")
 
 FAULTY_RSU = [{"index": 1, "drop_prob": 0.6, "delay_factor": 1.0}]
+# The fault moves to a different RSU every 40 steps, so the policy cannot memorise which node is bad.
+ROTATING_FAULT = [{"index": "random", "drop_prob": 0.6, "delay_factor": 1.0, "rotate_every_steps": 40}]
 
 
 def _parent_run():
@@ -115,6 +117,16 @@ def run(quick=False, resume_from=None, label="supplementary_edge_node_staleness"
         cell(g, b + "_faulty", cfg_f, baseline=b, **common)
     cell(g, "Trust_Greedy_no_fault", config, baseline="Trust_Greedy", **common)
 
+    # ---------------- N: rotating faulty edge node ----------------
+    print("[N] Rotating faulty edge node (the unreliable RSU changes every 40 steps)")
+    cfg_r = variant(adversarial={"faulty_rsus": ROTATING_FAULT})
+    cfg_rm = variant(adversarial={"faulty_rsus": ROTATING_FAULT}, environment_model={"mask_trust_features": True})
+    g = "experiment_n_rotating_faulty_edge_node"
+    cell(g, "learned_with_trust_features", cfg_r, method="trust_aware", **common)
+    cell(g, "learned_trust_features_masked", cfg_rm, method="trust_aware", **common)
+    for b in ("Resource_Aware", "Trust_Greedy"):
+        cell(g, b + "_rotating", cfg_r, baseline=b, **common)
+
     # ---------------- M: intermittent connectivity + stale updates ----------------
     print("[M] Intermittent connectivity (40 percent offline per round, missed broadcasts)")
     fl_m = {"connectivity_dropout": 0.4, "missed_broadcast": True}
@@ -148,6 +160,7 @@ def run(quick=False, resume_from=None, label="supplementary_edge_node_staleness"
                               ("num_rounds", "steps_per_round", "local_epochs")},
         "environment_model": dict(config.get("environment_model", {}), reward=config.get("reward", {})),
         "faulty_rsu": FAULTY_RSU,
+        "rotating_fault": ROTATING_FAULT,
         "connectivity": fl_m,
         "code_revision": er.source_revision(),
         "environment_versions": er._environment_versions(),
