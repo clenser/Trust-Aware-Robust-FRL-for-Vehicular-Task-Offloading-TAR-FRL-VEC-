@@ -200,3 +200,7 @@ edge_calibration:
   day_compression: 288.0          # 1 simulated second = 288 s of platform time (300 s = 24 h)
   capacity_heterogeneity: true
   backhaul_rtt: true
+  # "bandwidth_profile": share = peak x bandwidth diurnal profile (allocation view, upper bound).
+  # "cpu_trace": share = allocated-core ratio x measured VM CPU utilisation (diurnal + AR(1)).
+  load_model: "bandwidth_profile"
+  tenant_alloc_ratio: null        # cpu_trace only; null = measured median allocation ratio

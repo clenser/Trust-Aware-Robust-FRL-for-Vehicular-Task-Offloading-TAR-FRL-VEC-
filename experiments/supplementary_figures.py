@@ -24,7 +24,8 @@ from experiments.plotter import sha256_file  # noqa: E402
 #: Filenames of the figures this module produces.
 SUPPLEMENTARY_FIGURES = ["fig11_faulty_edge_node.png", "fig12_intermittent_connectivity.png",
                          "fig13_data_plane_and_edge_calibration.png",
-                         "fig14_do_no_harm_closed_loop.png", "fig15_learner_study.png"]
+                         "fig14_do_no_harm_closed_loop.png", "fig15_learner_study.png",
+                         "fig16_hypothesis_tests.png"]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BLUE, GREEN, RED, GREY, AMBER = "#1f5fbf", "#17803d", "#c0392b", "#6b7380", "#b26a00"
@@ -154,6 +155,32 @@ def fig_learner(path_dir, out):
     return path, ["learner_study.json"]
 
 
+def fig_hypotheses(path_dir, out):
+    rows = json.load(open(os.path.join(path_dir, "hypothesis_verdicts.json")))["tests"]
+    fig, ax = plt.subplots(figsize=(11.5, 5.4))
+    xmax = max(r["ci_high"] for r in rows)
+    for i, r in enumerate(rows):
+        ok = r["verdict"] == "SUPPORTED"
+        raw = r["verdict"].startswith("SUPPORTED (")
+        col = GREEN if ok else (AMBER if raw else GREY)
+        ax.errorbar(r["mean"], i, xerr=[[r["mean"] - r["ci_low"]], [r["ci_high"] - r["mean"]]], fmt="o", color=col,
+                    ecolor=col, capsize=4)
+        ax.text(xmax + 2, i, "%s (Holm p=%.3f)" % (r["verdict"].split(" (")[0].lower() if not raw else "raw CI only", r["p_holm"]),
+                va="center", fontsize=8, color=col)
+    ax.axvline(0, color="black", lw=1)
+    ax.set_yticks(range(len(rows)))
+    ax.set_yticklabels(["%s  %s  %s" % (r["id"], r["hypothesis"], r["description"]) for r in rows], fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlim(min(r["ci_low"] for r in rows) - 3, xmax + 22)
+    ax.set_xlabel("Paired difference (pp of completion; ms for latency, where negative is better), 95% CI")
+    ax.set_title("Pre-specified tests of the roadmap hypotheses (green = supported after Holm)", fontsize=11)
+    fig.tight_layout()
+    path = os.path.join(out, "fig16_hypothesis_tests.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path, ["hypothesis_verdicts.json"]
+
+
 def _latest(kind):
     manifest = json.load(open(os.path.join(ROOT, "results", "manifest.json")))
     runs = [e for e in manifest if e.get("kind") == kind]
@@ -186,6 +213,11 @@ def generate(supp=None, ext=None, out=os.path.join(ROOT, "plots")):
         study_jobs.append((fig_learner, lrn_dir, os.path.join(lrn_dir, "learner_study.json"),
                            "Fig 15: Learner study - delay-estimate inputs and bandit targets",
                            "Learned policy variants vs Resource-Aware across four environments."))
+    hyp_dir = os.path.join(ROOT, "results", "hypothesis_study")
+    if os.path.exists(os.path.join(hyp_dir, "hypothesis_verdicts.json")):
+        study_jobs.append((fig_hypotheses, hyp_dir, os.path.join(hyp_dir, "hypothesis_verdicts.json"),
+                           "Fig 16: Pre-specified hypothesis tests",
+                           "Ten paired comparisons for H1-H4 with Holm-adjusted verdicts."))
     made = []
     for fn, d, res, title, desc in study_jobs:
         path, series = fn(d, out)

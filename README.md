@@ -33,6 +33,7 @@ real data (FHWA NGSIM US-101).
 | Energy | local execution uses ~31x less energy per task |
 | *Extended run (6 seeds):* data-plane attack on V2V helpers | costs a trust-blind V2V heuristic 2.9 pp; trust-aware peer selection recovers 2.2 pp (part of it not trust-related) - small |
 | *Extended run:* learned policy under that attack | trust features +0.9 pp, CI [-1.4, +3.3] - not established |
+| *Hypothesis study (24 seeds, Holm-corrected):* H2 / H3 / H4 / H5 | **supported with stated scope**: +6.1 pp at 24 % and +16.2 pp at 40 % attackers over FedAvg; joint trust beats behavioural-only (+5.3 / +19.7 pp); holds on synthetic and authentic NGSIM mobility; H1 only for completion, latency effect <= 3 ms ([`docs/HYPOTHESES.md`](docs/HYPOTHESES.md)) |
 | *Method attempt (12 seeds):* do-no-harm exclusion | no-attacker cost -0.8 pp (deployed rule -6.4 pp); false exclusions 1.7 % vs 10.3 %; +17.6 pp at 40 % attackers; 24 % gain unresolved; norm-matched / partial attacks not detected |
 | *Method attempt:* learner with delay-estimate inputs | +6.6 pp over Resource-Aware in the benchmark environment; parity or loss under hidden-state conditions; trust features add nothing |
 | *Extended run:* Alibaba edge-trace calibration, peak hour | Nearest-RSU 16.8 %, Resource-Aware 59.9 %, learned policy = Local-Only (58.3 %) |

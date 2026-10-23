@@ -405,3 +405,11 @@ Target-venue note: with one supported headline claim and null or negative supple
 **Learner.**  Giving the DQN the heuristics' own delay estimates and bandit targets (gamma = 0) beats Resource-Aware on the benchmark environment (+6.6 pp, CI [+3.6, +9.6]) but only ties it under a rotating faulty RSU (-0.4 pp) and under the data-plane attack (+0.0 pp), and loses at the edge-trace peak hour (-7.6 pp).  Hiding the trust features changes nothing in any environment.
 
 **Reading.**  Two of the roadmap's open items move: the cost of the defence at zero attackers is largely removed, and a learned policy beats the best simple heuristic in the benchmark environment.  Three do not: no significant benefit at the default 24 % attack ratio, no benefit from trust features in the learner, and no advantage under hidden-state conditions.
+
+---
+
+## Pre-specified confirmation of the roadmap hypotheses
+
+*Study `results/hypothesis_study`; table and caveats in `docs/HYPOTHESES.md`; Fig. 16.  Ten comparisons and a Holm correction fixed before running; 24 paired seeds (12 for the offline-client and mobility conditions).*
+
+With the do-no-harm rule as the trust-aware method and FedAvg as the non-trust-aware baseline: completion improves by +6.1 pp at the default 24 % attack ratio (CI [+2.7, +9.4], Holm p = 0.007) and +16.2 pp at 40 % (CI [+12.0, +20.4]) (H2); the joint rule beats behavioural trust alone by +5.3 pp and +19.7 pp (H3; behavioural trust alone is no defence and falls below FedAvg at 40 %); the advantage holds under synthetic and authentic NGSIM mobility (+9.9 and +8.5 pp, Holm p <= 0.02) and, on the raw interval only, with 40 % of clients offline each round (+9.6 pp, Holm p = 0.089) (H4); aggregation costs 136 ms against 12 ms (H5).  H1 is supported for reliability, not for speed: latency of completed tasks improves by 3.3 ms at 40 % (raw interval only) and not at all at 24 %.  The rule does not detect norm-matched or partial attackers, and the hypotheses are supported for the sign-flip attack in simulation only.

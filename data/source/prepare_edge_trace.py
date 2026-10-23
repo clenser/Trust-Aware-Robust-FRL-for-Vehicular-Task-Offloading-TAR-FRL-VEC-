@@ -10,13 +10,14 @@ Files read (all optional except PM.csv):
   SITE_RTT.csv            inter-site ICMP RTT / loss        (36 GB, block-sampled)
   VM_BW_THREE_MONTHS.csv  per-VM bandwidth, 3 months        (0.45 GB, full pass)
   VM_BANDWIDTH.csv        per-VM bandwidth, 5-min snapshots (6.5 GB, block-sampled)
+  VM_CPU.csv              per-VM CPU utilisation, 2-min samples (18 GB, block-sampled)
 
 Large files are sampled by seeking to evenly spread byte offsets and parsing
 whole lines inside fixed-size blocks, so the pass takes minutes, not hours,
 and the sampling is deterministic.  The summary records exactly how each file
 was read, so the numbers are not presented as a full-population census.
 
-Usage: python data/source/prepare_edge_trace.py [trace_dir] [out_json]
+Usage: python data/source/prepare_edge_trace.py [trace_dir] [out_json] [--only-vm-cpu]
 """
 
 import hashlib
@@ -171,6 +172,74 @@ def summarise_vm_bandwidth(path):
     }
 
 
+def summarise_vm_cpu(path, n_blocks=40, block=8 * 1024 * 1024):
+    """CPU utilisation dynamics of tenant VMs (2-minute samples).
+
+    The file is not time-ordered and contains embedded header lines, but the
+    rows of one VM are contiguous, so a byte block holds several hundred
+    complete per-VM series.  Statistics use only consecutive 120 s steps.
+    Hour of day is platform local time (UTC+8, all sites are in China).
+    """
+    step = 120
+    lags = (1, 5, 15, 30)             # 2 min, 10 min, 30 min, 1 h
+    num = {l: 0.0 for l in lags}
+    den = {l: 0.0 for l in lags}
+    vm_means, site_means, jumps = [], {}, []
+    sq, nsq = 0.0, 0
+    hour_sum, hour_cnt = np.zeros(24), np.zeros(24)
+    all_vals, innov = [], []
+    for df, _ in _block_sample(path, _read_lines, n_blocks=n_blocks, block=block):
+        df = df[df["report_ts"].astype(str) != "report_ts"]
+        ts = pd.to_numeric(df["report_ts"], errors="coerce")
+        cpu = pd.to_numeric(df["cpu_rate"], errors="coerce")
+        df = pd.DataFrame({"vm": df["vm_id"], "site": df["site_id"], "ts": ts, "c": cpu}).dropna()
+        df = df[(df["c"] >= 0) & (df["c"] <= 1)].sort_values(["vm", "ts"])
+        h = ((df["ts"].to_numpy() // 3600) + 8) % 24
+        hour_sum += np.bincount(h.astype(int), weights=df["c"].to_numpy(), minlength=24)
+        hour_cnt += np.bincount(h.astype(int), minlength=24)
+        all_vals.append(df["c"].to_numpy())
+        for vm, g in df.groupby("vm"):
+            if len(g) < 60:
+                continue
+            t = g["ts"].to_numpy()
+            x = g["c"].to_numpy()
+            m = x.mean()
+            vm_means.append(m)
+            site_means.setdefault(g["site"].iloc[0], []).append(m)
+            d = x - m
+            sq += float(np.sum(d ** 2))
+            nsq += len(d)
+            for l in lags:
+                ok = (t[l:] - t[:-l]) == step * l   # gap-free pairs only
+                num[l] += float(np.sum(d[l:][ok] * d[:-l][ok]))
+                den[l] += float(np.sum(d[:-l][ok] ** 2))
+            ok1 = (t[1:] - t[:-1]) == step
+            dx = np.diff(x)[ok1]
+            jumps.append(dx)
+    allv = np.concatenate(all_vals)
+    dx = np.concatenate(jumps)
+    acf = {f"lag_{l * step // 60}min": (num[l] / den[l] if den[l] > 0 else None) for l in lags}
+    phi = acf["lag_2min"]
+    site_vm_mean = np.array([np.mean(v) for v in site_means.values()])
+    hourly = hour_sum / np.maximum(hour_cnt, 1)
+    return {
+        "method": f"{n_blocks} line-aligned blocks of {block >> 20} MiB; per-VM series, gap-free 120 s steps only",
+        "cpu_rate": _quantiles(allv),
+        "vm_mean_cpu": _quantiles(np.array(vm_means)),
+        "site_mean_vm_cpu": _quantiles(site_vm_mean),
+        "num_vm_series": int(len(vm_means)),
+        "acf_within_vm": acf,
+        "ar1_phi_per_2min": phi,
+        "within_vm_sd": float(np.sqrt(sq / max(nsq, 1))),
+        "step_change_std": float(dx.std()),
+        "step_change_abs_quantiles": _quantiles(np.abs(dx)),
+        "fraction_steps_jump_gt_0.2": float((np.abs(dx) > 0.2).mean()),
+        "mean_cpu_by_hour_utc8": hourly.tolist(),
+        "normalised_cpu_by_hour_utc8": (hourly / hourly.max()).tolist(),
+        "peak_to_mean_hourly": float(hourly.max() / hourly.mean()),
+    }
+
+
 def file_fingerprint(path, head_bytes=8 * 1024 * 1024):
     h = hashlib.sha256()
     with open(path, "rb") as fh:
@@ -178,11 +247,27 @@ def file_fingerprint(path, head_bytes=8 * 1024 * 1024):
     return {"bytes": os.path.getsize(path), "sha256_first_8MiB": h.hexdigest()}
 
 
+def add_vm_cpu(trace_dir, out):
+    """Merge the VM_CPU summary into an existing summary json (no 36 GB RTT re-read)."""
+    path = os.path.join(trace_dir, "VM_CPU.csv")
+    with open(out, encoding="utf-8") as fh:
+        summary = json.load(fh)
+    print("reading VM_CPU.csv", flush=True)
+    summary.setdefault("files", {})["VM_CPU.csv"] = file_fingerprint(path)
+    summary["vm_cpu"] = summarise_vm_cpu(path)
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(summary, fh, indent=1)
+    print("updated", out)
+
+
 def main():
-    trace_dir = sys.argv[1] if len(sys.argv) > 1 else "Full_trace"
-    out = sys.argv[2] if len(sys.argv) > 2 else "data/traces/edge_platform_summary.json"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    trace_dir = args[0] if len(args) > 0 else "Full_trace"
+    out = args[1] if len(args) > 1 else "data/traces/edge_platform_summary.json"
+    if "--only-vm-cpu" in sys.argv:
+        return add_vm_cpu(trace_dir, out)
     files = {n: os.path.join(trace_dir, n) for n in
-             ("PM.csv", "VM.csv", "SITE_RTT.csv", "VM_BW_THREE_MONTHS.csv", "VM_BANDWIDTH.csv")}
+             ("PM.csv", "VM.csv", "SITE_RTT.csv", "VM_BW_THREE_MONTHS.csv", "VM_BANDWIDTH.csv", "VM_CPU.csv")}
     summary = {
         "source": "Alibaba NEP edge platform (EdgeWorkloadsTraces); Xu et al., IMC 2021",
         "scope": ("Edge-platform compute capacity, inter-site RTT/loss and VM bandwidth. "
@@ -193,7 +278,8 @@ def main():
     summary["sites"] = summarise_sites(trace_dir)
     for key, name, fn in (("rtt", "SITE_RTT.csv", summarise_rtt),
                           ("bandwidth_three_months", "VM_BW_THREE_MONTHS.csv", summarise_bw_three_months),
-                          ("bandwidth_snapshots", "VM_BANDWIDTH.csv", summarise_vm_bandwidth)):
+                          ("bandwidth_snapshots", "VM_BANDWIDTH.csv", summarise_vm_bandwidth),
+                          ("vm_cpu", "VM_CPU.csv", summarise_vm_cpu)):
         if os.path.exists(files[name]):
             print("reading", name, flush=True)
             summary[key] = fn(files[name])

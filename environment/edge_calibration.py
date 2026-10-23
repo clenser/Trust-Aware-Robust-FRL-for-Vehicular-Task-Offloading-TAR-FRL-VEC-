@@ -30,8 +30,12 @@ import numpy as np
 class EdgeCalibration:
     def __init__(self, summary, peak_background_share=None, start_hour=12.0,
                  day_compression=288.0, capacity_heterogeneity=True,
-                 backhaul_rtt=True, seed=0):
+                 backhaul_rtt=True, seed=0, load_model="bandwidth_profile",
+                 tenant_alloc_ratio=None):
         self.summary = summary
+        if load_model not in ("bandwidth_profile", "cpu_trace"):
+            raise ValueError("load_model must be 'bandwidth_profile' or 'cpu_trace'")
+        self.load_model = load_model
         bw = summary["bandwidth_three_months"]
         self.hourly = np.asarray(bw["normalised_load_by_hour"], dtype=float)
         if peak_background_share is None:
@@ -45,6 +49,18 @@ class EdgeCalibration:
         self._loss = np.asarray(summary["rtt"]["loss_percent_grid_p01_p99"], dtype=float)
         self._cores = summary["sites"]["cores_per_site"]
         self.rng = np.random.RandomState(int(seed) + 31)
+        if load_model == "cpu_trace":
+            cpu = summary["vm_cpu"]          # needs prepare_edge_trace.py --only-vm-cpu
+            self._cpu_mean = float(cpu["cpu_rate"]["mean"])
+            hourly = np.asarray(cpu["mean_cpu_by_hour_utc8"], dtype=float)
+            self._cpu_hourly = hourly / hourly.mean()   # mean-one diurnal shape
+            self._phi2 = float(cpu["ar1_phi_per_2min"])
+            self._sd = float(cpu["within_vm_sd"])
+            if tenant_alloc_ratio is None:
+                tenant_alloc_ratio = summary["sites"]["vm_core_allocation_ratio"]["p50"]
+            self._alloc = float(np.clip(tenant_alloc_ratio, 0.0, 1.0))
+            self._noise_rng = np.random.RandomState(int(seed) + 47)   # keeps self.rng's stream unchanged
+            self._z, self._z_t = {}, {}
 
     @classmethod
     def from_config(cls, config, seed=0):
@@ -64,7 +80,9 @@ class EdgeCalibration:
                    day_compression=float(cfg.get("day_compression", 288.0)),
                    capacity_heterogeneity=bool(cfg.get("capacity_heterogeneity", True)),
                    backhaul_rtt=bool(cfg.get("backhaul_rtt", True)),
-                   seed=seed)
+                   seed=seed,
+                   load_model=cfg.get("load_model", "bandwidth_profile"),
+                   tenant_alloc_ratio=cfg.get("tenant_alloc_ratio"))
 
     # ------------------------------------------------------------------
     def hour_of_day(self, sim_time_sec):
@@ -77,8 +95,33 @@ class EdgeCalibration:
         f = hour - np.floor(hour)
         return float((1.0 - f) * self.hourly[h0] + f * self.hourly[h1])
 
-    def background_share(self, sim_time_sec, site_factor=1.0):
+    def _cpu_trace_share(self, sim_time_sec, site_factor, idx):
+        """Measured-utilisation co-tenant share: allocated-core share x VM CPU utilisation.
+
+        Utilisation follows the trace's mean diurnal shape plus a per-RSU AR(1)
+        deviation with the persistence (phi per 2 min) and within-VM spread
+        measured in VM_CPU.csv; phi is rescaled to the simulation step.
+        """
+        h = self.hour_of_day(sim_time_sec)
+        h0, f = int(np.floor(h)) % 24, h - np.floor(h)
+        shape = (1.0 - f) * self._cpu_hourly[h0] + f * self._cpu_hourly[(h0 + 1) % 24]
+        last = self._z_t.get(idx)
+        if last is None:
+            z = self._sd * self._noise_rng.randn()
+        elif sim_time_sec > last:
+            real_sec = (sim_time_sec - last) * self.day_compression
+            phi = self._phi2 ** (real_sec / 120.0)
+            z = phi * self._z[idx] + np.sqrt(max(0.0, 1.0 - phi * phi)) * self._sd * self._noise_rng.randn()
+        else:
+            z = self._z[idx]
+        self._z[idx], self._z_t[idx] = z, sim_time_sec
+        util = np.clip(self._cpu_mean * shape * site_factor + z, 0.0, 1.0)
+        return float(np.clip(self._alloc * util, 0.0, 0.9))
+
+    def background_share(self, sim_time_sec, site_factor=1.0, idx=0):
         """Fraction of an RSU's CPU taken by co-tenants at ``sim_time_sec``."""
+        if self.load_model == "cpu_trace":
+            return self._cpu_trace_share(sim_time_sec, site_factor, idx)
         share = self.peak_share * self.load_profile(self.hour_of_day(sim_time_sec)) * site_factor
         return float(np.clip(share, 0.0, 0.9))
 

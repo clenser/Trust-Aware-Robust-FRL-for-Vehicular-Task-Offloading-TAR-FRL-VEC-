@@ -24,6 +24,8 @@ Downstream-Impact Protocol.*
 | Learned policy | beats heuristics | indistinguishable from Nearest-RSU; simulator-sensitive |
 | New in this revision | - | data-plane attack and V2V study (exp. P, Q), empirical edge calibration from the Alibaba trace (exp. R), faulty-edge and connectivity figures (Fig. 11-13) |
 
+**Update 24 Oct 2026:** a pre-specified confirmation study (`docs/HYPOTHESES.md`) supports H2, H3, H4 and H5 with stated scope, which strengthens the case for a full conference paper and makes a journal submission conditional mainly on the stealth-attack limitation, the literature review and a comparison with Multi-Krum / median in the rule's own closed loop.
+
 **Path B - bonus (attempted 23 Oct 2026; see `docs/DNH_DETECTOR.md`).**  Result: the do-no-harm exclusion rule removes the no-attacker cost and keeps the 40 % gain, but its benefit at the default ratio is unresolved and it does not stop norm-matched attacks; the learner beats the best heuristic only in the benchmark environment.  This supports a short paper with one modest method result, not a journal-level "defence that works" claim.
 
 (Original plan text follows.)  **Path B - bonus.** The extended suite asks whether the behavioural tier earns its

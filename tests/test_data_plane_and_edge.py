@@ -120,6 +120,33 @@ class TestEdgeCalibration(unittest.TestCase):
         self.assertEqual(len(s["bandwidth_three_months"]["normalised_load_by_hour"]), 24)
         self.assertTrue(all(np.isfinite(s["bandwidth_three_months"]["normalised_load_by_hour"])))
 
+    def test_cpu_trace_load_is_measured_and_autocorrelated(self):
+        env = _env(edge_calibration={"enabled": True, "load_model": "cpu_trace", "start_hour": 12.0})
+        cal = env.edge_cal
+        series = []
+        for i in range(1, 2001):
+            env.current_time_sec = i * 0.5
+            env._apply_background_load()
+            series.append(env.rsus[0].background_share)
+        x = np.asarray(series)
+        self.assertTrue(np.all((x >= 0) & (x <= 0.9)))
+        # the measured utilisation (~8 %) times the allocation ratio (~0.5) is far
+        # below the bandwidth-profile (allocation-view) share
+        self.assertLess(x.mean(), 0.15)
+        d = x - x.mean()
+        self.assertGreater(float(np.sum(d[1:] * d[:-1]) / np.sum(d * d)), 0.3)
+
+    def test_cpu_trace_does_not_change_default_model(self):
+        a = _env(edge_calibration={"enabled": True})
+        b = _env(edge_calibration={"enabled": True, "load_model": "bandwidth_profile"})
+        self.assertEqual([r.background_share for r in a.rsus], [r.background_share for r in b.rsus])
+
+    def test_cpu_trace_summary_is_committed(self):
+        with open(os.path.join(ROOT, "data", "traces", "edge_platform_summary.json"), encoding="utf-8") as fh:
+            c = json.load(fh)["vm_cpu"]
+        self.assertEqual(len(c["mean_cpu_by_hour_utc8"]), 24)
+        self.assertTrue(0.0 < c["ar1_phi_per_2min"] < 1.0)
+
     def test_missing_summary_is_an_error(self):
         with self.assertRaises(FileNotFoundError):
             EdgeCalibration.from_config({"edge_calibration": {"enabled": True, "summary_path": "nope.json"}})

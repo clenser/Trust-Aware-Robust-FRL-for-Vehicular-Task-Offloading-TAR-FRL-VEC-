@@ -177,6 +177,9 @@ results/dnh_study/*
 results/learner_study/*
 !results/learner_study/learner_summary.json
 results/learner_pilot/
+!results/hypothesis_study/
+results/hypothesis_study/*
+!results/hypothesis_study/hypothesis_verdicts.json
 !evidence/
 !plots/*.png
 *.csv

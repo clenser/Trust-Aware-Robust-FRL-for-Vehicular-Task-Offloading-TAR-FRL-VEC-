@@ -134,6 +134,10 @@ congestion.
 
 ---
 
+## Update (24 Oct 2026): hypotheses confirmed with scope
+
+A pre-specified, Holm-corrected study (`docs/HYPOTHESES.md`) supports H2, H3, H4 and H5 for the sign-flip attack in simulation, and H1 only as a reliability benefit (latency effect at most 3 ms).  This revises the earlier statement that the project is not a "trust-aware FRL beats FedAvg" paper: with the do-no-harm rule it is, for this attack and these conditions; the stealth-attack limitation and the unsupported RQ3 remain.
+
 ## Update (23 Oct 2026): what the method attempt changed
 
 Two roadmap items were attempted with pre-registered criteria (`docs/DNH_DETECTOR.md`):

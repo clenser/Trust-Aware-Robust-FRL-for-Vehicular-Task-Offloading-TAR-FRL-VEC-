@@ -383,8 +383,8 @@ class VANETOffloadingEnv:
         """Set each RSU's co-tenant CPU share from the empirical diurnal profile."""
         if self.edge_cal is None:
             return
-        for rsu, f in zip(self.rsus, self._site_factors):
-            rsu.background_share = self.edge_cal.background_share(self.current_time_sec, f)
+        for i, (rsu, f) in enumerate(zip(self.rsus, self._site_factors)):
+            rsu.background_share = self.edge_cal.background_share(self.current_time_sec, f, i)
 
     def _v2v_candidates(self, v):
         """In-range, currently present peers of ``v`` with their distance."""

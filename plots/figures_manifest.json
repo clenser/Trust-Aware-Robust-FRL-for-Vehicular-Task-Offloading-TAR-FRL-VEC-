@@ -268,6 +268,22 @@
       ]
     },
     {
+      "filename": "fig16_hypothesis_tests.png",
+      "title": "Fig 16: Pre-specified hypothesis tests",
+      "sha256": "e7044cf41adad857818edf242f9975870fe143d48e30b2db8f3d65fbb8688e34",
+      "experiment_id": "dnh_and_learner_studies",
+      "source_experiment": "hypothesis_verdicts.json",
+      "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\hypothesis_study\\hypothesis_verdicts.json",
+      "source_results_sha256": "5300acc3e0e297d2cb01b1ade7c078225277278426276820a5ec75fcc8658a34",
+      "source_metadata_file": null,
+      "source_metadata_sha256": null,
+      "description": "Ten paired comparisons for H1-H4 with Holm-adjusted verdicts.",
+      "series": [
+        "hypothesis_verdicts.json"
+      ]
+    },
+    {
       "filename": "fig11_faulty_edge_node.png",
       "title": "Fig 11: Learned policy vs heuristics under an unreliable edge node",
       "sha256": "7fe8531026c342ea6f5b1f49c1329d9caacdd638c531e9426b7de9fa3dacc7fb",
