@@ -8,7 +8,7 @@ import numpy as np
 from configs.config_loader import load_config
 from environment.vanet_env import VANETOffloadingEnv
 from federated.server import FederatedServer
-from trust.dnh_detector import DoNoHarmDetector, loo_features
+from trust.dnh_detector import DoNoHarmDetector, CalibratedDetector, CALIBRATION, loo_features
 
 
 def _population(n=20, d=2000, n_bad=4, scale=2.5, seed=0, flip=True):
@@ -70,6 +70,66 @@ class TestDetector(unittest.TestCase):
     def test_too_few_participants_excludes_nobody(self):
         ups, _ = _population(n=3, n_bad=1)
         self.assertEqual(DoNoHarmDetector().decide(ups)[0], set())
+
+
+class TestCalibratedDetector(unittest.TestCase):
+    def test_catches_a_norm_matched_reversal_that_the_norm_test_cannot_see(self):
+        ups, bad = _population(n=20, n_bad=4, scale=1.0)          # scale 1: same norm, reversed direction
+        det = CalibratedDetector(**CALIBRATION)
+        for _ in range(3):
+            excluded, _ = det.decide(ups)
+        self.assertEqual(excluded, bad)
+
+    def test_leaves_an_honest_population_alone(self):
+        ups, _ = _population(n_bad=0)
+        det = CalibratedDetector(**CALIBRATION)
+        for _ in range(5):
+            excluded, _ = det.decide(ups)
+        self.assertEqual(excluded, set())
+
+    def test_server_strategy_runs(self):
+        import torch
+        srv = FederatedServer(state_dim=20, action_dim=5, aggregation_strategy="do_no_harm_v2")
+        g = srv.get_global_weights()
+        rng = np.random.RandomState(1)
+        models, samples, roles = {}, {}, {}
+        for cid in range(8):
+            w = {k: v + torch.tensor(rng.randn(*v.shape) * 0.01, dtype=v.dtype) for k, v in g.items()}
+            models[cid], samples[cid], roles[cid] = w, 10, "honest"
+        _, m = srv.run_aggregation_round(models, samples, ground_truth_roles=roles)
+        self.assertEqual(m["defense_type"], "do_no_harm_v2_exclusion")
+        self.assertTrue(m["aggregation_produced_model"])
+
+
+class TestFLTrust(unittest.TestCase):
+    def _models(self, g, n, rng):
+        import torch
+        return {c: {k: v + torch.tensor(rng.randn(*v.shape) * 0.01, dtype=v.dtype) for k, v in g.items()}
+                for c in range(n)}
+
+    def test_requires_a_root_trainer(self):
+        srv = FederatedServer(state_dim=20, action_dim=5, aggregation_strategy="fltrust")
+        g = srv.get_global_weights()
+        models = self._models(g, 6, np.random.RandomState(0))
+        with self.assertRaises(RuntimeError):
+            srv.run_aggregation_round(models, {c: 5 for c in models}, ground_truth_roles={c: "honest" for c in models})
+
+    def test_reversed_clients_get_zero_trust(self):
+        import torch
+        srv = FederatedServer(state_dim=20, action_dim=5, aggregation_strategy="fltrust")
+        g = srv.get_global_weights()
+        rng = np.random.RandomState(2)
+        direction = {k: torch.tensor(rng.randn(*v.shape) * 0.02, dtype=v.dtype) for k, v in g.items()}
+        srv.root_trainer = lambda gw: {k: gw[k] + direction[k] for k in gw}
+        models, roles = {}, {}
+        for c in range(8):
+            sign = -1.0 if c >= 6 else 1.0
+            models[c] = {k: g[k] + sign * (direction[k] + torch.tensor(rng.randn(*g[k].shape) * 0.005, dtype=g[k].dtype))
+                         for k in g}
+            roles[c] = "poisoning" if c >= 6 else "honest"
+        _, m = srv.run_aggregation_round(models, {c: 5 for c in models}, ground_truth_roles=roles)
+        self.assertEqual(set(m["excluded_clients"]), {6, 7})
+        self.assertEqual(m["false_positives"], 0)
 
 
 class TestServerStrategy(unittest.TestCase):

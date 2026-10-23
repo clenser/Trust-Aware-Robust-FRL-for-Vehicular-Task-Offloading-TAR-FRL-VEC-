@@ -109,3 +109,45 @@ RQ3's "trust improves the offloading decision" remains unsupported.  The benchma
 gain depends on the simulator semantics (Section 6.5 of the paper) and on the
 heuristics' information being given to the learner; it is not evidence that RL
 beats a well-engineered controller.
+
+## 7. Stealth attackers: a label-free v2 rule and a negative result (24 Oct 2026)
+
+**Why v1 missed norm-matched attackers.**  The v1 weights were fitted on the sign-flip
+attack, where the norm ratio alone separates attackers; the logistic therefore leaned on
+`ratio`, which a norm-matched attacker leaves at 1.  The direction statistic `cos_loo` itself
+separates them almost perfectly in the undefended loop (ROC AUC 0.999 for norm-matched, 0.998
+sign-flip, 0.887 partial; `experiments/impact_diag.py`).
+
+**v2 (`CalibratedDetector`, strategy `do_no_harm_v2`).**  No attack is used for fitting:
+the 99.5th percentile of the honest norm ratio (2.05) and the 0.5th percentile of the honest
+`cos_loo` (-0.245) are measured on **attacker-free** runs; a client's margin is the larger of
+its excess over either bound; the margin is smoothed over rounds and the client is excluded
+while it is positive.  Same free-rider and 45 % cap guards.
+
+| Closed loop, 24 % attackers | TPR / FPR deployed | TPR / FPR v1 | **TPR / FPR v2** | v2 - FedAvg (pp) |
+|---|---|---|---|---|
+| norm-matched sign flip (6 seeds) | 0.73 / 5.4 % | 0.51 / 1.2 % | **0.85 / 0.8 %** | +0.3 [-3.9, +4.5] |
+| partial sign flip, 50 % (6 seeds) | 0.57 / 5.9 % | 0.50 / 0.5 % | 0.50 / 0.9 % | +0.7 [-0.6, +2.0] |
+| scaling x3 (6 seeds) | 1.0 / 3.7 % | 1.0 / 0.0 % | 1.0 / 0.8 % | -1.1 [-3.3, +1.0] |
+| sign flip (12 seeds) | 0.995 / 4.6 % | 0.996 / 0.6 % | 0.975 / 1.6 % | +4.1 [-1.2, +9.4] |
+| sign flip, 40 % attackers | 0.92 / 0.5 % | 0.985 / 1.5 % | 0.943 / 2.2 % | +14.9 [+7.4, +22.5] |
+| sign flip, no attackers | - / 10.3 % | - / 1.7 % | - / 1.7 % | -1.9 [-4.9, +1.2] |
+
+* **Detection of norm-matched attackers rises from 0.51 to 0.85** at under 1 % false exclusion,
+  with no attack-specific fitting.  This is a detection result, not a downstream one: the
+  norm-matched attack barely lowers FedAvg's completion (74.5 % vs 78.7 % clean), so there is
+  nothing large for any defence to recover, and v2's +0.3 pp is unresolved.
+* The price is a slightly lower sign-flip detection and a slightly higher false-exclusion rate
+  than v1 (the union of two bounds, each at a 0.5 % budget).
+* **Partial sign flip is still not detected** (TPR 0.5, the free riders): those poisoners stay
+  positively correlated with honest clients, and the honest-calibrated bound is conservative.
+  The statistic has signal (AUC 0.887); a lower bound would catch some at a higher false-exclusion
+  rate, which was not pursued.
+
+**Negative result: impact-validated aggregation.**  Scoring each uploaded model by its change
+in value error on trusted RSU-side data was tested as a norm- and direction-free signal
+(`experiments/impact_diag.py`, 2 seeds x 4 attacks).  It does **not** work here: ROC AUC
+0.21 (sign flip), 0.32 (norm-matched), 0.45 (partial), 0.28 (scaling) - below 0.5, i.e.
+inverted, because honest models fitted to their own (non-IID, epsilon-greedy) data fit the
+heuristic-generated root data *worse* than the global model.  The idea is dropped; a trusted
+root set that matches the clients' behaviour policy would be needed.

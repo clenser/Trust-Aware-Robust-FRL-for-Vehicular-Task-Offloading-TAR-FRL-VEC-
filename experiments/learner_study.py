@@ -52,11 +52,15 @@ SETTINGS = {
     "rotating": {"adversarial": {"faulty_rsus": [{"index": "random", "drop_prob": 0.6, "delay_factor": 1.0,
                                                     "rotate_every_steps": 40}]}},
     "peak": {"edge_calibration": {"enabled": True, "start_hour": 20.0}},
+    # Realistic load: measured-utilisation co-tenant model (docs/EDGE_TRACE_USE.md).
+    "cpu_peak": {"edge_calibration": {"enabled": True, "load_model": "cpu_trace", "start_hour": 20.0}},
+    "cpu_trough": {"edge_calibration": {"enabled": True, "load_model": "cpu_trace", "start_hour": 5.0}},
     "dataplane": {"mobility": RICH, "adversarial": {"data_plane": {"enabled": True}},
                   "network": {"v2v_peer_selection": "trust_aware"}},
 }
 BASELINES = {"default": ("Resource_Aware", "Nearest_RSU"), "rotating": ("Resource_Aware", "Trust_Greedy"),
-             "peak": ("Resource_Aware", "Nearest_RSU"), "dataplane": ("Resource_Aware", "Trust_V2V")}
+             "peak": ("Resource_Aware", "Nearest_RSU"), "dataplane": ("Resource_Aware", "Trust_V2V"),
+             "cpu_peak": ("Resource_Aware", "Nearest_RSU"), "cpu_trough": ("Resource_Aware", "Nearest_RSU")}
 
 
 def _merge(cfg, mods):
