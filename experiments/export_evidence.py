@@ -42,7 +42,7 @@ def main():
         sums.append("%s  %s" % (_sha(src), os.path.basename(dst)[:-3]))
         print("%s -> %.1f MB" % (e["run_id"], os.path.getsize(dst) / 1e6))
     # Standalone studies (do-no-harm closed loop, learner study).
-    for sub in ("dnh_study", "learner_study", "hypothesis_study"):
+    for sub in ("dnh_study", "learner_study", "hypothesis_study", "baseline_study", "deployment_study", "scale_study"):
         d = os.path.join(ROOT, "results", sub)
         if not os.path.isdir(d):
             continue

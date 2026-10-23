@@ -180,6 +180,17 @@ results/learner_pilot/
 !results/hypothesis_study/
 results/hypothesis_study/*
 !results/hypothesis_study/hypothesis_verdicts.json
+!results/baseline_study/
+results/baseline_study/*
+!results/baseline_study/*verdicts.json
+!results/deployment_study/
+results/deployment_study/*
+!results/deployment_study/deployment_verdicts.json
+!results/scale_study/
+results/scale_study/*
+!results/scale_study/scale_verdicts.json
+!results/impact_diag.json
+!results/dnh_fit*.json
 !evidence/
 !plots/*.png
 *.csv

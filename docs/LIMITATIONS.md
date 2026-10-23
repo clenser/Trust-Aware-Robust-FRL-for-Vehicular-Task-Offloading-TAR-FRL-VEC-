@@ -162,3 +162,13 @@ congestion.
 ## Correction to the edge-calibration results (24 Oct 2026)
 
 The first edge calibration (`bandwidth_profile`) scales co-tenant load by the VM *core allocation* ratio.  The measured CPU utilisation of tenant VMs is about 8 %, so that load is an upper bound roughly ten times above measured use (`docs/EDGE_TRACE_USE.md`).  Extended experiment R, the learner study's "peak" setting and the "edge-trace peak hour" rows are stress tests under that upper bound.  Use `load_model: cpu_trace` for realistic load; the learner has not yet been re-evaluated under it.
+
+## Added with the baseline and stealth studies (24 Oct 2026)
+
+* The FLTrust-style baseline is an adaptation with a heuristic-driven root environment and performs poorly
+  here (54-76 % of honest clients get zero trust); it is not evidence about the original method.
+* Multi-Krum is run with its default assumed Byzantine fraction (20 %), not the true ratio.
+* The label-free v2 detector's bounds come from two attacker-free runs (seeds 1000-1001); its stealth gain is a
+  detection result, not a downstream one (the norm-matched attack barely lowers FedAvg's completion).
+* Partial sign-flip attackers are still not detected by any rule evaluated here.
+* The impact-validated idea (value error on trusted root data) was tested and rejected (inverted signal).

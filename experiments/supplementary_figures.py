@@ -25,7 +25,7 @@ from experiments.plotter import sha256_file  # noqa: E402
 SUPPLEMENTARY_FIGURES = ["fig11_faulty_edge_node.png", "fig12_intermittent_connectivity.png",
                          "fig13_data_plane_and_edge_calibration.png",
                          "fig14_do_no_harm_closed_loop.png", "fig15_learner_study.png",
-                         "fig16_hypothesis_tests.png"]
+                         "fig16_hypothesis_tests.png", "fig17_baselines.png"]
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BLUE, GREEN, RED, GREY, AMBER = "#1f5fbf", "#17803d", "#c0392b", "#6b7380", "#b26a00"
@@ -181,6 +181,31 @@ def fig_hypotheses(path_dir, out):
     return path, ["hypothesis_verdicts.json"]
 
 
+def fig_baselines(path_dir, out):
+    a = json.load(open(os.path.join(path_dir, "baseline_verdicts.json")))["means"]
+    f = json.load(open(os.path.join(path_dir, "fltrust_verdicts.json")))["means"]
+    ratios = ["0.0", "0.24", "0.4"]
+    series = (("fedavg", "FedAvg", GREY), ("do_no_harm", "do-no-harm", GREEN), ("multi_krum", "Multi-Krum", BLUE),
+              ("coordinate_median", "coord. median", "#8aa4c8"), ("trimmed_mean", "trimmed mean", AMBER),
+              ("fltrust", "FLTrust-style (adapted)", RED))
+    fig, ax = plt.subplots(figsize=(11.5, 4.8))
+    w = 0.13
+    for j, (key, lab, col) in enumerate(series):
+        vals = [(f if key == "fltrust" else a)[r][key] for r in ratios]
+        ax.bar(np.arange(3) + (j - 2.5) * w, vals, w, color=col, label=lab)
+    ax.set_xticks(range(3))
+    ax.set_xticklabels(["0 % attackers (12 seeds)", "24 % attackers (24 seeds)", "40 % attackers (24 seeds)"])
+    ax.set_ylabel("Task completion, % (mean)")
+    ax.set_ylim(20, 90)
+    ax.set_title("do-no-harm vs the standard robust aggregators (sign-flip attack, paired seeds)", fontsize=11)
+    ax.legend(ncol=3, fontsize=8, loc="lower left")
+    fig.tight_layout()
+    path = os.path.join(out, "fig17_baselines.png")
+    fig.savefig(path, dpi=200)
+    plt.close(fig)
+    return path, ["baseline_verdicts.json", "fltrust_verdicts.json"]
+
+
 def _latest(kind):
     manifest = json.load(open(os.path.join(ROOT, "results", "manifest.json")))
     runs = [e for e in manifest if e.get("kind") == kind]
@@ -218,6 +243,11 @@ def generate(supp=None, ext=None, out=os.path.join(ROOT, "plots")):
         study_jobs.append((fig_hypotheses, hyp_dir, os.path.join(hyp_dir, "hypothesis_verdicts.json"),
                            "Fig 16: Pre-specified hypothesis tests",
                            "Ten paired comparisons for H1-H4 with Holm-adjusted verdicts."))
+    bs_dir = os.path.join(ROOT, "results", "baseline_study")
+    if os.path.exists(os.path.join(bs_dir, "fltrust_verdicts.json")):
+        study_jobs.append((fig_baselines, bs_dir, os.path.join(bs_dir, "baseline_verdicts.json"),
+                           "Fig 17: do-no-harm vs Multi-Krum, median, trimmed mean and an FLTrust-style rule",
+                           "Mean completion at 0, 24 and 40 % attackers."))
     made = []
     for fn, d, res, title, desc in study_jobs:
         path, series = fn(d, out)

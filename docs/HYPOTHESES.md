@@ -55,3 +55,15 @@ interval, one is not established.
 H2, H3 and H4 can be claimed with these scopes; H5 can be claimed; H1 can be claimed
 only as a reliability benefit.  RQ3 (trust inside the RL decision) remains
 unsupported (`docs/DNH_DETECTOR.md` section 6).
+
+## Addendum (24 Oct 2026): robustness checks
+
+* **Against robust aggregators** (`docs/BASELINES.md`): DNH ties Multi-Krum at 0 / 24 / 40 % attackers
+  (differences within noise), and beats coordinate median (+15.5 / +16.5 pp at 24 / 40 %) and trimmed mean
+  (+6.5 / +12.4 pp) after Holm correction.  H2 therefore holds against conventional robust aggregation for
+  the median and trimmed mean, and is a tie against Multi-Krum.
+* **Across trace-calibrated edge deployments** (`experiments/deployment_study.py`; measured-utilisation load,
+  per-seed capacity and load draws; 24 % attackers; 12 seeds): DNH - FedAvg = +4.4 pp [+0.5, +8.3] at 05:00
+  and +4.3 pp [+0.3, +8.4] at 20:00 (Holm p = 0.059 each: raw interval only).  Same size and sign as the
+  24-seed estimate (+6.1 pp); 12 seeds are too few to clear the correction.
+* **Stealth attackers**: see `docs/DNH_DETECTOR.md` section 7.

@@ -151,3 +151,17 @@ in value error on trusted RSU-side data was tested as a norm- and direction-free
 inverted, because honest models fitted to their own (non-IID, epsilon-greedy) data fit the
 heuristic-generated root data *worse* than the global model.  The idea is dropped; a trusted
 root set that matches the clients' behaviour policy would be needed.
+
+## 8. Learner under the measured-utilisation edge load (24 Oct 2026)
+
+Re-run of the learner study with `load_model: cpu_trace` (realistic co-tenant load), 12 paired seeds:
+
+| Setting | Resource-Aware | Nearest-RSU | learned (est + bandit) | learned - Resource-Aware |
+|---|---|---|---|---|
+| 05:00 | 70.9 | 69.0 | 71.0 | +0.1 pp [-3.5, +3.6] |
+| 20:00 | 70.8 | 67.7 | 70.2 | -0.5 pp [-3.4, +2.4] |
+
+Under realistic load the learner **ties** the best heuristic: the -7.6 pp loss of section 6 was an
+artefact of the allocation-view stress load.  There is also little to win (Resource-Aware and
+Nearest-RSU are within 3 pp), so the benchmark-environment gain (+6.6 pp) does not carry over to
+realistic edge load.
