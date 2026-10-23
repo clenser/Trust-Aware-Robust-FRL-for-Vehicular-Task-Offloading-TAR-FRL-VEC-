@@ -98,6 +98,8 @@ heuristic?  12 seeds, paired against Resource-Aware.
 Pilot (6 seeds, benchmark): the original learner +1.6 pp [-4.8, +8.1], with
 delay estimates only (gamma 0.95) +5.7 pp [+1.8, +9.6], with bandit targets +8.5 pp.
 
+*Correction (24 Oct 2026):* the "edge-trace peak hour" row uses the allocation-view load, an upper bound that overstates measured CPU utilisation about tenfold (`docs/EDGE_TRACE_USE.md`); the learner was not re-run under the measured-utilisation model, so that row is a stress test, not a statement about typical edge load.
+
 **Criteria.**  Winning on the benchmark environment: **met** (first positive
 learned-policy result in this project).  Winning under *hidden-state* conditions
 (faulty RSU, co-tenant load, V2V sabotage): **not met** - parity at best, a loss at

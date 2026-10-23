@@ -158,3 +158,7 @@ congestion.
   effect is reported as unresolved, not as zero.
 * Overhead was measured on an idle machine for 25 clients and 36,614 parameters
   only; it is not a scaling study.
+
+## Correction to the edge-calibration results (24 Oct 2026)
+
+The first edge calibration (`bandwidth_profile`) scales co-tenant load by the VM *core allocation* ratio.  The measured CPU utilisation of tenant VMs is about 8 %, so that load is an upper bound roughly ten times above measured use (`docs/EDGE_TRACE_USE.md`).  Extended experiment R, the learner study's "peak" setting and the "edge-trace peak hour" rows are stress tests under that upper bound.  Use `load_model: cpu_trace` for realistic load; the learner has not yet been re-evaluated under it.
