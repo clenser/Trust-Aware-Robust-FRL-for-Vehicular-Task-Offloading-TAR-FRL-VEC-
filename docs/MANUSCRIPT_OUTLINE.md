@@ -6,7 +6,7 @@ Evaluation under Poisoning in Vehicular Edge Networks*
 **One-sentence contribution.**  Excluding poisoned clients from a federated offloading policy is only worth doing
 if it does not exclude honest ones; a rule built on absolute (non-relative) update statistics with a measured
 false-positive budget removes the defence's no-attacker cost and matches the strongest classic baseline, and a
-label-free variant keeps working where Multi-Krum becomes harmful.
+label-free variant keeps working where Multi-Krum gives no benefit.
 
 ## Abstract (draft; every number is in the cited file)
 
@@ -18,8 +18,8 @@ The population-relative trust rule we started from excludes 10.3 % of honest cli
 0.5 % false-positive budget, cuts false exclusions to 1.7 % and the no-attacker cost to 0.8 pp, while improving
 completion over FedAvg by 6.1 pp at 24 % and 16.2 pp at 40 % sign-flip attackers (24 seeds).  It ties Multi-Krum and
 beats coordinate median, trimmed mean and an adapted FLTrust; a label-free variant calibrated on attacker-free runs
-detects norm-matched attackers (TPR 0.85, FPR < 1 %) and, at 40 % attackers, beats Multi-Krum by 6.7 pp, where
-Multi-Krum is worse than no defence.  We also report negative results: partial sign-flip attackers are not detected,
+detects norm-matched attackers (TPR 0.85, FPR < 1 %) and, at 40 % attackers, beats Multi-Krum by 6.6 pp (confirmed
+on fresh seeds), where Multi-Krum gives no benefit over FedAvg.  We also report negative results: partial sign-flip attackers are not detected,
 trust features do not help the learned policy, the gain shrinks and becomes unresolved at 50-100 vehicles, and
 conclusions about heuristics versus learning swing with the edge-load model.  Code, seeds and raw results are released.
 
@@ -46,5 +46,5 @@ Data-plane/V2V study, learner study, edge-load sensitivity, console.  They are r
 
 1. Database literature search with the strings in `docs/LITERATURE_GAP.md` section 3; verify every row in full text.
 2. Re-verify the target call (2027 editions), page limit and anonymisation.
-3. Decide whether to report the exploratory 40 % norm-matched result in the main text (label it exploratory).
+3. Report the 40 % norm-matched result in the main text: the v2 vs Multi-Krum comparison is confirmed (C1); the gain over FedAvg is raw-interval only (C2) and the Multi-Krum harm did not replicate (C3).
 4. Optional strengtheners: more seeds at 24 % for the stealth rows, partial-attack bound, scale (done to 16 seeds: still unresolved).

@@ -185,3 +185,22 @@ v2 minus Multi-Krum: **+6.7 pp [+2.4, +11.0], p = 0.006** (Holm over four compar
 that share is mostly honest (FPR 16.8 %, TPR 0.25).  v2 is the only rule above FedAvg, but its gain over FedAvg
 is **not resolved**.  This is the one setting in this study where the new rule clearly beats the strongest
 baseline.
+
+### 9.1 Confirmation on fresh seeds (24 Oct 2026, pre-specified)
+
+`experiments/stealth_confirmation.py` (committed before it was run, `c0834c5`): 12 new seeds (benchmark seeds + 1000,
+none shared with section 9), 40 % norm-matched attackers, three tests, Holm-corrected.
+
+| Test | Result (pp, 95 % CI) | Holm p | Verdict |
+|---|---|---|---|
+| C1 v2 - Multi-Krum > 0 | **+6.6 [+2.5, +10.8]** | 0.014 | **confirmed** |
+| C2 v2 - FedAvg > 0 | +6.6 [+0.6, +12.6] | 0.070 | raw interval only |
+| C3 Multi-Krum - FedAvg < 0 | -0.0 [-5.1, +5.0] | 0.99 | **not confirmed** |
+
+Means: FedAvg 65.2, v2 71.8 (TPR 0.80, FPR 2.9 %), Multi-Krum 65.2 (TPR 0.24, FPR 17.3 %).  The advantage of the
+label-free rule over Multi-Krum replicates almost exactly (+6.6 vs +6.7 pp).  The claim that **Multi-Krum is worse
+than no defence did not replicate**: on these seeds it equals FedAvg.  Pooled over all 24 seeds (secondary, not a
+confirmation): v2 - Multi-Krum +6.7 [+3.9, +9.4]; v2 - FedAvg +4.1 [+0.7, +7.5] (p = 0.022, unadjusted);
+Multi-Krum - FedAvg -2.6 [-5.5, +0.3].  Multi-Krum's detection is poor in both sets (TPR about 0.25, FPR 17 %), so
+the supportable statement is that Multi-Krum gives no benefit against norm-matched attackers at 40 %, while the
+label-free rule removes about 80 % of the attackers at 3 % false exclusion and recovers about 4-7 pp over FedAvg.

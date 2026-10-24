@@ -47,9 +47,10 @@ Google Scholar, with the search strings in section 3) before submission.
   downstream in an offloading task (see `docs/DNH_DETECTOR.md`).
 * **Blame the defence, not only the attacker:** Baruch et al. and Fang et al. both show
   that distance- or angle-based robust aggregators can be defeated by attackers that stay
-  inside the honest spread.  The Multi-Krum degradation under norm-matched attackers
-  measured here (67.1 % vs 72.2 % undefended at 40 %, exploratory) is consistent with them;
-  it is a task-level measurement of a known failure mode, not a new failure mode.
+  inside the honest spread.  Multi-Krum's weak detection of norm-matched attackers
+  measured here (TPR about 0.25 at 17 % false exclusion; no benefit over FedAvg on the 12 confirmation
+  seeds, -5 pp on the first 12) is consistent with them; it is a task-level measurement of a known failure
+  mode, not a new failure mode.
 * **Normalized attack (Fang et al.)** shows that angle-based attacks defeat
   distance-based robust FRL aggregators; the stealth / norm-matched attacks in
   this repository are the same family and are *not* defended by any rule here.

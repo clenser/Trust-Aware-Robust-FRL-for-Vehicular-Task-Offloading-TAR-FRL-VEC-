@@ -34,7 +34,7 @@ data-plane attacks, Alibaba edge-trace calibration, a 3D research console, ~400 
 **Robustness checks (24 Oct):** the rule **ties Multi-Krum** and **beats coordinate median, trimmed mean and an
 adapted FLTrust** ([`docs/BASELINES.md`](docs/BASELINES.md)); the gain holds across trace-calibrated edge deployments
 (+4.3-4.4 pp, 12 seeds, raw interval); a label-free v2 detects norm-matched attackers (TPR 0.85, FPR < 1 %)
-but they barely hurt FedAvg at 24 % (at 40 % the label-free v2 rule beats Multi-Krum by +6.7 pp, exploratory; Multi-Krum is worse than no defence there) ([`docs/DNH_DETECTOR.md`](docs/DNH_DETECTOR.md) sec. 7).
+but they barely hurt FedAvg at 24 % (at 40 % the label-free v2 rule beats Multi-Krum by +6.6 pp, confirmed on fresh seeds; Multi-Krum gives no benefit over FedAvg there) ([`docs/DNH_DETECTOR.md`](docs/DNH_DETECTOR.md) sec. 7).
 
 **Not achieved / limits:** no benefit from trust inside the learned policy; the learner beats the best heuristic
 only in the benchmark environment and ties it under measured edge load; partial sign-flip attackers are not

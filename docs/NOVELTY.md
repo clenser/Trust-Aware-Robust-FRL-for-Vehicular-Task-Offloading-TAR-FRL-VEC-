@@ -36,8 +36,9 @@ Plain statement, written against the literature check in `docs/LITERATURE_GAP.md
   false positives (FLARE).  The rule's novelty is the combination "absolute statistics +
   false-positive budget + downstream evaluation in an offloading task", nothing more.
 * The do-no-harm rule **ties** Multi-Krum under the plain sign-flip attack.  The one setting where it clearly
-  beats it is a norm-matched attack at 40 % attackers (v2 minus Multi-Krum +6.7 pp [+2.4, +11.0]; Multi-Krum is
-  worse than no defence there) - an exploratory result (`docs/DNH_DETECTOR.md` sec. 9).  Its advantages over it are a smaller no-attacker cost (point estimate only,
+  beats it is a norm-matched attack at 40 % attackers (v2 minus Multi-Krum +6.7 pp exploratory, replicated as +6.6 pp [+2.5, +10.8],
+  Holm p = 0.014, on 12 fresh seeds; Multi-Krum gives no benefit over FedAvg there, and the earlier "worse than no defence"
+  did not replicate) (`docs/DNH_DETECTOR.md` sec. 9.1).  Its advantages over it are a smaller no-attacker cost (point estimate only,
   unresolved) and no need to assume an attacker fraction.
 * The trust formula combining behavioural and model trust is a recombination of known statistics.
 

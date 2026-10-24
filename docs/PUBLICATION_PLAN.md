@@ -29,8 +29,9 @@ comparison, label-free stealth variant, trace-calibrated deployments and scale c
 (`docs/BASELINES.md`, `docs/DNH_DETECTOR.md` sec. 7-8, `docs/NOVELTY.md`).  Honest assessment: a **full IEEE conference
 paper** (VNC / SEC-workshop class) is now supportable - the central comparison survives Multi-Krum, median, trimmed-mean
 and an FLTrust-style baseline (ties the first, beats the rest).  A **journal** submission still needs: (i) a database
-literature review (not only the local 76 PDFs), (ii) a downstream gain against a *harmful* stealth attack (the
-norm-matched attack barely hurts FedAvg, so none is shown), (iii) a method contribution beyond tying Multi-Krum
+literature review (not only the local 76 PDFs), (ii) a downstream gain against a *harmful* stealth attack (partly met: at 40 % norm-matched the label-free rule beats
+Multi-Krum by +6.6 pp, confirmed on fresh seeds, and beats FedAvg by +4.1 pp pooled over 24 seeds, but the FedAvg gain is
+raw-interval only in the confirmation and 24 % remains unshown), (iii) a method contribution beyond tying Multi-Krum
 (e.g. a resolved no-attacker advantage or a proof of the false-exclusion bound), (iv) real-world validation or a
 stronger justification for the simulation.  Remaining must-do before any submission: re-verify call dates/page limits
 (2027 editions), rewrite the paper around one contribution, run the full literature search strings.
