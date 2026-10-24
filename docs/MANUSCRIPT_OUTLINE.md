@@ -47,4 +47,4 @@ Data-plane/V2V study, learner study, edge-load sensitivity, console.  They are r
 1. Database literature search with the strings in `docs/LITERATURE_GAP.md` section 3; verify every row in full text.
 2. Re-verify the target call (2027 editions), page limit and anonymisation.
 3. Decide whether to report the exploratory 40 % norm-matched result in the main text (label it exploratory).
-4. Optional strengtheners: more seeds at 24 % for the stealth rows, partial-attack bound, scale beyond 8 seeds.
+4. Optional strengtheners: more seeds at 24 % for the stealth rows, partial-attack bound, scale (done to 16 seeds: still unresolved).

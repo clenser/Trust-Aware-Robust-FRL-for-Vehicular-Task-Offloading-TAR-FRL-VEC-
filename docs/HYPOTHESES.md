@@ -67,15 +67,17 @@ unsupported (`docs/DNH_DETECTOR.md` section 6).
   and +4.3 pp [+0.3, +8.4] at 20:00 (Holm p = 0.059 each: raw interval only).  Same size and sign as the
   24-seed estimate (+6.1 pp); 12 seeds are too few to clear the correction.
 * **Stealth attackers**: see `docs/DNH_DETECTOR.md` section 7.
-* **Larger fleets** (`experiments/scale_study.py`; 24 % attackers; 8 paired seeds; RSU capacity unchanged):
+* **Larger fleets** (`experiments/scale_study.py`; 24 % attackers; 16 paired seeds (first run
+  used 8, extended with the same protocol); RSU capacity unchanged):
 
 | Fleet | FedAvg | do-no-harm | Multi-Krum | DNH - FedAvg (pp, CI, Holm p) | DNH - Multi-Krum |
 |---|---|---|---|---|---|
-| 50 | 58.8 | 61.6 | 62.4 | +2.8 [+0.3, +5.3] (0.14) | -0.9 [-5.1, +3.4] |
-| 100 | 57.9 | 59.8 | 61.0 | +1.9 [-3.2, +7.0] (0.85) | -1.2 [-3.7, +1.3] |
+| 50 | 61.6 | 63.0 | 64.6 | +1.3 [-1.0, +3.6] (0.72) | -1.6 [-3.8, +0.6] |
+| 100 | 59.0 | 60.4 | 61.1 | +1.4 [-1.2, +4.0] (0.72) | -0.7 [-2.2, +0.7] |
 
-  The sign is preserved but the effect shrinks and is **not resolved** at 8 seeds, and the pattern with Multi-Krum
-  (a tie) is unchanged.  Larger fleets also load the fixed RSUs more (completion falls from about 71 % at 25 vehicles to
-  58 %), so this mixes fleet size with edge load.  Aggregation cost (loaded machine, median per round): do-no-harm
-  1.1 s at 50 and 3.3 s at 100 vehicles vs FedAvg 0.09 / 0.19 s and Multi-Krum 0.20 / 0.72 s - the rule is O(n^2 d) and
+  The sign is preserved but the effect is small and **not resolved** at 16 seeds (the 8-seed point estimates,
+  +2.8 / +1.9 pp, shrank to +1.3 / +1.4 when seeds were added), and the pattern with Multi-Krum (a tie) is unchanged.
+  Read this as: no evidence that the rule's advantage over FedAvg holds beyond 25 vehicles, not evidence that it fails.  Larger fleets also load the fixed RSUs more (completion falls from about 71 % at 25 vehicles to
+  59-62 %), so this mixes fleet size with edge load.  Aggregation cost (loaded machine, median per round): do-no-harm
+  1.1 s at 50 and 3.5 s at 100 vehicles vs FedAvg 0.09 / 0.17 s and Multi-Krum 0.20 / 0.74 s - the rule is O(n^2 d) and
   is the slowest of the three; at about 100 clients it approaches the round period.

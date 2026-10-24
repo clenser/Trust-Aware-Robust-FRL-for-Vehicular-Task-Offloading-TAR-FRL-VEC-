@@ -51,6 +51,6 @@ RQ3 (trust inside the learned policy) is not supported.
 Simulation only; sign-flip is the main attack (partial sign-flip is not detected, norm-matched is
 detected but barely hurts FedAvg, so no downstream gain is shown for it); FLTrust was adapted and
 performs poorly in this setting; 25 vehicles in the main studies (at 50 and 100 vehicles the gain over FedAvg
-shrinks to +2.8 / +1.9 pp and is unresolved, and the rule's aggregation cost grows to 1-3 s per round -
+is +1.3 / +1.4 pp and unresolved at 16 seeds, and the rule's aggregation cost grows to 1-4 s per round -
 `docs/HYPOTHESES.md`); the learner beats the best heuristic only in the benchmark environment and
 ties it under measured edge load.
