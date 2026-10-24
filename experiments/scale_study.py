@@ -1,6 +1,8 @@
 """Does the advantage of the do-no-harm rule hold at larger fleets?
 
-Pre-specified (set before running), 24 % attackers, sign-flip, 8 paired seeds, fleets of 50 and
+Pre-specified (set before running), 24 % attackers, sign-flip, 8 paired seeds (extended to 16
+with ``--seeds 16``: the first 8 seeds are reused, the same four tests are recomputed, nothing else
+changes), fleets of 50 and
 100 vehicles (the benchmark uses 25; RSU capacity is unchanged, so larger fleets also load the
 edge more):
 
@@ -10,7 +12,7 @@ edge more):
   S4  completion, do_no_harm - Multi-Krum, 100 vehicles
 Holm-corrected across the four.  The aggregation time per round is also reported.
 
-    python -m experiments.scale_study
+    python -m experiments.scale_study [--seeds 16]
 """
 
 import argparse
@@ -31,9 +33,9 @@ RESULTS = os.path.join(er.PROJECT_ROOT, "results")
 METHODS = ("fedavg", "do_no_harm", "multi_krum")
 
 
-def run(out_dir):
+def run(out_dir, n_seeds=8):
     meta = json.load(open(os.path.join(RESULTS, "run_20261023_022608_env_v21_coverage_features", "metadata.json")))
-    seeds = list(meta["seeds"])[:8]
+    seeds = list(meta["seeds"])[:n_seeds]
     config = load_config()
     os.environ.setdefault("VANNET_JOBS", str(max(1, min(7, os.cpu_count() or 2))))
     fl = config["federated_learning"]
@@ -46,12 +48,20 @@ def run(out_dir):
     for n in (50, 100):
         for m in METHODS:
             name = "n%d_%s" % (n, m)
-            if name in results and len(results[name].get("per_seed_results", [])) == len(seeds):
+            have = results.get(name, {}).get("per_seed_results", [])
+            todo = [x for x in seeds if x not in {r["seed"] for r in have}]
+            if not todo:
                 print("  %s (cached)" % name, flush=True)
                 continue
             t0 = time.time()
-            results[name] = er.run_multiseed_experiment(seeds, config=config, eval_config=eval_config, attack_ratio=0.24,
-                                                        mobility_mode=mob, method=m, num_vehicles=n)
+            new = er.run_multiseed_experiment(todo, config=config, eval_config=eval_config, attack_ratio=0.24,
+                                              mobility_mode=mob, method=m, num_vehicles=n)
+            if have:                                   # extend the cached cell with the added seeds
+                new["per_seed_results"] = have + new["per_seed_results"]
+                new["seeds"] = [r["seed"] for r in new["per_seed_results"]]
+                new["num_seeds"] = len(new["seeds"])
+                new["completion_rate"] = {"mean": float(np.mean([r["completion_rate"] for r in new["per_seed_results"]]))}
+            results[name] = new
             print("  %-20s %.1f%% (%.0f s)" % (name, results[name]["completion_rate"]["mean"], time.time() - t0), flush=True)
             json.dump(results, open(path, "w"))
     rows = []
@@ -79,4 +89,6 @@ def run(out_dir):
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=os.path.join(RESULTS, "scale_study"))
-    run(ap.parse_args().out)
+    ap.add_argument("--seeds", type=int, default=8)
+    a = ap.parse_args()
+    run(a.out, a.seeds)

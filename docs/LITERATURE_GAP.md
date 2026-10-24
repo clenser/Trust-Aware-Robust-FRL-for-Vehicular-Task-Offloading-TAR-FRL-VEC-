@@ -1,6 +1,6 @@
 # Literature positioning and gap matrix (23 Oct 2026)
 
-**Status: partial.**  The roadmap asks for 30-40 papers with at least 10 highly
+**Status: partial (about 20 works located; abstract level, 24 Oct 2026 update).**  The roadmap asks for 30-40 papers with at least 10 highly
 relevant.  This table contains only works that were actually located and read at
 the abstract level in web searches on 23 Oct 2026 (listed with the URL used).  It
 is *not* a systematic review; the claims below are therefore worded as "we found
@@ -26,6 +26,11 @@ Google Scholar, with the search strings in section 3) before submission.
 | RepuNet, reputation for malicious clients in decentralised FL [arXiv 2506.19892](https://arxiv.org/abs/2506.19892) | no | no | no | yes (DFL) | yes (EMA across rounds) | yes | no vehicular / offloading task |
 | FLAME [arXiv 2101.02281](https://arxiv.org/abs/2101.02281); FoolsGold [RAID 2020](https://www.cs.ubc.ca/~bestchai/papers/foolsgold-raid2020.pdf); FLTrust, Krum (classic robust aggregators, cited secondhand) | no | no | no | yes | partly | yes | supervised FL; FoolsGold-type rules penalise legitimately similar clients |
 | SoK on benchmarking poisoning defences in FL [arXiv 2502.03801](https://arxiv.org/abs/2502.03801) | no | no | no | yes | - | yes | supervised FL |
+| Wu, Wang, Fan, Fan, DRL vehicle selection for asynchronous FL in VEC (CNIS 2023) [arXiv 2304.02832](https://arxiv.org/abs/2304.02832) | yes | no (FL training, not offloading) | yes (selector) | yes | "bad nodes" removed | not stated in abstract | the learned task is the FL model, not an offloading policy |
+| Palit, Adaptive FL defences via trust-aware DQN (2025) [arXiv 2510.01261](https://arxiv.org/abs/2510.01261) | no | no | yes (RL defence controller) | yes | yes (long-horizon trust) | yes (poisoning, backdoor; CIFAR-10) | no vehicular or offloading task; baselines are other controllers (per abstract) |
+| Decentralized federated policy gradient with Byzantine fault tolerance (DecByzPG) [arXiv 2401.03489](https://arxiv.org/abs/2401.03489) | no | no | yes | yes (decentralised) | no | yes (random actions, noise, near-zero-mean) | policy-gradient benchmarks, no vehicular task |
+| Blanchard et al., Krum, NIPS 2017 [paper](https://papers.NeurIPS.cc/paper_files/paper/2017/file/f4b9ec30ad9f68f89b29639786cb62ef-Paper.pdf) | no | no | no | yes | no | yes | supervised learning; Multi-Krum is the averaging variant |
+| Baruch, Baruch, Goldberg, A Little Is Enough, NeurIPS 2019 [arXiv 1902.06156](https://arxiv.org/abs/1902.06156) | no | no | no | yes | no | yes (attack inside the honest variance) | shows distance- and variance-based defences can be circumvented; the closest published relative of the norm-matched attack here |
 
 ## 2. What the matrix supports (and does not)
 
@@ -40,6 +45,11 @@ Google Scholar, with the search strings in section 3) before submission.
   reputation-based defence.  Its defensible contribution is narrower: a rule built
   on *absolute* harm statistics with an explicit false-positive budget, evaluated
   downstream in an offloading task (see `docs/DNH_DETECTOR.md`).
+* **Blame the defence, not only the attacker:** Baruch et al. and Fang et al. both show
+  that distance- or angle-based robust aggregators can be defeated by attackers that stay
+  inside the honest spread.  The Multi-Krum degradation under norm-matched attackers
+  measured here (67.1 % vs 72.2 % undefended at 40 %, exploratory) is consistent with them;
+  it is a task-level measurement of a known failure mode, not a new failure mode.
 * **Normalized attack (Fang et al.)** shows that angle-based attacks defeat
   distance-based robust FRL aggregators; the stealth / norm-matched attacks in
   this repository are the same family and are *not* defended by any rule here.
