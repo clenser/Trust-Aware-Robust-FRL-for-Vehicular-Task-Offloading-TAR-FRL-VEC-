@@ -35,8 +35,9 @@ Plain statement, written against the literature check in `docs/LITERATURE_GAP.md
   over rounds (RepuNet, FLARE) are published; so is the observation that binary exclusion creates
   false positives (FLARE).  The rule's novelty is the combination "absolute statistics +
   false-positive budget + downstream evaluation in an offloading task", nothing more.
-* The do-no-harm rule **ties** Multi-Krum; it is not shown to be better than the strongest classic
-  baseline.  Its advantages over it are a smaller no-attacker cost (point estimate only,
+* The do-no-harm rule **ties** Multi-Krum under the plain sign-flip attack.  The one setting where it clearly
+  beats it is a norm-matched attack at 40 % attackers (v2 minus Multi-Krum +6.7 pp [+2.4, +11.0]; Multi-Krum is
+  worse than no defence there) - an exploratory result (`docs/DNH_DETECTOR.md` sec. 9).  Its advantages over it are a smaller no-attacker cost (point estimate only,
   unresolved) and no need to assume an attacker fraction.
 * The trust formula combining behavioural and model trust is a recombination of known statistics.
 

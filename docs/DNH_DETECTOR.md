@@ -165,3 +165,23 @@ Under realistic load the learner **ties** the best heuristic: the -7.6 pp loss o
 artefact of the allocation-view stress load.  There is also little to win (Resource-Aware and
 Nearest-RSU are within 3 pp), so the benchmark-environment gain (+6.6 pp) does not carry over to
 realistic edge load.
+
+## 9. Norm-matched attack at 40 % attackers: Multi-Krum is harmful (24 Oct 2026, exploratory)
+
+At 24 % attackers the norm-matched attack barely lowers FedAvg's completion, so no defence could show a gain.
+At 40 % it does (72.2 % vs 78.7 % clean).  12 paired seeds, run **after** seeing the 24 % result, so exploratory
+(the four comparisons below are Holm-adjusted among themselves only):
+
+| Method | Completion % | TPR / FPR | minus FedAvg (pp, 95 % CI) |
+|---|---|---|---|
+| FedAvg | 72.2 | - | - |
+| deployed trust-aware | 71.2 | 0.61 / 3.6 % | -1.0 [-4.6, +2.6] |
+| do-no-harm v1 | 70.7 | 0.54 / 2.7 % | -1.5 [-3.5, +0.4] |
+| **do-no-harm v2 (label-free)** | **73.8** | **0.81 / 1.8 %** | **+1.6 [-2.1, +5.2]** |
+| Multi-Krum | 67.1 | 0.25 / 16.8 % | **-5.1 [-8.1, -2.2]** |
+
+v2 minus Multi-Krum: **+6.7 pp [+2.4, +11.0], p = 0.006** (Holm over four comparisons: 0.024).  Multi-Krum is
+*worse than no defence* here: it always discards a fixed share of clients, and against a norm-matched reversal
+that share is mostly honest (FPR 16.8 %, TPR 0.25).  v2 is the only rule above FedAvg, but its gain over FedAvg
+is **not resolved**.  This is the one setting in this study where the new rule clearly beats the strongest
+baseline.
