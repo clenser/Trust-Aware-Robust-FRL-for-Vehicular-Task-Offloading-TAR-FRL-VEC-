@@ -208,3 +208,6 @@ logs/
 *.temp
 temp/
 tmp/
+!results/stealth_confirmation/
+results/stealth_confirmation/*
+!results/stealth_confirmation/stealth_confirmation_verdicts.json
