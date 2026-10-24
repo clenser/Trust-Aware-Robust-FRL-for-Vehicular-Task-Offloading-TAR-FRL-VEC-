@@ -1,0 +1,60 @@
+{
+ "tests": [
+  {
+   "mean": 2.780000000000001,
+   "ci_low": 0.28061794608464474,
+   "ci_high": 5.2793820539153575,
+   "p": 0.0339070800625084,
+   "n": 8,
+   "id": "S1",
+   "vehicles": 50,
+   "baseline": "fedavg",
+   "p_holm": 0.1356283202500336,
+   "verdict": "no difference resolved"
+  },
+  {
+   "mean": -0.8583249999999998,
+   "ci_low": -5.0689029555814455,
+   "ci_high": 3.352252955581446,
+   "p": 0.6444922426773121,
+   "n": 8,
+   "id": "S2",
+   "vehicles": 50,
+   "baseline": "multi_krum",
+   "p_holm": 0.8508775960236457,
+   "verdict": "no difference resolved"
+  },
+  {
+   "mean": 1.8691625000000007,
+   "ci_low": -3.233575239861362,
+   "ci_high": 6.971900239861363,
+   "p": 0.4150929751792006,
+   "n": 8,
+   "id": "S3",
+   "vehicles": 100,
+   "baseline": "fedavg",
+   "p_holm": 0.8508775960236457,
+   "verdict": "no difference resolved"
+  },
+  {
+   "mean": -1.2150124999999994,
+   "ci_low": -3.689237450236104,
+   "ci_high": 1.259212450236105,
+   "p": 0.2836258653412152,
+   "n": 8,
+   "id": "S4",
+   "vehicles": 100,
+   "baseline": "multi_krum",
+   "p_holm": 0.8508775960236457,
+   "verdict": "no difference resolved"
+  }
+ ],
+ "median_aggregation_ms_loaded_machine": {
+  "n50_fedavg": 87.37,
+  "n50_do_no_harm": 1117.27,
+  "n50_multi_krum": 203.56,
+  "n100_fedavg": 184.9,
+  "n100_do_no_harm": 3302.2349999999997,
+  "n100_multi_krum": 721.4300000000001
+ }
+}

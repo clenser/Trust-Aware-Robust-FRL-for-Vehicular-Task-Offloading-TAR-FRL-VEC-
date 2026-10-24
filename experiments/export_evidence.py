@@ -37,7 +37,7 @@ def main():
         if not os.path.exists(src):
             continue
         dst = os.path.join(out, e["run_id"] + ".benchmark_results.json.gz")
-        with open(src, "rb") as fi, gzip.open(dst, "wb", compresslevel=9) as fo:
+        with open(src, "rb") as fi, open(dst, "wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", compresslevel=9, mtime=0) as fo:
             shutil.copyfileobj(fi, fo)
         sums.append("%s  %s" % (_sha(src), os.path.basename(dst)[:-3]))
         print("%s -> %.1f MB" % (e["run_id"], os.path.getsize(dst) / 1e6))
@@ -50,7 +50,7 @@ def main():
             if name.endswith(".json") and "summary" not in name and "verdicts" not in name:
                 src = os.path.join(d, name)
                 dst = os.path.join(out, "%s.%s.gz" % (sub, name))
-                with open(src, "rb") as fi, gzip.open(dst, "wb", compresslevel=9) as fo:
+                with open(src, "rb") as fi, open(dst, "wb") as raw, gzip.GzipFile(fileobj=raw, mode="wb", compresslevel=9, mtime=0) as fo:
                     shutil.copyfileobj(fi, fo)
                 sums.append("%s  %s" % (_sha(src), os.path.basename(dst)[:-3]))
                 print("%s/%s -> %.1f MB" % (sub, name, os.path.getsize(dst) / 1e6))

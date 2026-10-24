@@ -172,3 +172,5 @@ The first edge calibration (`bandwidth_profile`) scales co-tenant load by the VM
   detection result, not a downstream one (the norm-matched attack barely lowers FedAvg's completion).
 * Partial sign-flip attackers are still not detected by any rule evaluated here.
 * The impact-validated idea (value error on trusted root data) was tested and rejected (inverted signal).
+* **Scale:** at 50 and 100 vehicles the do-no-harm gain over FedAvg shrinks (+2.8 / +1.9 pp, unresolved at 8 seeds) and
+  its aggregation time grows to 1.1 / 3.3 s per round (loaded machine), more than Multi-Krum's 0.2 / 0.7 s.

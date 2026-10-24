@@ -243,7 +243,7 @@
       "source_experiment": "dnh_study_sign_flip.json",
       "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
       "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\dnh_study\\dnh_study_sign_flip.json",
-      "source_results_sha256": "c12658183ddbe099027bf50a2d3dd05b078df9ab0026d5a1419d1030603387cd",
+      "source_results_sha256": "12fc68fdabc5f723f0e05cdcfd96dafad49f671ef996420bedc18d70fc04bf23",
       "source_metadata_file": null,
       "source_metadata_sha256": null,
       "description": "Completion and false exclusions of FedAvg, the deployed trust-aware rule and the do-no-harm rule.",
@@ -259,7 +259,7 @@
       "source_experiment": "learner_study.json",
       "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
       "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\learner_study\\learner_study.json",
-      "source_results_sha256": "bdba388f6d1c718261d9194f859c40337369dac58c8e246db00bad327b72d9fa",
+      "source_results_sha256": "a7502c55acbefc2085f12085c717ffd36ff0addb195cee8f2ed204157649fd2b",
       "source_metadata_file": null,
       "source_metadata_sha256": null,
       "description": "Learned policy variants vs Resource-Aware across four environments.",
@@ -281,6 +281,23 @@
       "description": "Ten paired comparisons for H1-H4 with Holm-adjusted verdicts.",
       "series": [
         "hypothesis_verdicts.json"
+      ]
+    },
+    {
+      "filename": "fig17_baselines.png",
+      "title": "Fig 17: do-no-harm vs Multi-Krum, median, trimmed mean and an FLTrust-style rule",
+      "sha256": "a41aa30d9923aa5cc45a319787a78d684ef521633ec18cbb64553a6d43e62930",
+      "experiment_id": "dnh_and_learner_studies",
+      "source_experiment": "baseline_verdicts.json, fltrust_verdicts.json",
+      "source_records": "<ratio|setting>.<cell>.completion_rate / pooled_confusion_counts",
+      "source_results_file": "C:\\Users\\LENOVO\\Desktop\\VANNET\\results\\baseline_study\\baseline_verdicts.json",
+      "source_results_sha256": "3514a7a67bfd337648d34426b3dd0bb0b737716d8e4bcc8c77aa88233dc15ea9",
+      "source_metadata_file": null,
+      "source_metadata_sha256": null,
+      "description": "Mean completion at 0, 24 and 40 % attackers.",
+      "series": [
+        "baseline_verdicts.json",
+        "fltrust_verdicts.json"
       ]
     },
     {

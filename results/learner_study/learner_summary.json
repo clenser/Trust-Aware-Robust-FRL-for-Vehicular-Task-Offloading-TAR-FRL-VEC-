@@ -67,6 +67,18 @@
    "ci_low": -4.88062179947494,
    "ci_high": 4.2095051328082755,
    "n": 12
+  },
+  "cpu_peak/learned_est_bandit vs Resource_Aware": {
+   "mean_pp": -0.5244416666666675,
+   "ci_low": -3.43371500574763,
+   "ci_high": 2.3848316724142946,
+   "n": 12
+  },
+  "cpu_trough/learned_est_bandit vs Resource_Aware": {
+   "mean_pp": 0.07333333333333177,
+   "ci_low": -3.4736290479362903,
+   "ci_high": 3.620295714602954,
+   "n": 12
   }
  }
 }
